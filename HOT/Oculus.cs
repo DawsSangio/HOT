@@ -6,12 +6,11 @@ using System.IO;
 using System.ServiceProcess;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 using System;
 using System.IO.Compression;
 using System.Collections.Generic;
 
-namespace Oculus
+namespace OculusHack
 {
     public class Manifest 
          
@@ -152,9 +151,9 @@ namespace Oculus
 
     }
 
-    public static class Tools
+    public class Tools
     {
-        
+        #region Oculus folder 
         ///<summary>
         ///Check the existance of "OculusSetup.exe", "OculusDash.exe" and libOVR, in the given folder.
         ///</summary>   
@@ -168,6 +167,7 @@ namespace Oculus
             else return false;
         }
 
+        //TODO finalyze, get path form registry
         public static List<string> GetOculusLibraris()
         {
             List<string> libraries = new List<string>();
@@ -183,6 +183,7 @@ namespace Oculus
             return libraries;
 
         }
+        #endregion
 
         #region Oculus Service
         public static void StartOculusService()
@@ -217,49 +218,12 @@ namespace Oculus
             else return false;
         }
         #endregion
-        
+
         #region Oculus Home enviroment
-        ///<summary>
-        ///Check the existance of "Home2-Win64-Shipping.exe" and the size is more than 60Mbyte.
-        ///Retrun: 2 active, 1 hidden, 0 not found
-        ///</summary>
-        //public static int GetHomeStatus(string OculusInstallFolder)
-        //{
-        //    string[] files = Directory.GetFiles(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\", "*.*", SearchOption.AllDirectories);
-                        
-        //    foreach (string file in files)
-        //    {
-        //        FileInfo fileinfo = new FileInfo(file);
-        //        if (fileinfo.Length > 60000000 && file == OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe")
-        //        {
-        //            return 2; //is active
-        //        }
-        //        else if (fileinfo.Length > 60000000 && file == OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_")
-        //        {
-        //            return 1; //is hidden
-        //        }
-        //        else if (fileinfo.Length > 60000000)
-        //        {
-        //            File.Copy(file, OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_", true);
-        //            return 1; //is hidden
-        //        }
-
-        //    }
-        //    return 0; //not found
-        //}
 
         ///<summary>
-        ///Make backup of Home2-Win64-Shipping.exe renaming *.ex_
-        ///</summary>
-        //public static void BackupHome2exe(string OculusInstallFolder)
-        //{
-
-        //    File.Copy(  OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe",
-        //                OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_",
-        //                true);
-          
-        //}
-       
+        ///Copy Home2-Win64-Shipping.exe to *.ex_ and delete *.exe
+        ///</summary>     
         public static void DisableHome(string OculusInstallFolder)
         {
             
@@ -269,11 +233,15 @@ namespace Oculus
                 pname.WaitForExit();
             }
 
-            File.Move(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe",
-                   OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_");
+            File.Copy(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe",
+                   OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_",true);
+            File.Delete(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe");
 
         }
 
+        ///<summary>
+        ///Rename Home2-Win64-Shipping.ex_ to *.exe
+        ///</summary>
         public static void EnableHome(string OculusInstallFolder)
         {
             File.Move(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_",
@@ -287,48 +255,7 @@ namespace Oculus
             home.StartInfo = startInfo;
             home.Start();
         }
-               
-        #endregion
-
-        #region Oculus core library
-        ///<summary>
-        ///Check the existance of "LibOVRRT32_1.dll" and "LibOVRRT32_1.dll"
-        ///</summary>
-        public static bool IsOculusLibraryEnable(string OculusInstallFolder)
-                {
-                    // TODO need improvement to check file not found
-                    if (File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT32_1.dll") &&
-                         File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll"))
-                    {
-                        return true;
-                    }
-                    else return false;
-                }
-
-        ///<summary>
-        ///Disable Oculus native library renaming "LibOVRRT" to hide them
-        ///</summary>
-        public static void DisableOculusLibrary(string OculusInstallFolder)
-        {
-                File.Move(  OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll",
-                            OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_");
-                File.Move(  OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll",
-                            OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_");
-        }
-
-        ///<summary>
-        ///Enable Oculus native library renaming "LibOVRRT" .dl_ to .dll to show them
-        ///</summary>
-        public static void EnableOculusLibrary(string OculusInstallFolder)
-        {
-                File.Move(  OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll");
-            File.Move(  OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll");
-        }
-        #endregion
-
-        #region Dash SFX
+       
         ///<summary>
         ///Disable Dash background "humming" sfx. 
         ///</summary>
@@ -351,8 +278,7 @@ namespace Oculus
         #endregion
 
         #region Debugtools
-        //TODO fix access denied, allow to run without admin rights, "cmd" must be created near program exe
-        public static void SetDebugToolSS(string OculusInstallFolder, double ss)
+        public static void SetSS(string OculusInstallFolder, double ss)
         {
             if (ss == 1)
             {
@@ -376,7 +302,7 @@ namespace Oculus
 
         }
 
-        public static void SetDebugOSD(string OculusInstallFolder, int mode)
+        public static void SetOSD(string OculusInstallFolder, int mode)
         {
             File.CreateText("cmd").Dispose();
             string file = "cmd";
@@ -444,6 +370,45 @@ namespace Oculus
 
         #region Manage Runtime Library
 
+        ///<summary>
+        ///Check the existance of "LibOVRRT32_1.dll" and "LibOVRRT32_1.dll"
+        ///</summary>
+        public static bool IsOculusLibraryEnable(string OculusInstallFolder)
+        {
+            // TODO need improvement to check file not found
+            if (File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT32_1.dll") &&
+                 File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll"))
+            {
+                return true;
+            }
+            else return false;
+        }
+
+        ///<summary>
+        ///Disable Oculus native library renaming "LibOVRRT" to hide them
+        ///</summary>
+        public static void DisableOculusLibrary(string OculusInstallFolder)
+        {
+            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll",
+                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_");
+            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll",
+                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_");
+        }
+
+        ///<summary>
+        ///Enable Oculus native library renaming "LibOVRRT" .dl_ to .dll to show them
+        ///</summary>
+        public static void EnableOculusLibrary(string OculusInstallFolder)
+        {
+            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_",
+                    OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll");
+            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_",
+                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll");
+        }
+
+        /// <summary>
+        /// Return Oculus Library version, major release.
+        /// </summary>
         public static string GetLibVersion(string OculusInstallFolder)
         {
             
@@ -453,7 +418,10 @@ namespace Oculus
 
         }
 
-        public static void BackupLibrary(string OculusInstallFolder)
+        /// <summary>
+        /// Backup, to a zip file, the main core Oculus library
+        /// </summary>
+        public static void BackupLibrary(string OculusInstallFolder, string zipfile)
         {
             string[] libraryfiles = {
 
@@ -473,7 +441,9 @@ namespace Oculus
                 "oculus-runtime\\OVRServer_x64.exe",
                 "oculus-runtime\\OVRServiceLauncher.exe"
             };
-            string filename = GetLibVersion(OculusInstallFolder) + ".zip";
+            string filename = zipfile; //GetLibVersion(OculusInstallFolder) + ".zip";
+
+
             File.Create(filename).Dispose(); 
                 using (FileStream zipToOpen = new FileStream(filename, FileMode.Create))
                 {
@@ -489,7 +459,10 @@ namespace Oculus
                    
                 }
         }
-
+        
+        /// <summary>
+        /// Restore the main core Oculus library from a zipfile
+        /// </summary>
         public static void RestoreLibrary(string filename, string OculusInstallFolder)
         {
             //Delete orignal file before replacing from archive.zip
@@ -505,8 +478,6 @@ namespace Oculus
             
             ZipFile.ExtractToDirectory(filename, OculusInstallFolder+"\\Support\\");
         }
-
-
 
         #endregion
 

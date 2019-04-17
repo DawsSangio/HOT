@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusHack"
         mc:Ignorable="d"
-        Title="HOT - Humble Oculus Toolkit - Daws 2018" Height="400" Width="590" ResizeMode="CanMinimize" TabIndex="0" >
+        Title="Humble Oculus Toolkit - Daws 2018" Height="300" Width="400" ResizeMode="CanMinimize" TabIndex="0" >
 
 
     <Grid x:Name="grid" Margin="10,10,10,10">
@@ -14,33 +14,34 @@
             <TabItem Header="Main">
                 <Grid x:Name="MainGrid" Margin="0" UseLayoutRounding="False" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    
-                    <Label Content="Global Super Sampling" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="180" HorizontalContentAlignment="Right"/>
-                    <Label x:Name="l_ss"       Grid.Row="0" Grid.Column="1" Content="1.0" HorizontalAlignment="Left" Width="80" FontSize="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Margin="50,0,0,0" Padding="0" />
-                    <Button x:Name="b_ss_plus"  Grid.Row="0" Grid.Column="1" Content="+" HorizontalAlignment="Left" Width="50" Click="b_ss_plus_Click" FontSize="24" VerticalContentAlignment="Top" Margin="130,0,0,0"/>
-                    <Button x:Name="b_ss_minus" Grid.Row="0" Grid.Column="1" Content="-" HorizontalAlignment="Left" Width="50" Click="b_ss_minus_Click" FontSize="24" VerticalContentAlignment="Top" Margin="0"/>
-                    <Button x:Name="b_setSS"   Grid.Row="0" Grid.Column="1" Content="Apply Super Sampling" Width="180" Click="b_setSS_Click" HorizontalAlignment="Right"/>
 
+                    <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"   HorizontalAlignment="Left" VerticalContentAlignment="Center" Width="100" HorizontalContentAlignment="Right" FontSize="11"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" Padding="0" FontWeight="Bold"/>
+                        <Label x:Name="l_ss"         Content="1.00" Width="58" FontSize="20" HorizontalContentAlignment="Center" Padding="0"   />
+                        <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" Padding="0" FontWeight="Bold" />
+                        <Button x:Name="b_setSS"     Content="Apply Super Sampling" Click="b_setSS_Click"  FontSize="11" Width="140" />
+                    </StackPanel>
 
-                    <Label Content="Async Space Warp status" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="180" />
-                    <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged" FontSize="14"  >
+                    <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="100" FontSize="11" />
+                    <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
                         <ComboBoxItem Content="Auto"/>
                         <ComboBoxItem Content="45fps ASW on"/>
                         <ComboBoxItem Content="45fps ASW off"/>
                         <ComboBoxItem Content="Off"/>
                     </ComboBox>
 
-                    <Label Content="OSD performance monitor" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="180"/>
-                    <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" SelectionChanged="cb_debugHUD_SelectionChanged" FontSize="14"  >
+                    <Label Content="OSD performance" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Width="100" FontSize="11" UseLayoutRounding="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                    <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1" VerticalContentAlignment="Center" SelectionChanged="cb_debugHUD_SelectionChanged"  >
                         <ComboBoxItem Content="Off"/>
                         <ComboBoxItem Content="Performance summary"/>
                         <ComboBoxItem Content="Latency timing"/>
@@ -49,46 +50,53 @@
                         <ComboBoxItem Content="ASW status"/>
                         <ComboBoxItem Content="Layer info - Pixel density"/>
                     </ComboBox>
-
+                    <Label x:Name="l_launcher" Grid.Row="3" Grid.ColumnSpan="2" />
 
                 </Grid>
             </TabItem>
-            
-            
+
+
             <TabItem Header="Advanced"  >
                 <Grid x:Name="grid_advanced">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="13.333"/>
+                        <ColumnDefinition Width="166.667"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="ck_home_status" Content="Oculus Home Enable" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click"/>
-                    <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click"/>
+                    <CheckBox x:Name="ck_home_status" Content="Oculus Home Enable" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" Grid.ColumnSpan="2" FontSize="11"/>
+                    <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" Grid.ColumnSpan="2" FontSize="11"/>
 
-                    <Label  x:Name="l_timer"    Grid.Row="1" Grid.Column="1" Content="" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="48"  Width="50"/>
-                    <Button x:Name="b_back_lib" Grid.Row="2" Content="Backup Library"  Click="B_back_lib_Click" FontSize="10" />
-                    <Button x:Name="b_lib"      Grid.Row="3" Content="Resore Library"  Click="B_restore_lib_Click" FontSize="10" />
-                    <Button x:Name="b_guardian" Grid.Row="4" Content="Enable Guardian" Click="B_guardian_Click" FontSize="10" />
-                    <Label  x:Name="l_version"  Grid.Row="5" Content="Runtime version" VerticalAlignment="Top"/>
+                    <Label  x:Name="l_timer"    Grid.Row="1" Grid.Column="2" Content="" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="48"  Width="50"/>
+                    <Button x:Name="b_back_lib" Grid.Row="2" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" Grid.ColumnSpan="2" />
+                    <Button x:Name="b_lib"      Grid.Row="3" Content="Resore Library"  Click="B_restore_lib_Click" FontSize="11" Grid.ColumnSpan="2" />
+                    <Button x:Name="b_guardian" Grid.Row="4" Content="Enable Guardian" Click="B_guardian_Click" FontSize="11" Grid.ColumnSpan="2" />
+                    <Label  x:Name="l_version"  Grid.Row="5" Content="Runtime version" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="11"/>
+                    <Label  x:Name="l_admin_right" Grid.Column="2" Grid.Row="2" FontSize="14" FontWeight="Bold" HorizontalContentAlignment="Center"  Grid.RowSpan="3" VerticalContentAlignment="Center" Padding="2">
+                        <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
+                    </Label>
+
+
 
 
                 </Grid>
             </TabItem>
-            
+
+
         </TabControl>
 
 
 
-        <Label Content="Oculus install folder found in:" Padding="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="180" FontWeight="Bold" Height="20"/>
-        <Label x:Name="l_oculusfolder" Content="OulusFolder" Padding="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="20" Width="329" BorderBrush="Red" Background="#00000000" Margin="182,0,0,0"/>
-        <Button x:Name="b_oculusfolder" Content="..." Margin="511,0,0,0" Click="b_oculusfolder_Click" IsEnabled="False" HorizontalAlignment="Left" Width="38" Height="20" VerticalAlignment="Top"/>
+        <Label Content="Oculus install folder:" Padding="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="121" FontWeight="Bold" Height="20"/>
+        <Label x:Name="l_oculusfolder" Content="OulusFolder" Padding="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="20" Width="205" BorderBrush="Red" Background="#00000000" Margin="121,0,0,0"/>
+        <Button x:Name="b_oculusfolder" Content="..." Margin="326,0,0,0" Click="b_oculusfolder_Click" IsEnabled="False" HorizontalAlignment="Left" Width="38" Height="20" VerticalAlignment="Top"/>
 
 
 
