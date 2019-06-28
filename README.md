@@ -16,7 +16,7 @@ When you run as Administrator you can:
 
 Bonus:
 - Enable/Disable Open Composite.
-Thanks to ZNix, author of Open Composite, I've implemented the donwolad of latest Open Composite dll, and manage activation.
+Thanks to ZNix, author of Open Composite, I've implemented the donwload of latest Open Composite dll, and manage activation.
 For more info on Open Coposite:
 https://gitlab.com/znixian/OpenOVR/
 
