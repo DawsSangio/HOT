@@ -67,7 +67,7 @@ namespace OculusHack
 
         public string CreateAssets()
         {
-           string assets =  "{\"dominantColor\": \"#0D0C19\",\n"+ //TODO: colore di fondo ?
+           string assets =  "{\"dominantColor\": \"#0D0C19\",\n"+
                             "\"files\": {\n"+
                             "\"original.jpg\": \"0f94d358cc180d3c268f0acdc4a6be1196879f67be47a0a87609a3bf6e339bc2\",\n"+
                             "\"cover_landscape_image.jpg\": \"805d7bac0942adbb8a84cadda86af670da1dd3e0fced122c4ac6cbeba1d7d8eb\",\n" +
@@ -140,18 +140,10 @@ namespace OculusHack
 
             original.Dispose();
         }
-
-        //public static OculusManifest ReadOculusApps()
-        //{
-        //    OculusManifest manifest = new OculusManifest();
-
-        //    return manifest;
-        //}
-
-
+                
     }
 
-    public class Tools
+    public static class Tools
     {
         #region Oculus folder 
         ///<summary>
@@ -160,14 +152,15 @@ namespace OculusHack
         public static bool CheckOculusInstallFolder(string OculusInstallFolder)
         {
             if (File.Exists(OculusInstallFolder + "\\OculusSetup.exe")
-                && File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll"))
+                && File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll")
+                && File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\OVRServer_x64.exe") )
             { 
             return true;
             }
             else return false;
         }
 
-        //TODO finalyze, get path form registry
+        //TODO: fix me, get path form registry
         public static List<string> GetOculusLibraris()
         {
             List<string> libraries = new List<string>();
@@ -176,7 +169,6 @@ namespace OculusHack
             foreach (string entry in lib)
             {
                 string key = (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Oculus VR, LLC\\Oculus\\Libraries\\" + entry, "Path",null);
-                //TODO pulire percorso
                 libraries.Add(key);
 
             }
@@ -220,67 +212,130 @@ namespace OculusHack
         #endregion
 
         #region Oculus Home enviroment
-
-        ///<summary>
-        ///Copy Home2-Win64-Shipping.exe to *.ex_ and delete *.exe
-        ///</summary>     
-        public static void DisableHome(string OculusInstallFolder)
+                
+        /// <summary>
+        /// Check Oculus Home enviroment status, with optional update
+        /// mode: 1 = home enable, 0 = home disable
+        /// </summary>
+        public static bool OculusHome(string OculusInstallFolder, int mode, bool update)
         {
-            
-            foreach (Process pname in Process.GetProcessesByName("Home2-Win64-Shipping"))
+
+            string home_file = OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe";
+            string home_bkup_file = OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_";
+
+            if (File.Exists(home_file) && mode == 1)
             {
-                pname.Kill();
-                pname.WaitForExit();
+                return true;
             }
-
-            File.Copy(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe",
-                   OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_",true);
-            File.Delete(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe");
-
+            else if (File.Exists(home_file) && mode == 0)
+            {
+                if (update)
+                {
+                    //disable
+                    File.Copy(home_file, home_bkup_file, true);
+                    File.Delete(home_file);
+                }
+                return false;
+            }
+            else if (!File.Exists(home_file) && File.Exists(home_bkup_file) && mode == 1)
+            {
+                if (update)
+                {
+                    //enable
+                    File.Move(home_bkup_file, home_file);
+                }
+                return false;
+            }
+            else if (!File.Exists(home_file) && mode == 0)
+            {
+                return true;
+            }
+            else return false;
         }
 
-        ///<summary>
-        ///Rename Home2-Win64-Shipping.ex_ to *.exe
-        ///</summary>
-        public static void EnableHome(string OculusInstallFolder)
+        /// <summary>
+        /// Check Dash Sound FX status, with optional update
+        /// mode: 1 = sound on, 0 = sound off
+        /// </summary>
+        public static bool DashSFX(string OculusInstallFolder, int mode, bool update)
         {
-            File.Move(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.ex_",
-                   OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe");
-            
-            Process home = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "Support\\oculus-worlds\\Home2\\Binaries\\Win64\\";
-            startInfo.FileName = "Home2-Win64-Shipping.exe";
-            home.StartInfo = startInfo;
-            home.Start();
-        }
-       
-        ///<summary>
-        ///Disable Dash background "humming" sfx. 
-        ///</summary>
-        public static void DisableDashSFX(string OculusInstallFolder)
-        {
-            KillDash();
-            File.Move(OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank",
-                        OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.ban_");
+            string bank_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank";
+            string bank_bkup_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.ban_";
+
+            if (File.Exists(bank_file) && mode == 1)
+            {
+                return true;
+            }
+            else if (File.Exists(bank_file) && mode == 0)
+            {
+                if (update)
+                {
+                    //disable
+                    File.Copy(bank_file, bank_bkup_file, true);
+                    File.Delete(bank_file);
+                }
+                return false;
+            }
+            else if (File.Exists(bank_bkup_file) && mode == 1)
+            {
+                if (update)
+                {
+                    //enable
+                    File.Move(bank_bkup_file, bank_file);
+                }
+                return false;
+            }
+            else if (File.Exists(bank_bkup_file) && mode == 0)
+            {
+                return true;
+            }
+            else return false;
         }
 
-        ///<summary>
-        ///Enable Dash background "humming" sfx. 
-        ///</summary>
-        public static void EnableDashSFX(string OculusInstallFolder)
+        /// <summary>
+        /// Check Dash background status, with optional update
+        /// 0 = white, 1 = black
+        /// </summary>
+        public static bool DashBackground(string OculusInstallFolder, int mode, bool update)
         {
-            File.Move(OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.ban_",
-                      OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank");
-            KillDash();
+            string file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\materials\\environment\\the_void\\the_void_new.material";
+            string txt = File.ReadAllText(file);
+            if (txt.Contains("6") && mode == 0)
+            {
+                return true;
+            }
+            else if (txt.Contains("6") && mode == 1)
+            {
+                if (update)
+                {
+                    File.WriteAllText(file, txt.Replace("006", "007"));
+                }
+                return false;
+            }
+            else if (txt.Contains("7") && mode == 1)
+            {
+                return true;
+            }
+            else if (txt.Contains("7") && mode == 0)
+            {
+                if (update)
+                {
+                    File.WriteAllText(file, txt.Replace("007", "006"));
+                }
+                return false;
+            }
+            else return false;
+           
+           
         }
+
         #endregion
 
         #region Debugtools
+
         public static void SetSS(string OculusInstallFolder, double ss)
         {
-            if (ss == 1)
+            if (ss == 1 || ss == 1.00)
             {
                 ss = 0;
             }
@@ -291,17 +346,21 @@ namespace OculusHack
             Process debugtool = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "Support\\oculus-diagnostics\\";
-            startInfo.FileName = "OculusDebugToolCLI.exe";
+            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
             string args = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
             startInfo.Arguments = args;
             debugtool.StartInfo = startInfo;
             debugtool.Start();
             debugtool.WaitForExit();
             File.Delete(file);
-
+            
         }
 
+        /// <summary>
+        /// Set the Debug OSD.
+        /// "mode: 0=Off, 1=Perfomance summary, 2=Latency timing, 3=Application render timing, 4=Compositor render timing, 6=AWS status, 10=Layer info 
+        /// </summary>
         public static void SetOSD(string OculusInstallFolder, int mode)
         {
             File.CreateText("cmd").Dispose();
@@ -320,27 +379,35 @@ namespace OculusHack
             Process debugtool = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "Support\\oculus-diagnostics\\";
-            startInfo.FileName = "OculusDebugToolCLI.exe";
+            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
             startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
             debugtool.StartInfo = startInfo;
             debugtool.Start();
             debugtool.WaitForExit();
+            
             File.Delete(file);
 
         }
 
-        //ASW mode: 0=auto, 1=45 on, 2=45 off, 3=off
+        /// <summary>
+        /// Set ASW mode.
+        /// 0 = Auto, 1 = 45fps(AWS), 2 = 45fps(no AWS), 3 = Off, 4 = 30fps(ASW) 
+        /// </summary>
         public static void SetASW(string OculusInstallFolder, int mode)
         {
             string asw;
-            if (mode == 3)
+            if (mode == 4)
+            {
+                asw = "asw.Clock30";
+            }
+            else if (mode == 3)
             {
                 asw = "asw.Off";
             }
             else if (mode == 2)
             {
-                asw = "asw.Sim45";
+                asw = "asw.Sim45"; //NO ASW
             }
             else if (mode == 1)
             {
@@ -357,8 +424,8 @@ namespace OculusHack
             Process debugtool = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "Support\\oculus-diagnostics\\";
-            startInfo.FileName = "OculusDebugToolCLI.exe";
+            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
             startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
             debugtool.StartInfo = startInfo;
             debugtool.Start();
@@ -375,7 +442,6 @@ namespace OculusHack
         ///</summary>
         public static bool IsOculusLibraryEnable(string OculusInstallFolder)
         {
-            // TODO need improvement to check file not found
             if (File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT32_1.dll") &&
                  File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll"))
             {
@@ -412,8 +478,8 @@ namespace OculusHack
         public static string GetLibVersion(string OculusInstallFolder)
         {
             
-            FileVersionInfo fa = FileVersionInfo.GetVersionInfo(OculusInstallFolder+ "support\\oculus-runtime\\OVRServer_x64.exe");
-            string version = fa.ProductMajorPart +"."+fa.ProductMinorPart;
+            FileVersionInfo fa = FileVersionInfo.GetVersionInfo(OculusInstallFolder+ "\\support\\oculus-runtime\\OVRServer_x64.exe"); 
+            string version = fa.FileMajorPart +"."+fa.FileMinorPart + "." + fa.FileBuildPart;
             return version;
 
         }
@@ -451,7 +517,7 @@ namespace OculusHack
                     {
                         foreach (string file in libraryfiles)
                         {
-                            ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "Support\\"+file, file);
+                            ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "\\Support\\"+file, file);
                         }
                         archive.Dispose();
                     
@@ -471,7 +537,7 @@ namespace OculusHack
             {
                 if (!file.ToString().EndsWith("/"))
                 {
-                    File.Delete(OculusInstallFolder + "Support\\" + file);
+                    File.Delete(OculusInstallFolder + "\\Support\\" + file);
                 }
             }
             archive.Dispose();
@@ -482,6 +548,10 @@ namespace OculusHack
         #endregion
 
         #region Guardian
+        /// <summary>
+        /// Probably outdated since 1.31 runtime
+        /// </summary>
+        /// <param name="OculusInstallFolder"></param>
         public static void EnableGuardian(string OculusInstallFolder)
         {
             Process proc = new Process();
@@ -518,6 +588,16 @@ namespace OculusHack
 
         }
 
+        public static void KillOculusHome()
+        {
+            foreach (Process pname in Process.GetProcessesByName("Home2-Win64-Shipping"))
+            {
+                pname.Kill();
+                pname.WaitForExit();
+            }
+
+        }
+
         public static void KillDesktopClient()
         {
             foreach (Process pname in Process.GetProcessesByName("OculusClient"))
@@ -526,10 +606,9 @@ namespace OculusHack
                 pname.WaitForExit();
             }
         }
-                    
-        
+                  
+               
     }
 
-   
 
 }

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Management;
 using System.Security.Principal;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Launcher;
-
+using Json;
 
 
 namespace OculusHack
@@ -19,174 +21,211 @@ namespace OculusHack
     {
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
-        public List<Record> records = new List<Record>();
-        public string[] args = Environment.GetCommandLineArgs();
-        
-        
-                
+        public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
+        private List<JsonRecord> jrecs = new List<JsonRecord>();
+
+        private string cfg_file;
+        private string newapp = "";
+        private string lastapp = "";
+
+        public ObservableCollection<Record> records = new ObservableCollection<Record>();
 
         public MainWindow()
         {
             
             InitializeComponent();
-                                              
-            // Check if the Oculus install forlder is real
-            // if not, enable the ofd to select the forlder.
-            if (Tools.CheckOculusInstallFolder(OculusInstallFolder))
+
+            #region Open Composite: check for update and download
+            popup.IsOpen = true;
+            void dl_dll()
             {
-                l_oculusfolder.Content = OculusInstallFolder;
-                b_oculusfolder.IsEnabled = false;
-                cb_ASW.SelectedIndex = 0; //TODO this should get actual status
-                cb_debugHUD.SelectedIndex = 0; //TODO this should get actual status
-                Tools.SetSS(OculusInstallFolder,ss);
-
-                // Disable Advanced tab if not in Administrator mode.
-                if (!IsAdministrator())
+                OC.downloadDll();
+                Dispatcher.Invoke(() =>
                 {
-                    grid_advanced.IsEnabled = false;
-                    tb_admin.Text = "To enable this tab you need to run as Administrator";
-                }
-
-
-                // Check if "args" are passed and launch apps with relative settings.
-                if (args.Length > 1)
-                {
-                    //TODO evaulate if really needed args check.
-                    //foreach (Record rec in records)
-                    //{
-                    //    if (args[1].Substring(args[1].LastIndexOf("\\") + 1) == rec.exe)
-                    //    {
-                    //        l_launcher.Content = "gotcha!";
-                    //        Tools.SetSS(OculusInstallFolder, rec.ss);
-                    //        ss = rec.ss;
-                    //        Tools.SetASW(OculusInstallFolder, rec.asw);
-                    //        Tools.SetOSD(OculusInstallFolder, rec.osd);
-                    //        CfgTools.RunApp(args[1]);
-                    //        //TODO: reset Oculus to default
-                    //        //TODO: optional lose HOT
-                    //    }
-                    //}
-                }
-
-                CheckStatus();
+                    popup.IsOpen = false;
+                    
+                });
             }
-            else if (Tools.CheckOculusInstallFolder("c:\\Program Files\\Oculus\\"))
-            {
-                OculusInstallFolder = "c:\\Program Files\\Oculus\\";
+                        
+            Thread thread = new Thread(dl_dll);
+            thread.Start();
+            #endregion
 
+            //if Oculus installfolder is null, try the default
+            if (OculusInstallFolder == "")
+            {
+                OculusInstallFolder = "c:\\Program Files\\Oculus";
                 Properties.Settings.Default.HOTSettings = OculusInstallFolder;
                 Properties.Settings.Default.Save();
 
-                l_oculusfolder.Content = OculusInstallFolder;
-                b_oculusfolder.IsEnabled = false;
+            }
 
-                CheckStatus();
+            // Check if the Oculus install forlder is ok
+            // if not, enable the ofd to select the forlder, or abort app.
+            while (!Tools.CheckOculusInstallFolder(OculusInstallFolder))
+            {
+                MessageBoxResult mb = MessageBox.Show("Please install Oculus client, and click OK to select OculusSetup.exe", "Oculus desktop client not found", MessageBoxButton.OKCancel);
+                if (mb == MessageBoxResult.OK)
+                {
+                    OculusInstallFolder = get_oculusfolder();
+                }
+                else
+                {
+                    Application.Current.MainWindow.Close();// TODO implement better close, instead crash
+                }
+
+            }
+
+            #region Set default parameter
+
+            //jrecs = JsonReader.ReadJsonFile(openvrcfg); // TODO WIP **********
+
+            cb_ASW.SelectedIndex = 0; 
+            cb_debugHUD.SelectedIndex = 0;
+            Tools.SetSS(OculusInstallFolder,ss);
+            l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+            ReadAppsCfg();
+
+            CheckEnviroment();
+            #endregion
+
+            #region Admin mode - exe check
+            //Activate exe check if in Admin mode, or disable Advanced tab if not in Administrator mode.
+            if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+            {
+                grid_advanced.IsEnabled = false;
+                tb_admin.Text = "To enable this tab you need to run as Administrator";
+                b_add_exe.IsEnabled = false;
+                b_del_exe.IsEnabled = false;
+                lv_records.Visibility = Visibility.Hidden;
+                tb_launcher.Visibility = Visibility.Visible;
+                
             }
             else
             {
-                l_oculusfolder.Content = "Oculus Client not found!";
-                b_oculusfolder.IsEnabled = true;
-                MainGrid.IsEnabled = false;
+                //Start exe check with Management Event. Admini required
+                WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"); 
+
+                ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+                watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+                watcher.Start();
             }
 
-            // Read all records in cfg, or create it if not exist
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HOT\\HOT.cfg"))
+            // new Exe found
+            void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
             {
-                records = CfgTools.ReadCfg(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\HOT\\HOT.cfg");
+                newapp = e.NewEvent.Properties["ProcessName"].Value.ToString();
+
+                if (newapp!=lastapp)
+                {
+                    foreach (Record rec in records)
+                    {
+                        if (e.NewEvent.Properties["ProcessName"].Value.ToString() == rec.exe)
+                        {
+                            //Use Dipatcher to allow cross treading to set runtime setup.
+                            Dispatcher.Invoke(() =>
+                            {
+                                //l_launcher.Content = "eccolo";
+                                Tools.SetSS(OculusInstallFolder, rec.ss);
+                                cb_ASW.SelectedIndex = rec.asw;
+                                cb_debugHUD.SelectedIndex = rec.osd;
+                                ss = rec.ss;
+                                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                                if (rec.oc == 1 && !OC.IsOCactive())
+                                {
+                                    OC.EnableOC();
+                                    cb_OC.IsChecked = true;
+                                }
+                                else if (rec.oc == 0 && OC.IsOCactive())
+                                {
+                                    OC.DisableOC();
+                                    cb_OC.IsChecked = false;
+                                }
+
+                            });
+
+                        }
+                    }
+                }
+                                
+                lastapp = e.NewEvent.Properties["ProcessName"].Value.ToString();
+
             }
-            
+            #endregion
 
-            //TODO: implement run exe check for launch parameters
-            //ExeCheck execheck = new ExeCheck();
-            //ExeCheck();
-
-        }
-
-       
-
-        public void ExeCheck()
-        {   
-            try
-            {
-                string ComputerName = "localhost";
-                string WmiQuery = "Select * From __InstanceCreationEvent Within 1 " + "Where TargetInstance ISA 'Win32_Process' "; ;
-                ManagementEventWatcher Watcher;
-                ManagementScope Scope;
-
-                Scope = new ManagementScope(String.Format("\\\\{0}\\root\\CIMV2", ComputerName), null);
-                Scope.Connect();
-
-                Watcher = new ManagementEventWatcher(Scope, new EventQuery(WmiQuery));
-                Watcher.EventArrived += new EventArrivedEventHandler(this.evento);
-                Watcher.Start();
-                //Console.Read();
-                //Watcher.Stop();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception {0} Trace {1}", e.Message, e.StackTrace);
-            }
+               
 
         }
         
-
-        //Check status of avialability of Home and Dash SFX
-        private void CheckStatus()
+        private void CheckEnviroment()
         {
             //Check Library version
-            l_version.Content = "Runtime version: "+Tools.GetLibVersion(OculusInstallFolder);
-                 
+            l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
             
             //Check Home status
-            if (File.Exists(OculusInstallFolder + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe"))
-                {
+            if (Tools.OculusHome(OculusInstallFolder, 1, false))
+            {
                 ck_home_status.IsChecked = true;
-                }else ck_home_status.IsChecked = false;
+            }
+            else ck_home_status.IsChecked = false;
 
             //Check Dash SFX
-            if (File.Exists(OculusInstallFolder + "Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank"))
+            if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
                 ck_sfx_status.IsChecked = true;
             }
             else ck_sfx_status.IsChecked = false;
 
+            //check Dash black BG
+            if (Tools.DashBackground(OculusInstallFolder, 0, false))
+            {
+                ck_blk_dash.IsChecked = false;
+            }
+            else ck_blk_dash.IsChecked = true;
 
-            //Super setting value
-            l_ss.Content = ss.ToString();
-            b_setSS.IsEnabled = false;
-                
+            //Chekc OC active
+            if (OC.IsOCactive())
+            {
+                cb_OC.IsChecked = true;
+            }
+            else cb_OC.IsChecked = false;
         }
 
-        private void evento(object sender, EventArrivedEventArgs e)
-        {
-            //in this point the new events arrives
-            //you can access to any property of the Win32_Process class
-            //Console.WriteLine("TargetInstance.Handle :    " + ((ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value)["Handle"]);
-            string exe = Convert.ToString(((ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value)["Name"]);
-            l_launcher.Content = exe;
-        }
-        
-        private void b_oculusfolder_Click(object sender, RoutedEventArgs e)
+        private string get_oculusfolder()
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Title = "Select OculusSetup.exe";
             ofd.DefaultExt = "*.exe";
             ofd.Filter = "OculusSetup.exe |OculusSetup.exe";
-            if (ofd.ShowDialog() == false) return;
+            if (ofd.ShowDialog() == false) return null;
 
-            OculusInstallFolder = System.IO.Path.GetDirectoryName(ofd.FileName);
-            l_oculusfolder.Content = OculusInstallFolder;
-            Properties.Settings.Default.HOTSettings = OculusInstallFolder;
-            Properties.Settings.Default.Save();
-            CheckStatus();
-            MainGrid.IsEnabled = true;
+            OculusInstallFolder = Path.GetDirectoryName(ofd.FileName);
 
+            return OculusInstallFolder;
+            
         }
-                  
+
+        private void ReadAppsCfg()
+        {
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\HOT.cfg"))
+            {
+                cfg_file = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\HOT.cfg";
+                records = CfgTools.ReadCfg(cfg_file);
+                lv_records.ItemsSource = records;
+            }
+            else
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack");
+                File.Create(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\HOT.cfg");
+                cfg_file = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\HOT.cfg";
+            }
+        }
+
+        #region Main tab
         private void b_setSS_Click(object sender, RoutedEventArgs e)
         {
             Tools.SetSS(OculusInstallFolder, ss);
-            //Store actual SS as default value
             Properties.Settings.Default.SSsetting = ss;
             Properties.Settings.Default.Save();
             b_setSS.IsEnabled = false;
@@ -198,7 +237,7 @@ namespace OculusHack
             {
                 ss += 0.05;
                 Math.Round(ss, 2);
-                CheckStatus();
+                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 b_setSS.IsEnabled = true;
             }
         }
@@ -209,7 +248,7 @@ namespace OculusHack
             {
                 ss -= 0.05;
                 Math.Round(ss, 2);
-                CheckStatus();
+                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 b_setSS.IsEnabled = true;
             }
             
@@ -234,98 +273,88 @@ namespace OculusHack
             {
                 Tools.SetASW(OculusInstallFolder, 3);
             }
+            else if (cb_ASW.SelectedIndex == 4)
+            {
+                Tools.SetASW(OculusInstallFolder, 4);
+            }
+
 
         }
 
-        private void cb_debugHUD_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void cb_OSD_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (cb_debugHUD.SelectedIndex == 0)
+            if (cb_debugHUD.SelectedIndex == 0) // OFF
             {
                 Tools.SetOSD(OculusInstallFolder, 0);
             }
-            else if (cb_debugHUD.SelectedIndex == 1)
+            else if (cb_debugHUD.SelectedIndex == 1) // Performance summary
             {
                 Tools.SetOSD(OculusInstallFolder, 1);
             }
-            else if (cb_debugHUD.SelectedIndex == 2)
+            else if (cb_debugHUD.SelectedIndex == 2) // Latency Timing
             {
                 Tools.SetOSD(OculusInstallFolder, 2);
             }
-            else if (cb_debugHUD.SelectedIndex == 3)
+            else if (cb_debugHUD.SelectedIndex == 3) // Applicamtion Render Timing
             {
                 Tools.SetOSD(OculusInstallFolder, 3);
             }
-            else if (cb_debugHUD.SelectedIndex == 4)
+            else if (cb_debugHUD.SelectedIndex == 4) // Compositor Render Timing
             {
                 Tools.SetOSD(OculusInstallFolder, 4);
             }
-            else if (cb_debugHUD.SelectedIndex == 5)
+            else if (cb_debugHUD.SelectedIndex == 5) // ASW status
             {
                 Tools.SetOSD(OculusInstallFolder, 6);
             }
-            else if (cb_debugHUD.SelectedIndex == 6)
+            else if (cb_debugHUD.SelectedIndex == 6) // Layer info, pixel density
             {
                 Tools.SetOSD(OculusInstallFolder, 10);
             }
         }
-                             
 
-
-        #region Advanced setting tab
-        private void b_svr_Click(object sender, RoutedEventArgs e)
+        private void Cb_OC_Click(object sender, RoutedEventArgs e)
         {
-
-            //Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("MoveHome.Home2-Win64-Shipping.exe");
-            //FileStream fileStream = new FileStream(Tools.GetOculusInstallFolder() + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\temp.exe", FileMode.CreateNew);
-            //for (int i = 0; i < stream.Length; i++)
-            //    fileStream.WriteByte((byte)stream.ReadByte());
-            //fileStream.Close();
-            //File.Copy(Tools.GetOculusInstallFolder() + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\temp.exe", Tools.GetOculusInstallFolder() + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\Home2-Win64-Shipping.exe", true);
-            //File.Delete(Tools.GetOculusInstallFolder() + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\temp.exe");
-            //File.WriteAllText(Tools.GetOculusInstallFolder() + "\\Support\\oculus-worlds\\Home2\\Binaries\\Win64\\MoveHome.ini", "steam://rungameid/250820");
-            //CheckStatus();
-
-        }
-
-        private void b_lib_Click(object sender, RoutedEventArgs e)
-        {
-            //need to check if both Oculus client runnung and steam VR 
-
-            if (Tools.IsOculusLibraryEnable(OculusInstallFolder))
+            if (cb_OC.IsChecked != true)
             {
-                Tools.DisableOculusLibrary(OculusInstallFolder);
-                CheckStatus();
-                CountDown(30);
+                OC.DisableOC();
             }
             else
             {
-                Tools.EnableOculusLibrary(OculusInstallFolder);
+                OC.EnableOC();
             }
-            CheckStatus();
-
         }
 
-        private void CountDown(int t)
+        private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
-            var timer = new DispatcherTimer();
-            timer.Tick += delegate
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Title = "Select App Exe";
+            ofd.DefaultExt = "*.exe";
+            ofd.Filter = "*.exe |*.exe";
+            ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (ofd.ShowDialog() == false) return;
 
-            {
-                l_timer.Content = t.ToString();
-                t--;
-                if (t == 0)
-                {
-                    timer.Stop();
-                    Tools.EnableOculusLibrary(OculusInstallFolder);
-                    l_timer.Content = "";
-                    CheckStatus();
-                    return;
-                }
-            };
+            Record rec = new Record(Path.GetFileName(ofd.FileName), ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
+            records.Add(rec);
+            CfgTools.AddRecordToCfg(rec, cfg_file);
+            
 
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
-            timer.Start();
         }
+
+        private void B_del_exe_Click(object sender, RoutedEventArgs e)
+        {
+            int idx = lv_records.SelectedIndex;
+            records.RemoveAt(idx);
+            CfgTools.WriteCfg(records, cfg_file);
+        }
+        #endregion
+        
+        #region Advanced setting tab
+        
+        //private static bool IsAdministrator()
+        //{
+        //    return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
+        //}
 
         private void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
@@ -337,14 +366,13 @@ namespace OculusHack
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (ofd.ShowDialog() == false) return;
             string filename = ofd.FileName;
-            //Tools.StopOculusService();
             while (Tools.StopOculusService() != 0)
             {
                 MessageBox.Show("Oculus Service is stopping...");
             }
             Tools.RestoreLibrary(filename,OculusInstallFolder);
             Tools.StartOculusService();
-            CheckStatus();
+            CheckEnviroment();
         }
 
         private void B_back_lib_Click(object sender, RoutedEventArgs e)
@@ -357,40 +385,44 @@ namespace OculusHack
 
             Tools.BackupLibrary(OculusInstallFolder,ofd.FileName);
         }
-
-        private void B_guardian_Click(object sender, RoutedEventArgs e)
-        {
-            Tools.EnableGuardian(OculusInstallFolder);
-        }
-
-        private static bool IsAdministrator()
-        {
-            return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
-        }
      
         private void Ck_home_status_Click(object sender, RoutedEventArgs e)
         {
+            Tools.KillOculusHome();
+
             if (ck_home_status.IsChecked == false)
             {
-                Tools.DisableHome(OculusInstallFolder);
+                Tools.OculusHome(OculusInstallFolder, 0, true);
             }
-            else Tools.EnableHome(OculusInstallFolder);
+            else Tools.OculusHome(OculusInstallFolder, 1, true);
         }
 
         private void Ck_sfx_status_Click(object sender, RoutedEventArgs e)
         {
             if (ck_sfx_status.IsChecked == false)
             {
-                MessageBox.Show("Warning, Dash will be restarted.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-                Tools.DisableDashSFX(OculusInstallFolder);
+                Tools.DashSFX(OculusInstallFolder, 0, true);
             }
-            else
-            {
-                MessageBox.Show("Warning, Dash will be restarted.", "Warning", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-                Tools.EnableDashSFX(OculusInstallFolder);
-            }
+            else    Tools.DashSFX(OculusInstallFolder, 1, true);
+
+            Tools.KillDash();
         }
+
+        private void Ck_blk_dash_Click(object sender, RoutedEventArgs e)
+        {
+            if (ck_blk_dash.IsChecked == false)
+            {
+                Tools.DashBackground(OculusInstallFolder, 0, true);
+            }
+            else Tools.DashBackground(OculusInstallFolder, 1, true);
+
+            Tools.KillDash();
+
+        }
+
+
         #endregion
+
 
     }
 }

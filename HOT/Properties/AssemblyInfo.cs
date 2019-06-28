@@ -8,7 +8,7 @@ using System.Windows;
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
 [assembly: AssemblyTitle("HOT")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Humble Oculus Toolkit")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("HOT")]
