@@ -9,7 +9,7 @@ What you can do:
 
 When you run as Administrator you can:
 - Save preset per application's exe, that will be loaded on specific apps start
-- Enable/Disable Home 2 Enviroment, you'll get only Dash, usefull to same time and resources.
+- Enable/Disable Home 2 Enviroment, you'll get only Dash, usefull to save loading time and resources.
 - Enable/Disable Dash noisy background sound.
 - Select Dash floor texture, black / white.
 - Backup and Restore Oculus core runtime library. Usefull to test different runtime.
