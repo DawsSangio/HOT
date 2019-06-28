@@ -37,16 +37,20 @@ namespace OculusHack
 
             #region Open Composite: check for update and download
             popup.IsOpen = true;
+
             void dl_dll()
             {
-                OC.downloadDll();
+                if (OC.CheckForUpdate())
+                {
+                    OC.downloadDll();
+                }
+                              
                 Dispatcher.Invoke(() =>
                 {
                     popup.IsOpen = false;
-                    
                 });
             }
-                        
+
             Thread thread = new Thread(dl_dll);
             thread.Start();
             #endregion
@@ -60,8 +64,8 @@ namespace OculusHack
 
             }
 
-            // Check if the Oculus install forlder is ok
-            // if not, enable the ofd to select the forlder, or abort app.
+            // Check if the Oculus install folder is ok
+            // if not, enable the ofd to select the folder, or abort app.
             while (!Tools.CheckOculusInstallFolder(OculusInstallFolder))
             {
                 MessageBoxResult mb = MessageBox.Show("Please install Oculus client, and click OK to select OculusSetup.exe", "Oculus desktop client not found", MessageBoxButton.OKCancel);

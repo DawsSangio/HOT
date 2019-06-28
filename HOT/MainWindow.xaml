@@ -85,7 +85,7 @@
                     
                     <Popup x:Name="popup" Placement="Center">
                         <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
-                        <TextBlock Text="Downaloading Open Composite"  />
+                        <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
                         </Label>
                     </Popup>
                 </Grid>
