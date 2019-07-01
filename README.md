@@ -2,6 +2,8 @@
 Humble Oculus Toolkit
 
 A simple tool to manage basic function of the Oculus Runtime for Rift CV1 and Rift-S, like Super Sampling or OSD debug screens.
+I want it simple, so no install required, no additionl dll required, a single exe that you can put where you want and simply run it.
+
 What you can do:
 - Change Super Sampling
 - Select ASW mode
@@ -15,10 +17,10 @@ When you run as Administrator you can:
 - Backup and Restore Oculus core runtime library. Usefull to test different runtime.
 
 Bonus:
-- Enable/Disable Open Composite.
 Thanks to ZNix, author of Open Composite, I've implemented the donwload of latest Open Composite dll, and manage activation.
-For more info on Open Composite:
-https://gitlab.com/znixian/OpenOVR/
+For more info on Open Composite: https://gitlab.com/znixian/OpenOVR/
+- Enable/Disable Open Composite.
+- On start it check for Open Composite update and automatically download.
 
 
 Note:
