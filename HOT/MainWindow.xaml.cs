@@ -40,8 +40,10 @@ namespace OculusHack
 
             void dl_dll()
             {
+                //pop_oc.Text = "Check for update...";
                 if (OC.CheckForUpdate())
                 {
+                    //pop_oc.Text = "Download Open Composite...";
                     OC.downloadDll();
                 }
                               
@@ -136,16 +138,16 @@ namespace OculusHack
                                 cb_debugHUD.SelectedIndex = rec.osd;
                                 ss = rec.ss;
                                 l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                                if (rec.oc == 1 && !OC.IsOCactive())
-                                {
-                                    OC.EnableOC();
-                                    cb_OC.IsChecked = true;
-                                }
-                                else if (rec.oc == 0 && OC.IsOCactive())
-                                {
-                                    OC.DisableOC();
-                                    cb_OC.IsChecked = false;
-                                }
+                                //if (rec.oc == 1 && !OC.IsOCactive())
+                                //{
+                                //    OC.EnableOC();
+                                //    cb_OC.IsChecked = true;
+                                //}
+                                //else if (rec.oc == 0 && OC.IsOCactive())
+                                //{
+                                //    OC.DisableOC();
+                                //    cb_OC.IsChecked = false;
+                                //}
 
                             });
 
