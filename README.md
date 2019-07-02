@@ -9,7 +9,7 @@ What you can do:
 - Select ASW mode
 - Select On Screen Display debug information
 
-When you run as Administrator you can:
+Some features are only available if you run HOT as Administrator, so you can:
 - Save preset per application's exe, that will be loaded on specific apps start
 - Enable/Disable Home 2 Enviroment, you'll get only Dash, usefull to save loading time and resources.
 - Enable/Disable Dash noisy background sound.
