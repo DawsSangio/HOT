@@ -9,24 +9,17 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Launcher;
-using Json;
 
 
 namespace OculusHack
 {
-    /// <summary>
-    /// Logica di interazione per MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
-        private List<JsonRecord> jrecs = new List<JsonRecord>();
 
         private string cfg_file;
-        private string newapp = "";
-        private string lastapp = "";
 
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
 
@@ -35,57 +28,41 @@ namespace OculusHack
             
             InitializeComponent();
 
-            #region Open Composite: check for update and download
-            popup.IsOpen = true;
+            #region Check if Oculus is installed and service is running
+            // check Oculus if installed correctly
 
-            void dl_dll()
+            // Renable Native library in case off
+            Tools.SetNativeLibrary(OculusInstallFolder, true);
+
+            if (Tools.GetOculusInstallFolder() == null)
             {
-                //pop_oc.Text = "Check for update...";
-                if (OC.CheckForUpdate())
-                {
-                    //pop_oc.Text = "Download Open Composite...";
-                    OC.downloadDll();
-                }
-                              
-                Dispatcher.Invoke(() =>
-                {
-                    popup.IsOpen = false;
-                });
-            }
-
-            Thread thread = new Thread(dl_dll);
-            thread.Start();
-            #endregion
-
-            //if Oculus installfolder is null, try the default
-            if (OculusInstallFolder == "")
-            {
-                OculusInstallFolder = "c:\\Program Files\\Oculus";
-                Properties.Settings.Default.HOTSettings = OculusInstallFolder;
-                Properties.Settings.Default.Save();
-
-            }
-
-            // Check if the Oculus install folder is ok
-            // if not, enable the ofd to select the folder, or abort app.
-            while (!Tools.CheckOculusInstallFolder(OculusInstallFolder))
-            {
-                MessageBoxResult mb = MessageBox.Show("Please install Oculus client, and click OK to select OculusSetup.exe", "Oculus desktop client not found", MessageBoxButton.OKCancel);
+                MessageBoxResult mb = MessageBox.Show("Oculus installation not found. Please install using OculusSetup.exe", "Oculus register entry not found", MessageBoxButton.OK);
                 if (mb == MessageBoxResult.OK)
                 {
-                    OculusInstallFolder = get_oculusfolder();
-                }
-                else
-                {
-                    Application.Current.MainWindow.Close();// TODO implement better close, instead crash
+                    Application.Current.MainWindow.Close();
                 }
 
             }
+            // check if service is running
+            else if (!Tools.IsOculusServiceRunning())
+            {
+                MessageBoxResult mb = MessageBox.Show("Oculus service is not running","Oculus service not found", MessageBoxButton.OK);
+                //TODO implement Admin call to activate service.
+                if (mb == MessageBoxResult.OK)
+                {
+                    Application.Current.MainWindow.Close(); 
+                }
+            }
+            // all looks ok, go on.
+            else
+            { 
+                OculusInstallFolder = Tools.GetOculusInstallFolder();
+                Properties.Settings.Default.HOTSettings = OculusInstallFolder;
+                Properties.Settings.Default.Save();
+            }
+            #endregion
 
             #region Set default parameter
-
-            //jrecs = JsonReader.ReadJsonFile(openvrcfg); // TODO WIP **********
-
             cb_ASW.SelectedIndex = 0; 
             cb_debugHUD.SelectedIndex = 0;
             Tools.SetSS(OculusInstallFolder,ss);
@@ -121,18 +98,14 @@ namespace OculusHack
             // new Exe found
             void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
             {
-                newapp = e.NewEvent.Properties["ProcessName"].Value.ToString();
-
-                if (newapp!=lastapp)
-                {
+               
                     foreach (Record rec in records)
                     {
-                        if (e.NewEvent.Properties["ProcessName"].Value.ToString() == rec.exe)
+                        if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
                         {
                             //Use Dipatcher to allow cross treading to set runtime setup.
                             Dispatcher.Invoke(() =>
                             {
-                                //l_launcher.Content = "eccolo";
                                 Tools.SetSS(OculusInstallFolder, rec.ss);
                                 cb_ASW.SelectedIndex = rec.asw;
                                 cb_debugHUD.SelectedIndex = rec.osd;
@@ -152,18 +125,55 @@ namespace OculusHack
                             });
 
                         }
+                    
                     }
-                }
                                 
-                lastapp = e.NewEvent.Properties["ProcessName"].Value.ToString();
+               
 
             }
             #endregion
 
-               
+            #region Open Composite: check for update and download
+            popup.IsOpen = true;
+
+            void dl_dll()
+            {
+                if (OC.CheckForUpdate())
+                {
+                    if (OC.downloadDll() == false)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            pop_oc.Text = "Open Composite download: connection failed!";
+                        });
+
+
+                    }
+                    else
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            pop_oc.Text = "Open Composite is updated.";
+                        });
+                    }
+                    
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        popup.IsOpen = false;
+                    });
+                }
+            }
+
+            Thread thread = new Thread(dl_dll);
+            thread.Start();
+            #endregion
+
 
         }
-        
+
         private void CheckEnviroment()
         {
             //Check Library version
@@ -340,7 +350,7 @@ namespace OculusHack
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (ofd.ShowDialog() == false) return;
 
-            Record rec = new Record(Path.GetFileName(ofd.FileName), ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
+            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
             records.Add(rec);
             CfgTools.AddRecordToCfg(rec, cfg_file);
             
@@ -357,11 +367,6 @@ namespace OculusHack
         
         #region Advanced setting tab
         
-        //private static bool IsAdministrator()
-        //{
-        //    return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
-        //}
-
         private void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
 
@@ -426,9 +431,64 @@ namespace OculusHack
 
         }
 
+        private void B_disable_oculus_Click(object sender, RoutedEventArgs e)
+        {
+            // start Steam VR
+            Tools.SetNativeLibrary(OculusInstallFolder, false);
+            b_disable_oculus.Content = "Oculus Library is DISABLE";
+            MainGrid.IsEnabled = false;
+            int timeup = 10;
+            void timer_countdown()
+            {
+                for (int i = 0; i < timeup; i++)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        b_disable_oculus.Content = "Oculus Library is DISABLE... " + (timeup - i);
+                    });
+                    Thread.Sleep(1000);
+
+                }
+                //Thread.Sleep(1000);
+
+
+
+                Dispatcher.Invoke(() =>
+                        {
+                            Tools.SetNativeLibrary(OculusInstallFolder, true);
+                            b_disable_oculus.Content = "Oculus Library is ENABLE";
+                            MainGrid.IsEnabled = true;
+                        });
+
+
+                
+            }
+
+            Thread thread = new Thread(timer_countdown);
+            thread.Start();
+            // disable native library hook
+            //if (Tools.SetNativeLibrary(OculusInstallFolder, false))
+            //{
+            //    b_disable_oculus.Content = "is off";
+            //    MainGrid.IsEnabled = false;
+            //}
+            //else if (Tools.SetNativeLibrary(OculusInstallFolder, true))
+            //{
+            //    b_disable_oculus.Content = "is ON";
+            //    MainGrid.IsEnabled = true;
+            //}
+            
+            // opzional close Dash and destop client (loosing Guardian)
+
+        }
 
         #endregion
 
+        private void Label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            popup.IsOpen = false;
+        }
 
+        
     }
 }

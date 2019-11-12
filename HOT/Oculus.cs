@@ -146,18 +146,18 @@ namespace OculusHack
     public static class Tools
     {
         #region Oculus folder 
-        ///<summary>
-        ///Check the existance of "OculusSetup.exe", "OculusDash.exe" and libOVR, in the given folder.
-        ///</summary>   
-        public static bool CheckOculusInstallFolder(string OculusInstallFolder)
+        public static string GetOculusInstallFolder()
         {
-            if (File.Exists(OculusInstallFolder + "\\OculusSetup.exe")
-                && File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll")
-                && File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\OVRServer_x64.exe") )
-            { 
-            return true;
+            try
+            {
+                string key = (string)Microsoft.Win32.Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Oculus VR, LLC\\Oculus", "Base", null);
+                return key;
             }
-            else return false;
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         //TODO: fix me, get path form registry
@@ -329,6 +329,35 @@ namespace OculusHack
            
         }
 
+        public static void KillOculusHome()
+        {
+            foreach (Process pname in Process.GetProcessesByName("Home2-Win64-Shipping"))
+            {
+                pname.Kill();
+                pname.WaitForExit();
+            }
+
+        }
+
+        public static void KillDash()
+        {
+            foreach (Process pname in Process.GetProcessesByName("OculusDash"))
+            {
+                pname.Kill();
+                pname.WaitForExit();
+            }
+
+        }
+
+        public static void KillDesktopClient()
+        {
+            foreach (Process pname in Process.GetProcessesByName("OculusClient"))
+            {
+                pname.Kill();
+                pname.WaitForExit();
+            }
+        }
+
         #endregion
 
         #region Debugtools
@@ -438,40 +467,40 @@ namespace OculusHack
         #region Manage Runtime Library
 
         ///<summary>
-        ///Check the existance of "LibOVRRT32_1.dll" and "LibOVRRT32_1.dll"
+        ///Retrun Oculus native library status based on active request: true or false
         ///</summary>
-        public static bool IsOculusLibraryEnable(string OculusInstallFolder)
+        public static bool SetNativeLibrary(string OculusInstallFolder, bool active)
         {
-            if (File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT32_1.dll") &&
-                 File.Exists(OculusInstallFolder + "\\Support\\oculus-runtime\\LibOVRRT64_1.dll"))
+            try
             {
-                return true;
+                if (active)
+                {
+                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_",
+                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll");
+                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_",
+                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll");
+                    return true;
+                }
+                else 
+                {
+                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll",
+                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_");
+                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll",
+                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_");
+                    return true;
+                }
+
             }
-            else return false;
+            catch (FileNotFoundException)
+            {
+                
+                return false;
+            }
+            
+
         }
 
-        ///<summary>
-        ///Disable Oculus native library renaming "LibOVRRT" to hide them
-        ///</summary>
-        public static void DisableOculusLibrary(string OculusInstallFolder)
-        {
-            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_");
-            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_");
-        }
-
-        ///<summary>
-        ///Enable Oculus native library renaming "LibOVRRT" .dl_ to .dll to show them
-        ///</summary>
-        public static void EnableOculusLibrary(string OculusInstallFolder)
-        {
-            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_",
-                    OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll");
-            File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll");
-        }
-
+        
         /// <summary>
         /// Return Oculus Library version, major release.
         /// </summary>
@@ -578,34 +607,8 @@ namespace OculusHack
             else return true;
         }
         
-        public static void KillDash()
-        {
-            foreach (Process pname in Process.GetProcessesByName("OculusDash"))
-            {
-                pname.Kill();
-                pname.WaitForExit();
-            }
 
-        }
 
-        public static void KillOculusHome()
-        {
-            foreach (Process pname in Process.GetProcessesByName("Home2-Win64-Shipping"))
-            {
-                pname.Kill();
-                pname.WaitForExit();
-            }
-
-        }
-
-        public static void KillDesktopClient()
-        {
-            foreach (Process pname in Process.GetProcessesByName("OculusClient"))
-            {
-                pname.Kill();
-                pname.WaitForExit();
-            }
-        }
                   
                
     }

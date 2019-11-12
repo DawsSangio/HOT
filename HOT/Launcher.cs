@@ -27,7 +27,9 @@ namespace Launcher
             {
                 Record record = new Record();
                 string[] values = line.Split(' ');
-                record.exe = values[0];
+                int first_quote = line.IndexOf("\"");
+                int sec_quote = line.IndexOf("\"", first_quote+1);
+                record.exe = line.Substring(first_quote, sec_quote).Trim('"');
                 record.ss = double.Parse(values[1], System.Globalization.CultureInfo.InvariantCulture);
                 record.asw = Convert.ToInt16(values[2]);
                 record.osd = Convert.ToInt16(values[3]);
@@ -42,7 +44,8 @@ namespace Launcher
         public static void AddRecordToCfg(Record record, string cfg_file)
         {
             string space = " ";
-            File.AppendAllText(cfg_file, record.exe + space + record.ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + space + record.asw + space + record.osd + space + record.oc + "\n");
+            string quote = "\"";
+            File.AppendAllText(cfg_file,quote + record.exe + quote + space + record.ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + space + record.asw + space + record.osd + space + record.oc + "\n");
 
         }
 

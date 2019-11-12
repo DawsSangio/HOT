@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace OculusHack
 {
@@ -10,7 +11,8 @@ namespace OculusHack
     /// </summary>
     public static class OC
     {
-        //TODO: fix the management of the .vrpath modification on the go.
+        // This part is very hacky..
+        // TODO: use Json pharser.
         public static void EnableOC()
         {
             List<string> cfgparts = ReadSteamvrCfg();
@@ -56,8 +58,7 @@ namespace OculusHack
             else return false;
 
         }
-
-
+        
         /// <summary>
         /// Read SteamVR cfg trimming space, tabs and \n \r
         /// 0 - initial part
@@ -114,18 +115,47 @@ namespace OculusHack
 
         }
 
+        public static void EnableLocalOC(string exepath)
+        {
+            string path = Path.GetDirectoryName(exepath);
+            string[] apis = Directory.GetFiles(path, "openvr_api.dll",SearchOption.AllDirectories);
+            string OCapi = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
+
+            foreach (string api in apis)
+            {
+                File.Copy(api, Path.GetDirectoryName(api) + "\\openvr_api.original",true);
+                File.Copy(OCapi, api, true);
+            }
+        }
+
+        public static void DisableLocalOC(string exepath)
+        {
+            string path = Path.GetDirectoryName(exepath);
+            string[] apis = Directory.GetFiles(path, "openvr_api.original", SearchOption.AllDirectories);
+
+            foreach (string api in apis)
+            {
+                File.Copy(api, Path.GetDirectoryName(api) + "\\openvr_api.dll", true);
+            }
+        }
+
         /// <summary>
         /// Download OpenComposite dll and version.txt to [user]\appdata\local\OculusHack\bin
         /// </summary>
-        public static void downloadDll()
+        public static bool downloadDll()
         {
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin");
             string destfile_86 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient.dll";
             string destfile_64 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
             string version = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt";
 
+            //TO REMOVE
+            //Thread.Sleep(5000);
+            //return true;
 
-           
+
+            try
+            {
                 using (WebClient webClient = new WebClient())
                 {
                     webClient.DownloadFile("https://znix.xyz/OpenComposite/download.php?arch=x86", destfile_86);
@@ -134,6 +164,16 @@ namespace OculusHack
 
                 File.Create(version).Dispose();
                 File.WriteAllText(version, GetLatestHash());
+
+                return true;
+
+            }
+            catch (WebException)
+            {
+                return false;
+            }
+
+
 
 
         }

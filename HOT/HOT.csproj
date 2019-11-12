@@ -98,7 +98,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="OpenComposite.cs" />
-    <Compile Include="JsonReader.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
