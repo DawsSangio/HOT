@@ -437,7 +437,7 @@ namespace OculusHack
             Tools.SetNativeLibrary(OculusInstallFolder, false);
             b_disable_oculus.Content = "Oculus Library is DISABLE";
             MainGrid.IsEnabled = false;
-            int timeup = 10;
+            int timeup = 20;
             void timer_countdown()
             {
                 for (int i = 0; i < timeup; i++)
