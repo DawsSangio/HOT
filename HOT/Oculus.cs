@@ -9,6 +9,7 @@ using System.Text;
 using System;
 using System.IO.Compression;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OculusHack
 {
@@ -178,26 +179,32 @@ namespace OculusHack
         #endregion
 
         #region Oculus Service
-        public static void StartOculusService()
+        public static Task<bool> StartOculusService()
         {
-
-            ServiceController OVRService = new ServiceController("OVRService");
-            if (OVRService.Status== ServiceControllerStatus.Stopped)
+            return Task.Run(() =>
             {
-                OVRService.Start();
-                OVRService.WaitForStatus(ServiceControllerStatus.Running);
-            }
+                ServiceController OVRService = new ServiceController("OVRService");
+                if (OVRService.Status == ServiceControllerStatus.Stopped)
+                {
+                    OVRService.Start();
+                    OVRService.WaitForStatus(ServiceControllerStatus.Running);
+                }
+                return true;
+            });
         }
 
-        public static int StopOculusService()
+        public static Task<bool> StopOculusService()
         {
-            ServiceController OVRService = new ServiceController("OVRService");
-            if (OVRService.Status == ServiceControllerStatus.Running)
+            return Task.Run(() =>
             {
-                OVRService.Stop();
-                OVRService.WaitForStatus(ServiceControllerStatus.Stopped);
-            }
-            return 0;
+                ServiceController OVRService = new ServiceController("OVRService");
+                if (OVRService.Status == ServiceControllerStatus.Running)
+                {
+                    OVRService.Stop();
+                    OVRService.WaitForStatus(ServiceControllerStatus.Stopped);
+                }
+                return true;
+            });
         }
 
         public static bool IsOculusServiceRunning()
@@ -507,8 +514,9 @@ namespace OculusHack
         public static string GetLibVersion(string OculusInstallFolder)
         {
             
-            FileVersionInfo fa = FileVersionInfo.GetVersionInfo(OculusInstallFolder+ "\\support\\oculus-runtime\\OVRServer_x64.exe"); 
-            string version = fa.FileMajorPart +"."+fa.FileMinorPart + "." + fa.FileBuildPart;
+            FileVersionInfo fa = FileVersionInfo.GetVersionInfo(OculusInstallFolder+ "\\support\\oculus-runtime\\OVRServer_x64.exe");
+            
+            string version = fa.FileMajorPart +"."+fa.FileMinorPart + "." + fa.FileBuildPart + "." + fa.FilePrivatePart;
             return version;
 
         }
@@ -516,10 +524,9 @@ namespace OculusHack
         /// <summary>
         /// Backup, to a zip file, the main core Oculus library
         /// </summary>
-        public static void BackupLibrary(string OculusInstallFolder, string zipfile)
+        public static Task BackupLibrary(string OculusInstallFolder, string zipfile)
         {
             string[] libraryfiles = {
-
                 "oculus-diagnostics\\OculusDebugTool.exe",
                 "oculus-diagnostics\\OculusDebugToolCLI.exe",
                 "oculus-diagnostics\\OculusLogGatherer.exe",
@@ -537,41 +544,44 @@ namespace OculusHack
                 "oculus-runtime\\OVRServiceLauncher.exe"
             };
             string filename = zipfile; //GetLibVersion(OculusInstallFolder) + ".zip";
-
-
-            File.Create(filename).Dispose(); 
+            File.Create(filename).Dispose();
+            return Task.Run(() =>
+            {
                 using (FileStream zipToOpen = new FileStream(filename, FileMode.Create))
                 {
                     using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
                         foreach (string file in libraryfiles)
                         {
-                            ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "\\Support\\"+file, file);
+                            ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "\\Support\\" + file, file);
                         }
                         archive.Dispose();
-                    
                     }
-                   
                 }
+            });
+            
         }
         
         /// <summary>
         /// Restore the main core Oculus library from a zipfile
         /// </summary>
-        public static void RestoreLibrary(string filename, string OculusInstallFolder)
+        public static Task<bool> RestoreLibrary(string filename, string OculusInstallFolder)
         {
             //Delete orignal file before replacing from archive.zip
             ZipArchive archive = ZipFile.OpenRead(filename);
-            foreach (var file in archive.Entries)
+            return Task.Run(() =>
             {
-                if (!file.ToString().EndsWith("/"))
+                foreach (var file in archive.Entries)
                 {
-                    File.Delete(OculusInstallFolder + "\\Support\\" + file);
+                    if (!file.ToString().EndsWith("/"))
+                    {
+                        File.Delete(OculusInstallFolder + "\\Support\\" + file);
+                    }
                 }
-            }
-            archive.Dispose();
-            
-            ZipFile.ExtractToDirectory(filename, OculusInstallFolder+"\\Support\\");
+                archive.Dispose();
+                ZipFile.ExtractToDirectory(filename, OculusInstallFolder + "\\Support\\");
+                return true;
+            });
         }
 
         #endregion

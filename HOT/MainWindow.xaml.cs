@@ -5,6 +5,7 @@ using System.IO;
 using System.Management;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -142,19 +143,12 @@ namespace OculusHack
                 {
                     if (OC.downloadDll() == false)
                     {
-                        Dispatcher.Invoke(() =>
-                        {
-                            pop_oc.Text = "Open Composite download: connection failed!";
-                        });
-
+                        Dispatcher.Invoke(() => pop_oc.Text = "Open Composite download: connection failed!");
 
                     }
                     else
                     {
-                        Dispatcher.Invoke(() =>
-                        {
-                            pop_oc.Text = "Open Composite is updated.";
-                        });
+                        Dispatcher.Invoke(() => pop_oc.Text = "Open Composite is updated.");
                     }
                     
                 }
@@ -367,7 +361,7 @@ namespace OculusHack
         
         #region Advanced setting tab
         
-        private void B_restore_lib_Click(object sender, RoutedEventArgs e)
+        private async void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
 
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -377,25 +371,44 @@ namespace OculusHack
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (ofd.ShowDialog() == false) return;
             string filename = ofd.FileName;
-            while (Tools.StopOculusService() != 0)
-            {
-                MessageBox.Show("Oculus Service is stopping...");
-            }
-            Tools.RestoreLibrary(filename,OculusInstallFolder);
-            Tools.StartOculusService();
+
+            b_lib.IsEnabled = false;
+
+            b_lib.Content = "Oculus Service is stopping...";
+            await Tools.StopOculusService();
+
+            b_lib.Content = "Wait...";
+            await Tools.RestoreLibrary(filename, OculusInstallFolder);
+
+            b_lib.Content = "Oculus Service is starting...";
+            await Tools.StartOculusService();
+
+            b_lib.IsEnabled = true;
+            b_lib.Content = "Restore Library";
+
             CheckEnviroment();
         }
 
-        private void B_back_lib_Click(object sender, RoutedEventArgs e)
+        private async void B_back_lib_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog ofd = new Microsoft.Win32.SaveFileDialog();
             ofd.Title = "Select backup file name";
-            ofd.FileName = "OculusLib_"+Tools.GetLibVersion(OculusInstallFolder) + ".zip";
-            ofd.Filter = ".zip |.zip";
+            ofd.DefaultExt = "*.zip";
+            ofd.FileName = "OculusLib_" + Tools.GetLibVersion(OculusInstallFolder) + ".zip";
+            ofd.Filter = "*.zip |*.zip";
             if (ofd.ShowDialog() == false) return;
+            
+            b_back_lib.IsEnabled = false;
+            b_back_lib.Content = "Wait...";
+                       
+            await Tools.BackupLibrary(OculusInstallFolder, ofd.FileName);
+            
+            b_back_lib.IsEnabled = true;
+            b_back_lib.Content = "Backup Library";
 
-            Tools.BackupLibrary(OculusInstallFolder,ofd.FileName);
         }
+
+        
      
         private void Ck_home_status_Click(object sender, RoutedEventArgs e)
         {
@@ -449,9 +462,6 @@ namespace OculusHack
                     Thread.Sleep(1000);
 
                 }
-                //Thread.Sleep(1000);
-
-
 
                 Dispatcher.Invoke(() =>
                         {
@@ -459,26 +469,11 @@ namespace OculusHack
                             b_disable_oculus.Content = "Oculus Library is ENABLE";
                             MainGrid.IsEnabled = true;
                         });
-
-
                 
             }
 
             Thread thread = new Thread(timer_countdown);
             thread.Start();
-            // disable native library hook
-            //if (Tools.SetNativeLibrary(OculusInstallFolder, false))
-            //{
-            //    b_disable_oculus.Content = "is off";
-            //    MainGrid.IsEnabled = false;
-            //}
-            //else if (Tools.SetNativeLibrary(OculusInstallFolder, true))
-            //{
-            //    b_disable_oculus.Content = "is ON";
-            //    MainGrid.IsEnabled = true;
-            //}
-            
-            // opzional close Dash and destop client (loosing Guardian)
 
         }
 
