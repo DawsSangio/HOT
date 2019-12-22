@@ -406,8 +406,6 @@ namespace OculusHack
             b_back_lib.Content = "Backup Library";
 
         }
-
-        
      
         private void Ck_home_status_Click(object sender, RoutedEventArgs e)
         {
@@ -422,24 +420,25 @@ namespace OculusHack
 
         private void Ck_sfx_status_Click(object sender, RoutedEventArgs e)
         {
+            Tools.KillDash();
+
             if (ck_sfx_status.IsChecked == false)
             {
                 Tools.DashSFX(OculusInstallFolder, 0, true);
             }
             else    Tools.DashSFX(OculusInstallFolder, 1, true);
-
-            Tools.KillDash();
+            
         }
 
         private void Ck_blk_dash_Click(object sender, RoutedEventArgs e)
         {
+            Tools.KillDash();
+
             if (ck_blk_dash.IsChecked == false)
             {
                 Tools.DashBackground(OculusInstallFolder, 0, true);
             }
             else Tools.DashBackground(OculusInstallFolder, 1, true);
-
-            Tools.KillDash();
 
         }
 
