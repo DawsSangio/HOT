@@ -115,13 +115,13 @@
 
                 <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="3" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
                 <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="3" Content="Resore Library"  Click="B_restore_lib_Click" FontSize="11" />
-                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.ColumnSpan="2" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" />
-                
+                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.ColumnSpan="2" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
+
                 <Label  x:Name="l_admin_right" Grid.Row="5" Grid.ColumnSpan="4" FontSize="14" FontWeight="Bold" HorizontalContentAlignment="Center"   VerticalContentAlignment="Center" Padding="2">
                     <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
                 </Label>
-                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="3" Content="Runtime version" FontSize="11"/>
-                
+                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="1" Content="Runtime version" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+
 
 
 
