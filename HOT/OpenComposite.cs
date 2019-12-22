@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace OculusHack
 {
@@ -142,7 +142,7 @@ namespace OculusHack
         /// <summary>
         /// Download OpenComposite dll and version.txt to [user]\appdata\local\OculusHack\bin
         /// </summary>
-        public static bool downloadDll()
+        public static async Task<bool> downloadDll()
         {
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin");
             string destfile_86 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient.dll";
@@ -158,12 +158,12 @@ namespace OculusHack
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    webClient.DownloadFile("https://znix.xyz/OpenComposite/download.php?arch=x86", destfile_86);
-                    webClient.DownloadFile("https://znix.xyz/OpenComposite/download.php?arch=x64", destfile_64);
+                    await webClient.DownloadFileTaskAsync("https://znix.xyz/OpenComposite/download.php?arch=x86", destfile_86);
+                    await webClient.DownloadFileTaskAsync("https://znix.xyz/OpenComposite/download.php?arch=x64", destfile_64);
                 }
 
                 File.Create(version).Dispose();
-                File.WriteAllText(version, GetLatestHash());
+                File.WriteAllText(version, await GetLatestHash());
 
                 return true;
 
@@ -173,18 +173,15 @@ namespace OculusHack
                 return false;
             }
 
-
-
-
         }
 
-        public static bool CheckForUpdate()
+        public static async Task<bool> CheckForUpdate()
         {
             if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt"))
             {
 
                 string _old = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt");
-                string _new = GetLatestHash();
+                string _new = await GetLatestHash();
                 if (_old == _new)
                 {
                     return false;
@@ -195,12 +192,12 @@ namespace OculusHack
 
         }
 
-        public static string GetLatestHash()
+        public static async Task<string> GetLatestHash()
         {
             string hash;
             using (WebClient webClient = new WebClient())
             {
-                hash = webClient.DownloadString("https://gitlab.com/api/v4/projects/znixian%2fOpenOVR/repository/commits?per_page=1");
+                hash = await webClient.DownloadStringTaskAsync("https://gitlab.com/api/v4/projects/znixian%2fOpenOVR/repository/commits?per_page=1");
             }
 
             return hash.Substring(hash.IndexOf("\"id\":\"") + 6, hash.IndexOf("\",\"short_id\"")-8);

@@ -84,7 +84,7 @@
 
 
                 <Popup x:Name="popup" Placement="Center">
-                    <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" MouseEnter="Label_MouseEnter" >
+                    <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
                         <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
                     </Label>
                 </Popup>
@@ -105,22 +105,23 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="130"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="130"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="ck_home_status" Content="Oculus Home Enable" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="2"/>
-                <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="2"/>
-                <CheckBox x:Name="ck_blk_dash" Content="Black background" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" FontSize="11" Click="Ck_blk_dash_Click"/>
+                <CheckBox x:Name="ck_home_status" Content="Oculus Home Enable" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="3"/>
+                <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="3"/>
+                <CheckBox x:Name="ck_blk_dash" Content="Black background" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" FontSize="11" Click="Ck_blk_dash_Click" Grid.ColumnSpan="2"/>
 
                 <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="3" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
                 <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="3" Content="Resore Library"  Click="B_restore_lib_Click" FontSize="11" />
-                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.ColumnSpan="2" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
+                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.ColumnSpan="3" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
 
                 <Label  x:Name="l_admin_right" Grid.Row="5" Grid.ColumnSpan="4" FontSize="14" FontWeight="Bold" HorizontalContentAlignment="Center"   VerticalContentAlignment="Center" Padding="2">
                     <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
                 </Label>
-                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="1" Content="Runtime version" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
+                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="3" Content="Runtime version" HorizontalAlignment="Right"/>
 
 
 

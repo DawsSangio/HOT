@@ -135,34 +135,7 @@ namespace OculusHack
             #endregion
 
             #region Open Composite: check for update and download
-            popup.IsOpen = true;
-
-            void dl_dll()
-            {
-                if (OC.CheckForUpdate())
-                {
-                    if (OC.downloadDll() == false)
-                    {
-                        Dispatcher.Invoke(() => pop_oc.Text = "Open Composite download: connection failed!");
-
-                    }
-                    else
-                    {
-                        Dispatcher.Invoke(() => pop_oc.Text = "Open Composite is updated.");
-                    }
-                    
-                }
-                else
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        popup.IsOpen = false;
-                    });
-                }
-            }
-
-            Thread thread = new Thread(dl_dll);
-            thread.Start();
+            DownLoadOC();
             #endregion
 
 
@@ -323,6 +296,32 @@ namespace OculusHack
             }
         }
 
+        private async void DownLoadOC()
+        {
+            popup.IsOpen = true;
+            pop_oc.Text = "Check fo Open Composite update";
+            bool update = await OC.CheckForUpdate();
+            if (update)
+            {
+                pop_oc.Text = "NEW Open Composite version found !";
+                await Task.Delay(2000);
+                pop_oc.Text = "Downloading Open Composite...";
+                bool download = await OC.downloadDll();
+                if (!download)
+                {
+                    pop_oc.Text = "Open Composite download: connection failed!";
+
+                }
+                else pop_oc.Text = "Open Composite is updated.";
+                await Task.Delay(2000);
+                popup.IsOpen = false;
+            }
+            else
+            {
+                popup.IsOpen = false;
+            }
+        }
+
         private void Cb_OC_Click(object sender, RoutedEventArgs e)
         {
             if (cb_OC.IsChecked != true)
@@ -478,11 +477,6 @@ namespace OculusHack
         }
 
         #endregion
-
-        private void Label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            popup.IsOpen = false;
-        }
 
         
     }
