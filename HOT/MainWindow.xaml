@@ -121,7 +121,7 @@
                 <Label  x:Name="l_admin_right" Grid.Row="5" Grid.ColumnSpan="4" FontSize="14" FontWeight="Bold" HorizontalContentAlignment="Center"   VerticalContentAlignment="Center" Padding="2">
                     <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
                 </Label>
-                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="3" Content="Runtime version" HorizontalAlignment="Right"/>
+                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="2" Content="Runtime version" Grid.ColumnSpan="2"  HorizontalAlignment="Right"/>
 
 
 
