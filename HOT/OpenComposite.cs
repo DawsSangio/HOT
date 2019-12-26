@@ -48,15 +48,17 @@ namespace OculusHack
             WriteSteamvrCfg(cfgparts);
         }
 
-        public static bool IsOCactive()
+        public static bool IsOCavailable()
         {
-            List<string> cfgparts = ReadSteamvrCfg();
-            if (cfgparts[2].Contains("OculusHack"))
+            
+            string OCapi64 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
+            string OCapi = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient.dll";
+            if(File.Exists(OCapi) && File.Exists(OCapi64))
             {
                 return true;
             }
             else return false;
-
+           
         }
         
         /// <summary>
@@ -149,11 +151,6 @@ namespace OculusHack
             string destfile_64 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
             string version = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt";
 
-            //TO REMOVE
-            //Thread.Sleep(5000);
-            //return true;
-
-
             try
             {
                 using (WebClient webClient = new WebClient())
@@ -179,7 +176,6 @@ namespace OculusHack
         {
             if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt"))
             {
-
                 string _old = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\version.txt");
                 string _new = await GetLatestHash();
                 if (_old == _new)
@@ -195,12 +191,20 @@ namespace OculusHack
         public static async Task<string> GetLatestHash()
         {
             string hash;
-            using (WebClient webClient = new WebClient())
+            try
             {
-                hash = await webClient.DownloadStringTaskAsync("https://gitlab.com/api/v4/projects/znixian%2fOpenOVR/repository/commits?per_page=1");
+                using (WebClient webClient = new WebClient())
+                {
+                    hash = await webClient.DownloadStringTaskAsync("https://gitlab.com/api/v4/projects/znixian%2fOpenOVR/repository/commits?per_page=1");
+                }
+                return hash.Substring(hash.IndexOf("\"id\":\"") + 6, hash.IndexOf("\",\"short_id\"") - 8);
             }
-
-            return hash.Substring(hash.IndexOf("\"id\":\"") + 6, hash.IndexOf("\",\"short_id\"")-8);
+            catch (WebException)
+            {
+                return null;
+                
+            }
+            
         }
 
     }

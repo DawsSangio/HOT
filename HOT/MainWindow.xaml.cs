@@ -63,7 +63,7 @@ namespace OculusHack
             }
             #endregion
 
-            #region Set default parameter
+            #region Check if Oculus Debug tool are available and set default parameter
             if (!Tools.SetSS(OculusInstallFolder, ss))
             {
                 MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPleasce check your Oculus installation.");
@@ -174,13 +174,7 @@ namespace OculusHack
                 ck_blk_dash.IsChecked = false;
             }
             else ck_blk_dash.IsChecked = true;
-
-            //Chekc OC active
-            if (OC.IsOCactive())
-            {
-                cb_OC.IsChecked = true;
-            }
-            else cb_OC.IsChecked = false;
+            
         }
 
         private string get_oculusfolder()
@@ -309,20 +303,21 @@ namespace OculusHack
             popup.IsOpen = true;
             pop_oc.Text = "Check fo Open Composite update";
             bool update = await OC.CheckForUpdate();
-            if (update)
+            if (update || !OC.IsOCavailable())
             {
-                pop_oc.Text = "NEW Open Composite version found !";
-                await Task.Delay(2000);
                 pop_oc.Text = "Downloading Open Composite...";
                 bool download = await OC.downloadDll();
                 if (!download)
                 {
                     pop_oc.Text = "Open Composite download: connection failed!";
-
+                    cb_OC.Foreground = Brushes.Red;
+                    cb_OC.Content = "Open Composite\nnot available";
+                    cb_OC.IsEnabled = false;
                 }
                 else pop_oc.Text = "Open Composite is updated.";
                 await Task.Delay(2000);
                 popup.IsOpen = false;
+
             }
             else
             {
