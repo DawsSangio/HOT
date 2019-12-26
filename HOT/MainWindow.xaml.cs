@@ -64,9 +64,17 @@ namespace OculusHack
             #endregion
 
             #region Set default parameter
-            cb_ASW.SelectedIndex = 0; 
-            cb_debugHUD.SelectedIndex = 0;
-            Tools.SetSS(OculusInstallFolder,ss);
+            if (!Tools.SetSS(OculusInstallFolder, ss))
+            {
+                MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPleasce check your Oculus installation.");
+                grid_debugtools.IsEnabled = false;
+            }
+            else
+            {
+                cb_ASW.SelectedIndex = 0;
+                cb_debugHUD.SelectedIndex = 0;
+            }
+            
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
             ReadAppsCfg();

@@ -369,7 +369,7 @@ namespace OculusHack
 
         #region Debugtools
 
-        public static void SetSS(string OculusInstallFolder, double ss)
+        public static bool SetSS(string OculusInstallFolder, double ss)
         {
             if (ss == 1 || ss == 1.00)
             {
@@ -378,18 +378,26 @@ namespace OculusHack
             File.CreateText("cmd").Dispose();
             string file = "cmd";
             File.WriteAllText(file, "service set-pixels-per-display-pixel-override " + ss.ToString().Replace(",", ".") + "\nexit", Encoding.Default);
-
-            Process debugtool = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
-            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
-            string args = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
-            startInfo.Arguments = args;
-            debugtool.StartInfo = startInfo;
-            debugtool.Start();
-            debugtool.WaitForExit();
-            File.Delete(file);
+            try
+            {
+                Process debugtool = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+                startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
+                string args = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
+                startInfo.Arguments = args;
+                debugtool.StartInfo = startInfo;
+                debugtool.Start();
+                debugtool.WaitForExit();
+                File.Delete(file);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
             
         }
 
@@ -397,7 +405,7 @@ namespace OculusHack
         /// Set the Debug OSD.
         /// "mode: 0=Off, 1=Perfomance summary, 2=Latency timing, 3=Application render timing, 4=Compositor render timing, 6=AWS status, 10=Layer info 
         /// </summary>
-        public static void SetOSD(string OculusInstallFolder, int mode)
+        public static bool SetOSD(string OculusInstallFolder, int mode)
         {
             File.CreateText("cmd").Dispose();
             string file = "cmd";
@@ -412,17 +420,25 @@ namespace OculusHack
                 File.WriteAllText(file, "layerhud reset\nperfhud set-mode " + mode + "\nexit", Encoding.Default);
             }
 
-            Process debugtool = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
-            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
-            startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
-            debugtool.StartInfo = startInfo;
-            debugtool.Start();
-            debugtool.WaitForExit();
+            try
+            {
+                Process debugtool = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+                startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
+                startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
+                debugtool.StartInfo = startInfo;
+                debugtool.Start();
+                debugtool.WaitForExit();
+                File.Delete(file);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
             
-            File.Delete(file);
 
         }
 
@@ -430,7 +446,7 @@ namespace OculusHack
         /// Set ASW mode.
         /// 0 = Auto, 1 = 45fps(AWS), 2 = 45fps(no AWS), 3 = Off, 4 = 30fps(ASW) 
         /// </summary>
-        public static void SetASW(string OculusInstallFolder, int mode)
+        public static bool SetASW(string OculusInstallFolder, int mode)
         {
             string asw;
             if (mode == 4)
@@ -453,20 +469,28 @@ namespace OculusHack
 
             File.CreateText("cmd").Dispose();
             string file = "cmd";
-
-          
             File.WriteAllText(file, "server:" +asw +"\nexit", Encoding.Default);
 
-            Process debugtool = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
-            startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
-            startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
-            debugtool.StartInfo = startInfo;
-            debugtool.Start();
-            debugtool.WaitForExit();
-            File.Delete(file);
+            try
+            {
+                Process debugtool = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+                startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
+                startInfo.Arguments = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
+                debugtool.StartInfo = startInfo;
+                debugtool.Start();
+                debugtool.WaitForExit();
+                File.Delete(file);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+                
+            }
+            
 
         }
         #endregion

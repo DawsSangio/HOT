@@ -10,16 +10,56 @@
 
     <TabControl>
         <TabItem Header="Main">
-            <Grid x:Name="MainGrid"  >
+            <StackPanel>
+                <Grid x:Name="grid_debugtools">
+                    <Grid.RowDefinitions>
+                        <RowDefinition  Height="30"/>
+                        <RowDefinition  Height="30"/>
+                        <RowDefinition  Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition  Width="120"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                        <Label x:Name="l_ss"         Content="1.00" Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
+                        <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold" />
+                    </StackPanel>
+                    <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
+
+                    <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
+                    <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
+                        <ComboBoxItem Content="0 - Auto"/>
+                        <ComboBoxItem Content="1 - 45/40fps ASW on"/>
+                        <ComboBoxItem Content="2 - 45/40fps ASW off"/>
+                        <ComboBoxItem Content="3 - Off"/>
+                        <ComboBoxItem Content="4 - 30/27fps ASW on"/>
+                    </ComboBox>
+
+                    <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                    <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
+                        <ComboBoxItem Content="0 - Off"/>
+                        <ComboBoxItem Content="1 - Performance summary"/>
+                        <ComboBoxItem Content="2 - Latency timing"/>
+                        <ComboBoxItem Content="3 - Application render timing"/>
+                        <ComboBoxItem Content="4 - Compositor render timing"/>
+                        <ComboBoxItem Content="5 - ASW status"/>
+                        <ComboBoxItem Content="6 - Layer info - Pixel density"/>
+                    </ComboBox>
+                </Grid>
+                
+                
+                <Grid x:Name="MainGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-
-                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
@@ -27,46 +67,16 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                    <Label x:Name="l_ss"         Content="1.00" Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
-                    <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold" />
-                </StackPanel>
-                <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
+                <CheckBox x:Name="cb_OC" Grid.Row="0" Content="Open Composite" FontSize="11" Click="Cb_OC_Click" FlowDirection="RightToLeft" VerticalContentAlignment="Center" Margin="0,0,5,0"/>
 
-
-                <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
-                <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
-                    <ComboBoxItem Content="0 - Auto"/>
-                    <ComboBoxItem Content="1 - 45/40fps ASW on"/>
-                    <ComboBoxItem Content="2 - 45/40fps ASW off"/>
-                    <ComboBoxItem Content="3 - Off"/>
-                    <ComboBoxItem Content="4 - 30/27fps ASW on"/>
-                </ComboBox>
-
-                <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
-                    <ComboBoxItem Content="0 - Off"/>
-                    <ComboBoxItem Content="1 - Performance summary"/>
-                    <ComboBoxItem Content="2 - Latency timing"/>
-                    <ComboBoxItem Content="3 - Application render timing"/>
-                    <ComboBoxItem Content="4 - Compositor render timing"/>
-                    <ComboBoxItem Content="5 - ASW status"/>
-                    <ComboBoxItem Content="6 - Layer info - Pixel density"/>
-                </ComboBox>
-
-                <CheckBox x:Name="cb_OC" Grid.Row="3" Content="Open Composite" FontSize="11" Click="Cb_OC_Click" FlowDirection="RightToLeft" VerticalContentAlignment="Center" Margin="0,0,5,0"/>
-
-                <Button x:Name="b_add_exe"  Grid.Row="4" Click="B_add_exe_Click">
+                <Button x:Name="b_add_exe"  Grid.Row="1" Click="B_add_exe_Click">
                     <TextBlock Text="Add exe"  TextAlignment="Center" />
                 </Button>
-                <Button x:Name="b_del_exe" Grid.Row="5" Click="B_del_exe_Click">
+                <Button x:Name="b_del_exe" Grid.Row="2" Click="B_del_exe_Click">
                     <TextBlock Text="Remove exe" TextAlignment="Center" />
                 </Button>
 
-
-                <ListView x:Name="lv_records"  Grid.Row="3" Grid.RowSpan="4" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
+                <ListView x:Name="lv_records"  Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Exe" Width="150" DisplayMemberBinding="{Binding exe}"/>
@@ -77,8 +87,7 @@
                     </ListView.View>
                 </ListView>
 
-
-                <TextBlock x:Name="tb_launcher" Grid.Row="4" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
+                <TextBlock x:Name="tb_launcher" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
                                TextAlignment="Center" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"
                                Text="To enable auto configuration on apps launch, you need to run as Administrator" Visibility="Hidden" />
 
@@ -89,7 +98,8 @@
                     </Label>
                 </Popup>
             </Grid>
-
+            
+            </StackPanel>
         </TabItem>
 
 
