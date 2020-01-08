@@ -301,28 +301,39 @@ namespace OculusHack
         private async void DownLoadOC()
         {
             popup.IsOpen = true;
-            pop_oc.Text = "Check fo Open Composite update";
-            bool update = await OC.CheckForUpdate();
-            if (update || !OC.IsOCavailable())
+
+            pop_oc.Text = "Check for Open Composite update";
+            string latesthash = await OC.GetLatestHash();
+            await Task.Delay(2000);
+
+            if (latesthash is null)
             {
+                pop_oc.Text = "Open Composite version Check: connection failed!";
+                await Task.Delay(2000);
+            }
+            else if (!OC.CheckForVersion(latesthash))
+            {
+                pop_oc.Text = "New version available!";
+                await Task.Delay(2000);
                 pop_oc.Text = "Downloading Open Composite...";
                 bool download = await OC.downloadDll();
                 if (!download)
                 {
-                    pop_oc.Text = "Open Composite download: connection failed!";
-                    cb_OC.Foreground = Brushes.Red;
-                    cb_OC.Content = "Open Composite\nnot available";
-                    cb_OC.IsEnabled = false;
+                    pop_oc.Text = "Open Composite Download: connection failed!";
                 }
                 else pop_oc.Text = "Open Composite is updated.";
                 await Task.Delay(2000);
-                popup.IsOpen = false;
-
             }
-            else
+            
+            if (!OC.IsOCavailable())
             {
-                popup.IsOpen = false;
+                cb_OC.Foreground = Brushes.Red;
+                cb_OC.Content = "Open Composite\nnot available";
+                cb_OC.IsEnabled = false;
             }
+            
+            popup.IsOpen = false;
+            
         }
 
         private void Cb_OC_Click(object sender, RoutedEventArgs e)
