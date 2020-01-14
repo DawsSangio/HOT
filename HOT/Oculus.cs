@@ -556,6 +556,9 @@ namespace OculusHack
                 "oculus-diagnostics\\OculusLogGatherer.exe",
                 "oculus-diagnostics\\OculusMirror.exe",
 
+                "oculus-drivers\\oculus-driver.exe",
+                "oculus-drivers\\version.txt",
+                
                 "oculus-runtime\\LibOVRP2P32_1.dll",
                 "oculus-runtime\\LibOVRP2P64_1.dll",
                 "oculus-runtime\\LibOVRPlatform32_1.dll",
