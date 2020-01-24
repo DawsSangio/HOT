@@ -550,15 +550,19 @@ namespace OculusHack
         /// </summary>
         public static Task BackupLibrary(string OculusInstallFolder, string zipfile)
         {
-            string[] libraryfiles = {
+            /*string[] libraryfiles = {
                 "oculus-diagnostics\\OculusDebugTool.exe",
                 "oculus-diagnostics\\OculusDebugToolCLI.exe",
                 "oculus-diagnostics\\OculusLogGatherer.exe",
                 "oculus-diagnostics\\OculusMirror.exe",
-
+                               
                 "oculus-drivers\\oculus-driver.exe",
                 "oculus-drivers\\version.txt",
-                
+
+                "oculus-runtime\\Firmware\\firmware.zip",
+                "oculus-runtime\\Firmware\\firmware_km.zip",
+
+                "oculus-runtime\\LibOVRP2P32_1.dll",
                 "oculus-runtime\\LibOVRP2P32_1.dll",
                 "oculus-runtime\\LibOVRP2P64_1.dll",
                 "oculus-runtime\\LibOVRPlatform32_1.dll",
@@ -569,8 +573,21 @@ namespace OculusHack
                 "oculus-runtime\\OVRRedir.exe",
                 "oculus-runtime\\OVRServer_x64.exe",
                 "oculus-runtime\\OVRServiceLauncher.exe"
-            };
-            string filename = zipfile; //GetLibVersion(OculusInstallFolder) + ".zip";
+            };*/
+            List<string> libraryfiles = new List<string>();
+            void addFileToLibrary(string[] files)
+            {
+                foreach (string file in files)
+                {
+                    libraryfiles.Add(file);
+                }
+            }
+
+            addFileToLibrary(Directory.GetFiles(OculusInstallFolder + "Support\\oculus-diagnostics", "*.*", SearchOption.AllDirectories));
+            addFileToLibrary(Directory.GetFiles(OculusInstallFolder + "Support\\oculus-drivers", "*.*", SearchOption.AllDirectories));
+            addFileToLibrary(Directory.GetFiles(OculusInstallFolder + "Support\\oculus-runtime", "*.*", SearchOption.AllDirectories));
+
+            string filename = zipfile;
             File.Create(filename).Dispose();
             return Task.Run(() =>
             {
@@ -580,7 +597,9 @@ namespace OculusHack
                     {
                         foreach (string file in libraryfiles)
                         {
-                            ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "\\Support\\" + file, file);
+                            //ZipArchiveEntry entry = archive.CreateEntryFromFile(OculusInstallFolder + "Support\\" + file, file);
+                            ZipArchiveEntry entry = archive.CreateEntryFromFile(file, file.Replace(OculusInstallFolder + "Support\\",""));
+
                         }
                         archive.Dispose();
                     }
