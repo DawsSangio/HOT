@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,16 +11,20 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Launcher;
+using Valve.VR;
+using System.Reflection;
 
 
 namespace OculusHack
 {
     public partial class MainWindow : Window
     {
+        
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
+        public int asw = Properties.Settings.Default.ASWsetting;
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
-
+        public bool ASWPacemaker = false;
         private string cfg_file;
 
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
@@ -28,7 +33,7 @@ namespace OculusHack
         {
             
             InitializeComponent();
-
+           
             #region Check if Oculus is installed and service is running
             // check Oculus if installed correctly
 
@@ -40,7 +45,8 @@ namespace OculusHack
                 MessageBoxResult mb = MessageBox.Show("Oculus installation not found. Please install using OculusSetup.exe", "Oculus register entry not found", MessageBoxButton.OK);
                 if (mb == MessageBoxResult.OK)
                 {
-                    Application.Current.MainWindow.Close();
+                    Application.Current.Shutdown();
+                    Environment.Exit(0);
                 }
 
             }
@@ -51,7 +57,8 @@ namespace OculusHack
                 //TODO implement Admin call to activate service.
                 if (mb == MessageBoxResult.OK)
                 {
-                    Application.Current.MainWindow.Close(); 
+                    Application.Current.Shutdown();
+                    Environment.Exit(0);
                 }
             }
             // all looks ok, go on.
@@ -66,12 +73,12 @@ namespace OculusHack
             #region Check if Oculus Debug tool are available and set default parameter
             if (!Tools.SetSS(OculusInstallFolder, ss))
             {
-                MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPleasce check your Oculus installation.");
+                MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPlease check your Oculus installation.\nDebug function are disable.");
                 grid_debugtools.IsEnabled = false;
             }
             else
             {
-                cb_ASW.SelectedIndex = 0;
+                Tools.SetASW(OculusInstallFolder, asw);
                 cb_debugHUD.SelectedIndex = 0;
             }
             
@@ -82,7 +89,7 @@ namespace OculusHack
             CheckEnviroment();
             #endregion
 
-            #region Admin mode - exe check
+            #region Check Admin mode
             //Activate exe check if in Admin mode, or disable Advanced tab if not in Administrator mode.
             if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
             {
@@ -142,10 +149,9 @@ namespace OculusHack
             }
             #endregion
 
-            #region Open Composite: check for update and download
+            #region Check Open Composite: update, download and available
             DownLoadOC();
             #endregion
-
 
         }
 
@@ -245,25 +251,30 @@ namespace OculusHack
             if (cb_ASW.SelectedIndex == 0)
             {
                 Tools.SetASW(OculusInstallFolder, 0);
+                Properties.Settings.Default.ASWsetting = 0;
             }
             else if (cb_ASW.SelectedIndex == 1)
             {
                 Tools.SetASW(OculusInstallFolder, 1);
+                Properties.Settings.Default.ASWsetting = 1;
             }
             else if (cb_ASW.SelectedIndex == 2)
             {
                 Tools.SetASW(OculusInstallFolder, 2);
+                Properties.Settings.Default.ASWsetting = 2;
             }
             else if (cb_ASW.SelectedIndex == 3)
             {
                 Tools.SetASW(OculusInstallFolder, 3);
+                Properties.Settings.Default.ASWsetting = 3;
             }
             else if (cb_ASW.SelectedIndex == 4)
             {
                 Tools.SetASW(OculusInstallFolder, 4);
+                Properties.Settings.Default.ASWsetting = 4;
             }
 
-
+            Properties.Settings.Default.Save();
         }
 
         private void cb_OSD_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -325,15 +336,15 @@ namespace OculusHack
                 await Task.Delay(2000);
             }
             
+            popup.IsOpen = false;
+
             if (!OC.IsOCavailable())
             {
                 cb_OC.Foreground = Brushes.Red;
                 cb_OC.Content = "Open Composite\nnot available";
                 cb_OC.IsEnabled = false;
             }
-            
-            popup.IsOpen = false;
-            
+
         }
 
         private void Cb_OC_Click(object sender, RoutedEventArgs e)
@@ -489,8 +500,59 @@ namespace OculusHack
 
         }
 
+
         #endregion
 
-        
+        #region SteamVR tab
+        private void B_aswp_on_Click(object sender, RoutedEventArgs e)
+        {
+            if (ASWPacemaker)
+            {
+                ASWPacemaker = false;
+            }
+            else
+            {
+                OpenVR.Shutdown();
+                ASWPacemaker = true;
+            }
+
+            counter();
+            
+        }
+
+        private async void counter()
+        {
+            if (ASWPacemaker)
+            {
+                var error = EVRInitError.None;
+                OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
+                //OculusHack.ASWPacemaker.InitOpenVR();
+
+                //Get frame time rendering of the compositor.
+                Compositor_FrameTiming cft = new Compositor_FrameTiming();
+                cft.m_nSize = (uint)Marshal.SizeOf(typeof(Compositor_FrameTiming));
+
+                while (ASWPacemaker)
+                {
+                    await Task.Delay(200); // Delay of the polling check of frame timing
+                    OpenVR.Compositor.GetFrameTiming(ref cft, 0);
+                    tb_steamvr.Text = cft.m_flTotalRenderGpuMs.ToString() + "\n";
+
+                    if (cft.m_flTotalRenderGpuMs > 11)
+                    {
+                        Tools.SetASW(OculusInstallFolder, 1); //TODO make a quicker method
+                        tb_steamvr.Foreground = Brushes.DarkOrange;
+                        await Task.Delay(500); // Delay before returning to normal rendering
+                    }
+                    else
+                    {
+                        Tools.SetASW(OculusInstallFolder, 0);
+                        tb_steamvr.Foreground = Brushes.Black;
+                    }
+                }
+            }
+
+        }
+        #endregion
     }
 }

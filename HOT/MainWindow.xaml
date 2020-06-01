@@ -51,56 +51,73 @@
                         <ComboBoxItem Content="6 - Layer info - Pixel density"/>
                     </ComboBox>
                 </Grid>
-                
-                
+
+
                 <Grid x:Name="MainGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition  Width="120"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition  Width="120"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
-                <CheckBox x:Name="cb_OC" Grid.Row="0" Content="Open Composite" FontSize="11" Click="Cb_OC_Click" FlowDirection="RightToLeft" VerticalContentAlignment="Center" Margin="0,0,5,0"/>
+                    <CheckBox x:Name="cb_OC" Grid.Row="0" Content="Open Composite" FontSize="11" Click="Cb_OC_Click" FlowDirection="RightToLeft" VerticalContentAlignment="Center" Margin="0,0,5,0"/>
 
-                <Button x:Name="b_add_exe"  Grid.Row="1" Click="B_add_exe_Click">
-                    <TextBlock Text="Add exe"  TextAlignment="Center" />
-                </Button>
-                <Button x:Name="b_del_exe" Grid.Row="2" Click="B_del_exe_Click">
-                    <TextBlock Text="Remove exe" TextAlignment="Center" />
-                </Button>
+                    <Button x:Name="b_add_exe"  Grid.Row="1" Click="B_add_exe_Click">
+                        <TextBlock Text="Add exe"  TextAlignment="Center" />
+                    </Button>
+                    <Button x:Name="b_del_exe" Grid.Row="2" Click="B_del_exe_Click">
+                        <TextBlock Text="Remove exe" TextAlignment="Center" />
+                    </Button>
 
-                <ListView x:Name="lv_records"  Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Exe" Width="150" DisplayMemberBinding="{Binding exe}"/>
-                            <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
-                            <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
-                            <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                    <ListView x:Name="lv_records"  Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Exe" Width="150" DisplayMemberBinding="{Binding exe}"/>
+                                <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
+                                <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
+                                <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Label x:Name="l_version1" Grid.Row="4"></Label>
 
-                <TextBlock x:Name="tb_launcher" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
+                    <TextBlock x:Name="tb_launcher" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
                                TextAlignment="Center" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"
                                Text="To enable auto configuration on apps launch, you need to run as Administrator" Visibility="Hidden" />
 
 
-                <Popup x:Name="popup" Placement="Center">
-                    <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
-                        <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
-                    </Label>
-                </Popup>
-            </Grid>
-            
+                    <Popup x:Name="popup" Placement="Center">
+                        <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
+                            <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
+                        </Label>
+                    </Popup>
+                </Grid>
+
             </StackPanel>
         </TabItem>
+
+
+
+        <TabItem x:Name="tab_SteamVR" Header="SteamVR" Visibility="Visible">
+            <Grid x:Name="grid_steamvr">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="200"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="b_aswp_on" Content="Start" Click="B_aswp_on_Click" Grid.Row="0" HorizontalAlignment="Center" Width="100" />
+                <ScrollViewer Grid.Row="1">
+                <TextBlock x:Name="tb_steamvr" />
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
+
 
 
         <TabItem Header="Advanced"  >
@@ -132,10 +149,6 @@
                     <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
                 </Label>
                 <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="2" Content="Runtime version" Grid.ColumnSpan="2"  HorizontalAlignment="Right"/>
-
-
-
-
 
             </Grid>
         </TabItem>

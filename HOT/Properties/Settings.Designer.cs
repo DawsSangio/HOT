@@ -46,5 +46,17 @@ namespace OculusHack.Properties {
                 this["SSsetting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ASWsetting {
+            get {
+                return ((int)(this["ASWsetting"]));
+            }
+            set {
+                this["ASWsetting"] = value;
+            }
+        }
     }
 }
