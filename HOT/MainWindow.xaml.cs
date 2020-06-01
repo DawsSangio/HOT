@@ -78,7 +78,7 @@ namespace OculusHack
             }
             else
             {
-                Tools.SetASW(OculusInstallFolder, asw);
+                cb_ASW.SelectedIndex = asw;
                 cb_debugHUD.SelectedIndex = 0;
             }
             

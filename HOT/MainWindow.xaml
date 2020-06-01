@@ -105,7 +105,7 @@
 
 
 
-        <TabItem x:Name="tab_SteamVR" Header="SteamVR" Visibility="Visible">
+        <TabItem x:Name="tab_SteamVR" Header="SteamVR" Visibility="Collapsed">
             <Grid x:Name="grid_steamvr">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
