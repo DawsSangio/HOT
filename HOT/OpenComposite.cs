@@ -13,6 +13,37 @@ namespace OculusHack
     {
         // This part is very hacky..
         // TODO: use Json pharser.
+        public static bool IsAvtive()
+        {
+            List<string> cfgparts = ReadSteamvrCfg();
+            for (int i = 2; i < cfgparts.Count; i++)
+            {
+                if (cfgparts[i].Contains("\\OculusHack"))
+                {
+                    return true;
+                }
+                else if (cfgparts[i].Contains("\\SteamVR"))
+                {
+                    return false;
+                }
+
+            }
+            return false;
+        }
+
+        public static bool IsAvailable()
+        {
+
+            string OCapi64 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
+            string OCapi = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient.dll";
+            if (File.Exists(OCapi) && File.Exists(OCapi64))
+            {
+                return true;
+            }
+            else return false;
+
+        }
+
         public static void EnableOC()
         {
             List<string> cfgparts = ReadSteamvrCfg();
@@ -47,20 +78,7 @@ namespace OculusHack
 
             WriteSteamvrCfg(cfgparts);
         }
-
-        public static bool IsOCavailable()
-        {
-            
-            string OCapi64 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient_x64.dll";
-            string OCapi = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\OculusHack\\bin\\vrclient.dll";
-            if(File.Exists(OCapi) && File.Exists(OCapi64))
-            {
-                return true;
-            }
-            else return false;
-           
-        }
-        
+                
         /// <summary>
         /// Read SteamVR cfg trimming space, tabs and \n \r
         /// 0 - initial part

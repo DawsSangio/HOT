@@ -149,8 +149,13 @@ namespace OculusHack
             }
             #endregion
 
-            #region Check Open Composite: update, download and available
-            DownLoadOC();
+            #region Check if Open Composite is available for use
+            if (!OC.IsAvailable())
+            {
+                cb_OC.Foreground = Brushes.Red;
+                cb_OC.Content = "Open Composite\nnot available";
+                cb_OC.IsEnabled = false;
+            }
             #endregion
 
         }
@@ -159,7 +164,14 @@ namespace OculusHack
         {
             //Check Library version
             l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
-            
+
+            //Check is OC is actived
+            if (OC.IsAvtive())
+            {
+                cb_OC.IsChecked = true;
+            }
+            else cb_OC.IsChecked = false;
+
             //Check Home status
             if (Tools.OculusHome(OculusInstallFolder, 1, false))
             {
@@ -338,11 +350,17 @@ namespace OculusHack
             
             popup.IsOpen = false;
 
-            if (!OC.IsOCavailable())
+            if (!OC.IsAvailable())
             {
                 cb_OC.Foreground = Brushes.Red;
                 cb_OC.Content = "Open Composite\nnot available";
                 cb_OC.IsEnabled = false;
+            }
+            else
+            {
+                cb_OC.Foreground = Brushes.Black;
+                cb_OC.Content = "Use Open Composite";
+                cb_OC.IsEnabled = true;
             }
 
         }
@@ -381,10 +399,15 @@ namespace OculusHack
             records.RemoveAt(idx);
             CfgTools.WriteCfg(records, cfg_file);
         }
+
+        private void B_dl_OC_Click(object sender, RoutedEventArgs e)
+        {
+            DownLoadOC();
+        }
         #endregion
-        
+
         #region Advanced setting tab
-        
+
         private async void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
 
@@ -554,5 +577,7 @@ namespace OculusHack
 
         }
         #endregion
+
+        
     }
 }
