@@ -10,6 +10,7 @@ using System;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Permissions;
 
 namespace OculusHack
 {
@@ -183,12 +184,21 @@ namespace OculusHack
         {
             return Task.Run(() =>
             {
-                ServiceController OVRService = new ServiceController("OVRService");
-                if (OVRService.Status == ServiceControllerStatus.Stopped)
-                {
-                    OVRService.Start();
-                    OVRService.WaitForStatus(ServiceControllerStatus.Running);
-                }
+                //ServiceController OVRService = new ServiceController("OVRService");
+                //if (OVRService.Status == ServiceControllerStatus.Stopped)
+                //{
+                //    OVRService.Start();
+                //    OVRService.WaitForStatus(ServiceControllerStatus.Running);
+                //}
+                //return true;
+
+                Process process = new Process();
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.FileName = "net";
+                process.StartInfo.Arguments = "start \"OVRService\"";
+                process.StartInfo.Verb = "runas"; //run as admin
+                process.Start();
+                process.WaitForExit();
                 return true;
             });
         }
@@ -197,12 +207,20 @@ namespace OculusHack
         {
             return Task.Run(() =>
             {
-                ServiceController OVRService = new ServiceController("OVRService");
-                if (OVRService.Status == ServiceControllerStatus.Running)
-                {
-                    OVRService.Stop();
-                    OVRService.WaitForStatus(ServiceControllerStatus.Stopped);
-                }
+                //ServiceController OVRService = new ServiceController("OVRService");
+                //if (OVRService.Status == ServiceControllerStatus.Running)
+                //{
+                //    OVRService.Stop();
+                //    OVRService.WaitForStatus(ServiceControllerStatus.Stopped);
+                //}
+                //return true;
+                Process process = new Process();
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.FileName = "net";
+                process.StartInfo.Arguments = "stop \"OVRService\"";
+                process.StartInfo.Verb = "runas"; //run as admin
+                process.Start();
+                process.WaitForExit();
                 return true;
             });
         }

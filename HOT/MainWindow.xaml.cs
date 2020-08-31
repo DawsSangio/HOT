@@ -13,7 +13,7 @@ using System.Windows.Threading;
 using Launcher;
 using Valve.VR;
 using System.Reflection;
-
+using System.Security.Permissions;
 
 namespace OculusHack
 {
@@ -33,7 +33,7 @@ namespace OculusHack
         {
             
             InitializeComponent();
-           
+                        
             #region Check if Oculus is installed and service is running
             // check Oculus if installed correctly
 
@@ -50,6 +50,7 @@ namespace OculusHack
                 }
 
             }
+
             // check if service is running
             else if (!Tools.IsOculusServiceRunning())
             {
@@ -57,8 +58,9 @@ namespace OculusHack
                 //TODO implement Admin call to activate service.
                 if (mb == MessageBoxResult.OK)
                 {
-                    Application.Current.Shutdown();
-                    Environment.Exit(0);
+                    //Application.Current.Shutdown();
+                    //Environment.Exit(0);
+                    stacpanel_main.IsEnabled = false;
                 }
             }
             // all looks ok, go on.
@@ -71,15 +73,18 @@ namespace OculusHack
             #endregion
 
             #region Check if Oculus Debug tool are available and set default parameter
-            if (!Tools.SetSS(OculusInstallFolder, ss))
+            if (Tools.IsOculusServiceRunning())
             {
-                MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPlease check your Oculus installation.\nDebug function are disable.");
-                grid_debugtools.IsEnabled = false;
-            }
-            else
-            {
-                cb_ASW.SelectedIndex = asw;
-                cb_debugHUD.SelectedIndex = 0;
+                if (!Tools.SetSS(OculusInstallFolder, ss))
+                {
+                    MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPlease check your Oculus installation.\nDebug function are disable.");
+                    grid_debugtools.IsEnabled = false;
+                }
+                else
+                {
+                    cb_ASW.SelectedIndex = asw;
+                    cb_debugHUD.SelectedIndex = 0;
+                }
             }
             
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
@@ -93,7 +98,7 @@ namespace OculusHack
             //Activate exe check if in Admin mode, or disable Advanced tab if not in Administrator mode.
             if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
             {
-                grid_advanced.IsEnabled = false;
+                //grid_advanced.IsEnabled = false;
                 tb_admin.Text = "To enable this tab you need to run as Administrator";
                 b_add_exe.IsEnabled = false;
                 b_del_exe.IsEnabled = false;
@@ -105,7 +110,6 @@ namespace OculusHack
             {
                 //Start exe check with Management Event. Admini required
                 WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"); 
-
                 ManagementEventWatcher watcher = new ManagementEventWatcher(query);
                 watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
                 watcher.Start();
@@ -172,12 +176,12 @@ namespace OculusHack
             }
             else cb_OC.IsChecked = false;
 
-            //Check Home status
-            if (Tools.OculusHome(OculusInstallFolder, 1, false))
-            {
-                ck_home_status.IsChecked = true;
-            }
-            else ck_home_status.IsChecked = false;
+            //Check Home status - OBSOLETE since v12 is option in desctop client
+            //if (Tools.OculusHome(OculusInstallFolder, 1, false))
+            //{
+            //    ck_home_status.IsChecked = true;
+            //}
+            //else ck_home_status.IsChecked = false;
 
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
@@ -226,6 +230,7 @@ namespace OculusHack
         }
 
         #region Main tab
+        
         private void b_setSS_Click(object sender, RoutedEventArgs e)
         {
             Tools.SetSS(OculusInstallFolder, ss);
@@ -420,6 +425,7 @@ namespace OculusHack
             string filename = ofd.FileName;
 
             b_lib.IsEnabled = false;
+            b_back_lib.IsEnabled = false;
 
             b_lib.Content = "Oculus Service is stopping...";
             await Tools.StopOculusService();
@@ -431,6 +437,7 @@ namespace OculusHack
             await Tools.StartOculusService();
 
             b_lib.IsEnabled = true;
+            b_back_lib.IsEnabled = true;
             b_lib.Content = "Restore Library";
 
             CheckEnviroment();
@@ -446,25 +453,27 @@ namespace OculusHack
             if (ofd.ShowDialog() == false) return;
             
             b_back_lib.IsEnabled = false;
+            b_lib.IsEnabled = false;
             b_back_lib.Content = "Wait...";
                        
             await Tools.BackupLibrary(OculusInstallFolder, ofd.FileName);
             
             b_back_lib.IsEnabled = true;
+            b_lib.IsEnabled = true;
             b_back_lib.Content = "Backup Library";
 
         }
      
-        private void Ck_home_status_Click(object sender, RoutedEventArgs e)
-        {
-            Tools.KillOculusHome();
+        //private void Ck_home_status_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Tools.KillOculusHome();
 
-            if (ck_home_status.IsChecked == false)
-            {
-                Tools.OculusHome(OculusInstallFolder, 0, true);
-            }
-            else Tools.OculusHome(OculusInstallFolder, 1, true);
-        }
+        //    if (ck_home_status.IsChecked == false)
+        //    {
+        //        Tools.OculusHome(OculusInstallFolder, 0, true);
+        //    }
+        //    else Tools.OculusHome(OculusInstallFolder, 1, true);
+        //}
 
         private void Ck_sfx_status_Click(object sender, RoutedEventArgs e)
         {
@@ -523,6 +532,22 @@ namespace OculusHack
 
         }
 
+        private async void B_stop_service_Click(object sender, RoutedEventArgs e)
+        {
+            b_stop_service.Content = "Service is Stopping..";
+            stacpanel_main.IsEnabled = false;
+            await Tools.StopOculusService();
+            b_stop_service.Content = "Stop Oculus Service";
+        }
+
+        private async void B_start_service_Click(object sender, RoutedEventArgs e)
+        {
+            b_start_service.Content = "Service is Starting..";
+            await Tools.StartOculusService();
+            b_start_service.Content = "Start Oculus Service";
+            stacpanel_main.IsEnabled = true;
+        }
+
 
         #endregion
 
@@ -576,6 +601,8 @@ namespace OculusHack
             }
 
         }
+
+
         #endregion
 
         
