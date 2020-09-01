@@ -33,13 +33,9 @@ namespace OculusHack
         {
             
             InitializeComponent();
-                        
-            #region Check if Oculus is installed and service is running
-            // check Oculus if installed correctly
 
-            // Renable Native library in case off
-            Tools.SetNativeLibrary(OculusInstallFolder, true);
-
+            #region Check Oculus install and Service
+            // Check install
             if (Tools.GetOculusInstallFolder() == null)
             {
                 MessageBoxResult mb = MessageBox.Show("Oculus installation not found. Please install using OculusSetup.exe", "Oculus register entry not found", MessageBoxButton.OK);
@@ -50,26 +46,27 @@ namespace OculusHack
                 }
 
             }
+            else
+            {
+                // Renable Native library in case off, due to possible crash on disable
+                Tools.SetNativeLibrary(OculusInstallFolder, true);
+                OculusInstallFolder = Tools.GetOculusInstallFolder();
+                Properties.Settings.Default.HOTSettings = OculusInstallFolder;
+                Properties.Settings.Default.Save();
+            }
 
-            // check if service is running
-            else if (!Tools.IsOculusServiceRunning())
+            // Check Service
+            if (!Tools.IsOculusServiceRunning())
             {
                 MessageBoxResult mb = MessageBox.Show("Oculus service is not running","Oculus service not found", MessageBoxButton.OK);
                 //TODO implement Admin call to activate service.
                 if (mb == MessageBoxResult.OK)
                 {
-                    //Application.Current.Shutdown();
-                    //Environment.Exit(0);
                     stacpanel_main.IsEnabled = false;
                 }
             }
-            // all looks ok, go on.
-            else
-            { 
-                OculusInstallFolder = Tools.GetOculusInstallFolder();
-                Properties.Settings.Default.HOTSettings = OculusInstallFolder;
-                Properties.Settings.Default.Save();
-            }
+            // All OK, go on.
+           
             #endregion
 
             #region Check if Oculus Debug tool are available and set default parameter
@@ -156,8 +153,15 @@ namespace OculusHack
             #region Check if Open Composite is available for use
             if (!OC.IsAvailable())
             {
+                //Check is OC is actived
+                if (OC.IsActive())
+                {
+                    cb_OC.IsChecked = true;
+                }
+                else cb_OC.IsChecked = false;
+
                 cb_OC.Foreground = Brushes.Red;
-                cb_OC.Content = "Open Composite\nnot available";
+                cb_OC.Content = "Open Composite is not available";
                 cb_OC.IsEnabled = false;
             }
             #endregion
@@ -169,20 +173,14 @@ namespace OculusHack
             //Check Library version
             l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
 
-            //Check is OC is actived
-            if (OC.IsAvtive())
-            {
-                cb_OC.IsChecked = true;
-            }
-            else cb_OC.IsChecked = false;
-
             //Check Home status - OBSOLETE since v12 is option in desctop client
             //if (Tools.OculusHome(OculusInstallFolder, 1, false))
             //{
             //    ck_home_status.IsChecked = true;
             //}
             //else ck_home_status.IsChecked = false;
-
+            
+            /*
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
@@ -196,7 +194,7 @@ namespace OculusHack
                 ck_blk_dash.IsChecked = false;
             }
             else ck_blk_dash.IsChecked = true;
-            
+            */
         }
 
         private string get_oculusfolder()

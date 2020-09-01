@@ -13,22 +13,31 @@ namespace OculusHack
     {
         // This part is very hacky..
         // TODO: use Json pharser.
-        public static bool IsAvtive()
+        public static bool IsActive()
         {
-            List<string> cfgparts = ReadSteamvrCfg();
-            for (int i = 2; i < cfgparts.Count; i++)
+            try
             {
-                if (cfgparts[i].Contains("\\OculusHack"))
+                List<string> cfgparts = ReadSteamvrCfg();
+                for (int i = 2; i < cfgparts.Count; i++)
                 {
-                    return true;
+                    if (cfgparts[i].Contains("\\OculusHack"))
+                    {
+                        return true;
+                    }
+                    else if (cfgparts[i].Contains("\\SteamVR"))
+                    {
+                        return false;
+                    }
                 }
-                else if (cfgparts[i].Contains("\\SteamVR"))
-                {
-                    return false;
-                }
+                return false;
+            }
+            catch (Exception)
+            {
+
+                return false;
 
             }
-            return false;
+
         }
 
         public static bool IsAvailable()

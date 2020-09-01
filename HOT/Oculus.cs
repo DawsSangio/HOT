@@ -162,7 +162,6 @@ namespace OculusHack
             }
         }
 
-        //TODO: fix me, get path form registry
         public static List<string> GetOculusLibraris()
         {
             List<string> libraries = new List<string>();
@@ -228,11 +227,20 @@ namespace OculusHack
         public static bool IsOculusServiceRunning()
         {
             ServiceController OVRService = new ServiceController("OVRService");
-            if (OVRService.Status == ServiceControllerStatus.Running)
+            try
             {
-                return true;
+                if (OVRService.Status == ServiceControllerStatus.Running)
+                {
+                    return true;
+                }
+                else return false;
             }
-            else return false;
+            catch (Exception)
+            {
+
+                return false;
+            }
+            
         }
         #endregion
 
