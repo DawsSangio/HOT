@@ -14,6 +14,7 @@ using Launcher;
 using Valve.VR;
 using System.Reflection;
 using System.Security.Permissions;
+using System.Diagnostics;
 
 namespace OculusHack
 {
@@ -63,6 +64,7 @@ namespace OculusHack
                 if (mb == MessageBoxResult.OK)
                 {
                     stacpanel_main.IsEnabled = false;
+                    tab_service.IsSelected = true;
                 }
             }
             // All OK, go on.
@@ -96,7 +98,6 @@ namespace OculusHack
             if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
             {
                 //grid_advanced.IsEnabled = false;
-                tb_admin.Text = "To enable this tab you need to run as Administrator";
                 b_add_exe.IsEnabled = false;
                 b_del_exe.IsEnabled = false;
                 lv_records.Visibility = Visibility.Hidden;
@@ -324,6 +325,66 @@ namespace OculusHack
             }
         }
 
+
+
+        private void B_add_exe_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Title = "Select App Exe";
+            ofd.DefaultExt = "*.exe";
+            ofd.Filter = "*.exe |*.exe";
+            ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (ofd.ShowDialog() == false) return;
+
+            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
+            records.Add(rec);
+            CfgTools.AddRecordToCfg(rec, cfg_file);
+            
+
+        }
+
+        private void B_del_exe_Click(object sender, RoutedEventArgs e)
+        {
+            int idx = lv_records.SelectedIndex;
+            records.RemoveAt(idx);
+            CfgTools.WriteCfg(records, cfg_file);
+        }
+
+        #endregion
+                
+        #region Service tab
+        private async void B_stop_service_Click(object sender, RoutedEventArgs e)
+        {
+            b_stop_service.Content = "Service is Stopping...";
+            stacpanel_main.IsEnabled = false;
+            await Tools.StopOculusService();
+            b_stop_service.Content = "Stop Oculus Service";
+        }
+
+        private async void B_start_service_Click(object sender, RoutedEventArgs e)
+        {
+            b_start_service.Content = "Service is Starting...";
+            await Tools.StartOculusService();
+            b_start_service.Content = "Start Oculus Service";
+            stacpanel_main.IsEnabled = true;
+        }
+
+        private async void B_restart_service_Click(object sender, RoutedEventArgs e)
+        {
+            b_restart_service.Content = "Service is Stopping...";
+            stacpanel_main.IsEnabled = false;
+            await Tools.StopOculusService();
+
+            b_restart_service.Content = "Service is Starting...";
+            await Tools.StartOculusService();
+
+            b_restart_service.Content = "Restart Oculus Service";
+            stacpanel_main.IsEnabled = true;
+
+        }
+        #endregion
+
+        #region Open Composite tab
         private async void DownLoadOC()
         {
             popup.IsOpen = true;
@@ -350,13 +411,13 @@ namespace OculusHack
                 else pop_oc.Text = "Open Composite is updated.";
                 await Task.Delay(2000);
             }
-            
+
             popup.IsOpen = false;
 
             if (!OC.IsAvailable())
             {
                 cb_OC.Foreground = Brushes.Red;
-                cb_OC.Content = "Open Composite\nnot available";
+                cb_OC.Content = "Open Composite not available";
                 cb_OC.IsEnabled = false;
             }
             else
@@ -380,36 +441,13 @@ namespace OculusHack
             }
         }
 
-        private void B_add_exe_Click(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
-            ofd.Title = "Select App Exe";
-            ofd.DefaultExt = "*.exe";
-            ofd.Filter = "*.exe |*.exe";
-            ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            if (ofd.ShowDialog() == false) return;
-
-            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
-            records.Add(rec);
-            CfgTools.AddRecordToCfg(rec, cfg_file);
-            
-
-        }
-
-        private void B_del_exe_Click(object sender, RoutedEventArgs e)
-        {
-            int idx = lv_records.SelectedIndex;
-            records.RemoveAt(idx);
-            CfgTools.WriteCfg(records, cfg_file);
-        }
-
         private void B_dl_OC_Click(object sender, RoutedEventArgs e)
         {
             DownLoadOC();
         }
         #endregion
 
-        #region Advanced setting tab
+        #region Misc tab
 
         private async void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
@@ -449,19 +487,19 @@ namespace OculusHack
             ofd.FileName = "OculusLib_" + Tools.GetLibVersion(OculusInstallFolder) + ".zip";
             ofd.Filter = "*.zip |*.zip";
             if (ofd.ShowDialog() == false) return;
-            
+
             b_back_lib.IsEnabled = false;
             b_lib.IsEnabled = false;
             b_back_lib.Content = "Wait...";
-                       
+
             await Tools.BackupLibrary(OculusInstallFolder, ofd.FileName);
-            
+
             b_back_lib.IsEnabled = true;
             b_lib.IsEnabled = true;
             b_back_lib.Content = "Backup Library";
 
         }
-     
+
         //private void Ck_home_status_Click(object sender, RoutedEventArgs e)
         //{
         //    Tools.KillOculusHome();
@@ -481,8 +519,8 @@ namespace OculusHack
             {
                 Tools.DashSFX(OculusInstallFolder, 0, true);
             }
-            else    Tools.DashSFX(OculusInstallFolder, 1, true);
-            
+            else Tools.DashSFX(OculusInstallFolder, 1, true);
+
         }
 
         private void Ck_blk_dash_Click(object sender, RoutedEventArgs e)
@@ -504,7 +542,34 @@ namespace OculusHack
             b_disable_oculus.Content = "Oculus Library is DISABLE";
             MainGrid.IsEnabled = false;
             int timeup = 20;
-            void timer_countdown()
+
+            var timer = new System.Timers.Timer();
+            timer.Interval = 1000;
+            timer.Enabled = true;
+
+            Task.Run(() =>
+            {
+                //ServiceController OVRService = new ServiceController("OVRService");
+                //if (OVRService.Status == ServiceControllerStatus.Stopped)
+                //{
+                //    OVRService.Start();
+                //    OVRService.WaitForStatus(ServiceControllerStatus.Running);
+                //}
+                //return true;
+
+                Process process = new Process();
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.FileName = "net";
+                process.StartInfo.Arguments = "start \"OVRService\"";
+                process.StartInfo.Verb = "runas"; //run as admin
+                process.Start();
+                process.WaitForExit();
+                return true;
+            });
+
+
+            /*
+            void  timer_countdown()
             {
                 for (int i = 0; i < timeup; i++)
                 {
@@ -527,26 +592,9 @@ namespace OculusHack
 
             Thread thread = new Thread(timer_countdown);
             thread.Start();
+            */
 
         }
-
-        private async void B_stop_service_Click(object sender, RoutedEventArgs e)
-        {
-            b_stop_service.Content = "Service is Stopping..";
-            stacpanel_main.IsEnabled = false;
-            await Tools.StopOculusService();
-            b_stop_service.Content = "Stop Oculus Service";
-        }
-
-        private async void B_start_service_Click(object sender, RoutedEventArgs e)
-        {
-            b_start_service.Content = "Service is Starting..";
-            await Tools.StartOculusService();
-            b_start_service.Content = "Start Oculus Service";
-            stacpanel_main.IsEnabled = true;
-        }
-
-
         #endregion
 
         #region SteamVR tab
@@ -599,6 +647,7 @@ namespace OculusHack
             }
 
         }
+
 
 
         #endregion

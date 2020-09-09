@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusHack"
         xmlns:Launcher="clr-namespace:Launcher" x:Class="OculusHack.MainWindow"
-        mc:Ignorable="d"
         Title="Humble Oculus Toolkit - Daws 2019" Height="300" Width="400" MaxWidth="400" MinWidth="400" MinHeight="300" ResizeMode="CanResizeWithGrip" TabIndex="0" >
 
     <TabControl>
         <TabItem x:Name="tab_main" Header="Main">
             <StackPanel x:Name="stacpanel_main">
-                <Grid x:Name="grid_debugtools">
+                <Grid x:Name="grid_debugtools" >
                     <Grid.RowDefinitions>
                         <RowDefinition  Height="30"/>
                         <RowDefinition  Height="30"/>
@@ -74,7 +73,7 @@
                     <Button x:Name="b_del_exe" Grid.Row="2" Click="B_del_exe_Click">
                         <TextBlock Text="Remove exe" TextAlignment="Center" />
                     </Button>
-                    
+
 
 
                     <ListView x:Name="lv_records"  Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
@@ -97,6 +96,73 @@
             </StackPanel>
         </TabItem>
 
+        <TabItem x:Name="tab_OC" Header="Open Composite">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="b_dl_OC" Grid.Row="0" Click="B_dl_OC_Click" Grid.ColumnSpan="2">
+                    <TextBlock Text="Download Open Composite"/>
+                </Button>
+                <CheckBox x:Name="cb_OC" Grid.Row="1" Content="Use Open Composite" Click="Cb_OC_Click" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
+
+                <Popup x:Name="popup" Placement="Center" Grid.ColumnSpan="2">
+                    <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
+                        <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
+                    </Label>
+                </Popup>
+
+            </Grid>
+        </TabItem>
+        
+        <TabItem x:Name="tab_service" Header="Service">
+            <Grid x:Name="grid_service">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="b_stop_service"   Grid.Row="0" Grid.Column="0" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
+                <Button x:Name="b_start_service"   Grid.Row="1" Grid.Column="0" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
+                <Button x:Name="b_restart_service"   Grid.Row="2" Grid.Column="0" Content="Restart Oculus Service" FontSize="11" Click="B_restart_service_Click"   />
+
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Misc"  >
+            <Grid x:Name="grid_advanced">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="0" Content="Runtime version" Grid.ColumnSpan="2"/>
+                <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="0" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
+                <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="0" Content="Restore Library"  Click="B_restore_lib_Click" FontSize="11" />
+                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
+
+                <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
+                <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>
+                <CheckBox x:Name="ck_blk_dash" Content="Dash Black Background" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" FontSize="11" Click="Ck_blk_dash_Click" Grid.ColumnSpan="3"/>
+            </Grid>
+        </TabItem>
+
         <TabItem x:Name="tab_SteamVR" Header="SteamVR" Visibility="Collapsed">
             <Grid x:Name="grid_steamvr">
                 <Grid.RowDefinitions>
@@ -110,65 +176,9 @@
             </Grid>
         </TabItem>
 
-        <TabItem x:Name="tab_OC" Header="Open Composite">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <Button x:Name="b_dl_OC" Grid.Row="0" Click="B_dl_OC_Click">
-                    <TextBlock Text="Download Open Composite"/>
-                </Button>
-                <CheckBox x:Name="cb_OC" Grid.Row="1" Content="Use Open Composite" Click="Cb_OC_Click" VerticalContentAlignment="Center"/>
 
-                <Popup x:Name="popup" Placement="Center">
-                    <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
-                        <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
-                    </Label>
-                </Popup>
-
-            </Grid>
-        </TabItem>
-
-
-        <TabItem Header="Advanced"  >
-            <Grid x:Name="grid_advanced">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="8"/>
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="130"/>
-                </Grid.ColumnDefinitions>
-                <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
-                <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>
-                <CheckBox x:Name="ck_blk_dash" Content="Black background" Grid.Row="2" Grid.Column="0" VerticalContentAlignment="Center" FontSize="11" Click="Ck_blk_dash_Click" Grid.ColumnSpan="3"/>
-                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.ColumnSpan="3" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
-
-                <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="4" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
-                <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="4" Content="Resore Library"  Click="B_restore_lib_Click" FontSize="11" />
-                <Button x:Name="b_stop_service"   Grid.Row="3" Grid.Column="4" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
-                <Button x:Name="b_start_service"   Grid.Row="4" Grid.Column="4" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
-
-                <Label  x:Name="l_admin_right" Grid.Row="5" Grid.ColumnSpan="5" FontSize="14" FontWeight="Bold" HorizontalContentAlignment="Center"   VerticalContentAlignment="Center" Padding="2">
-                    <TextBlock x:Name="tb_admin" TextWrapping="WrapWithOverflow" />
-                </Label>
-                <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="3" Content="Runtime version" Margin="10,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Right"/>
-
-            </Grid>
-        </TabItem>
-        
     </TabControl>
+    
 
 
 
