@@ -155,7 +155,7 @@
                 <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="0" Content="Runtime version" Grid.ColumnSpan="2"/>
                 <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="0" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
                 <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="0" Content="Restore Library"  Click="B_restore_lib_Click" FontSize="11" />
-                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" IsEnabled="False" />
+                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" />
 
                 <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
                 <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>

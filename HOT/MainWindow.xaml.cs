@@ -55,7 +55,7 @@ namespace OculusHack
                 Properties.Settings.Default.HOTSettings = OculusInstallFolder;
                 Properties.Settings.Default.Save();
             }
-
+            
             // Check Service
             if (!Tools.IsOculusServiceRunning())
             {
@@ -116,7 +116,6 @@ namespace OculusHack
             // new Exe found
             void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
             {
-               
                     foreach (Record rec in records)
                     {
                         if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
@@ -145,9 +144,6 @@ namespace OculusHack
                         }
                     
                     }
-                                
-               
-
             }
             #endregion
 
@@ -324,9 +320,7 @@ namespace OculusHack
                 Tools.SetOSD(OculusInstallFolder, 10);
             }
         }
-
-
-
+               
         private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -451,7 +445,6 @@ namespace OculusHack
 
         private async void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
-
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
             ofd.Title = "Select Library .zip";
             ofd.DefaultExt = "*.zip";
@@ -500,17 +493,6 @@ namespace OculusHack
 
         }
 
-        //private void Ck_home_status_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Tools.KillOculusHome();
-
-        //    if (ck_home_status.IsChecked == false)
-        //    {
-        //        Tools.OculusHome(OculusInstallFolder, 0, true);
-        //    }
-        //    else Tools.OculusHome(OculusInstallFolder, 1, true);
-        //}
-
         private void Ck_sfx_status_Click(object sender, RoutedEventArgs e)
         {
             Tools.KillDash();
@@ -535,64 +517,20 @@ namespace OculusHack
 
         }
 
-        private void B_disable_oculus_Click(object sender, RoutedEventArgs e)
+        private async void B_disable_oculus_Click(object sender, RoutedEventArgs e)
         {
             // start Steam VR
             Tools.SetNativeLibrary(OculusInstallFolder, false);
-            b_disable_oculus.Content = "Oculus Library is DISABLE";
             MainGrid.IsEnabled = false;
             int timeup = 20;
 
-            var timer = new System.Timers.Timer();
-            timer.Interval = 1000;
-            timer.Enabled = true;
-
-            Task.Run(() =>
+            for (int i = timeup; i >= 0; i--)
             {
-                //ServiceController OVRService = new ServiceController("OVRService");
-                //if (OVRService.Status == ServiceControllerStatus.Stopped)
-                //{
-                //    OVRService.Start();
-                //    OVRService.WaitForStatus(ServiceControllerStatus.Running);
-                //}
-                //return true;
-
-                Process process = new Process();
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                process.StartInfo.FileName = "net";
-                process.StartInfo.Arguments = "start \"OVRService\"";
-                process.StartInfo.Verb = "runas"; //run as admin
-                process.Start();
-                process.WaitForExit();
-                return true;
-            });
-
-
-            /*
-            void  timer_countdown()
-            {
-                for (int i = 0; i < timeup; i++)
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        b_disable_oculus.Content = "Oculus Library is DISABLE... " + (timeup - i);
-                    });
-                    Thread.Sleep(1000);
-
-                }
-
-                Dispatcher.Invoke(() =>
-                        {
-                            Tools.SetNativeLibrary(OculusInstallFolder, true);
-                            b_disable_oculus.Content = "Oculus Library is ENABLE";
-                            MainGrid.IsEnabled = true;
-                        });
-                
+                await Task.Delay(1000);
+                b_disable_oculus.Content = i;
             }
-
-            Thread thread = new Thread(timer_countdown);
-            thread.Start();
-            */
+            Tools.SetNativeLibrary(OculusInstallFolder, true);
+            b_disable_oculus.Content = "Disable Oculus Library";
 
         }
         #endregion

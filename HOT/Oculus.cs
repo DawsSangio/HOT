@@ -183,20 +183,13 @@ namespace OculusHack
         {
             return Task.Run(() =>
             {
-                //ServiceController OVRService = new ServiceController("OVRService");
-                //if (OVRService.Status == ServiceControllerStatus.Stopped)
-                //{
-                //    OVRService.Start();
-                //    OVRService.WaitForStatus(ServiceControllerStatus.Running);
-                //}
-                //return true;
-
                 Process process = new Process();
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process.StartInfo.FileName = "net";
                 process.StartInfo.Arguments = "start \"OVRService\"";
                 process.StartInfo.Verb = "runas"; //run as admin
                 process.Start();
+                
                 process.WaitForExit();
                 return true;
             });
@@ -528,32 +521,36 @@ namespace OculusHack
         ///</summary>
         public static bool SetNativeLibrary(string OculusInstallFolder, bool active)
         {
-            try
-            {
-                if (active)
+                try
                 {
-                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_",
-                        OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll");
-                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_",
-                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll");
+                    if (active)
+                    {
+                        Process process = new Process();
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.StartInfo.FileName = "cmd.exe";
+                        process.StartInfo.Verb = "runas"; //run as admin
+                        process.StartInfo.Arguments = "/c REN \"" + OculusInstallFolder + "Support\\oculus-runtime\\LibOVRRT64_1.dl_\" LibOVRRT64_1.dll\n" +
+                                                      "REN \"" + OculusInstallFolder + "Support\\oculus-runtime\\LibOVRRT32_1.dl_\" LibOVRRT32_1.dll";
+                        process.Start();
+                        return true;
+                    }
+                    else
+                    {
+                        Process process = new Process();
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.StartInfo.FileName = "cmd.exe";
+                        process.StartInfo.Verb = "runas"; //run as admin
+                        process.StartInfo.Arguments = "/c REN \"" + OculusInstallFolder + "Support\\oculus-runtime\\LibOVRRT64_1.dll\" LibOVRRT64_1.dl_";
+                        process.Start();
                     return true;
-                }
-                else 
-                {
-                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dll",
-                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT32_1.dl_");
-                    File.Move(OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dll",
-                                OculusInstallFolder + "\\support\\oculus-runtime\\LibOVRRT64_1.dl_");
-                    return true;
-                }
+                    }
 
-            }
-            catch (FileNotFoundException)
-            {
-                
-                return false;
-            }
-            
+                }
+                catch (FileNotFoundException)
+                {
+
+                    return false;
+                }
 
         }
 
