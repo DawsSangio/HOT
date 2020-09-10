@@ -5,21 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusHack"
         xmlns:Launcher="clr-namespace:Launcher" x:Class="OculusHack.MainWindow"
-        Title="Humble Oculus Toolkit - Daws 2019" Height="300" Width="400" MaxWidth="400" MinWidth="400" MinHeight="300" ResizeMode="CanResizeWithGrip" TabIndex="0" >
+        Title="Humble Oculus Toolkit - Daws 2019" Height="300" Width="380" MaxWidth="380" MinWidth="380" MinHeight="300" ResizeMode="CanResizeWithGrip" TabIndex="0" >
 
     <TabControl>
         <TabItem x:Name="tab_main" Header="Main">
-            <StackPanel x:Name="stacpanel_main">
-                <Grid x:Name="grid_debugtools" >
+                <Grid x:Name="grid_main" >
                     <Grid.RowDefinitions>
                         <RowDefinition  Height="30"/>
                         <RowDefinition  Height="30"/>
                         <RowDefinition  Height="30"/>
+                        <RowDefinition  Height="30"/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120"/>
-                        <ColumnDefinition  Width="120"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
                     <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
@@ -49,53 +50,43 @@
                         <ComboBoxItem Content="5 - ASW status"/>
                         <ComboBoxItem Content="6 - Layer info - Pixel density"/>
                     </ComboBox>
-                </Grid>
 
-
-                <Grid x:Name="MainGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition  Width="120"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-
-
-                    <Button x:Name="b_add_exe"  Grid.Row="1" Click="B_add_exe_Click">
-                        <TextBlock Text="Add exe"  TextAlignment="Center" />
-                    </Button>
-                    <Button x:Name="b_del_exe" Grid.Row="2" Click="B_del_exe_Click">
-                        <TextBlock Text="Remove exe" TextAlignment="Center" />
-                    </Button>
-
-
-
-                    <ListView x:Name="lv_records"  Grid.Row="0" Grid.RowSpan="5" Grid.Column="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  >
+                    <CheckBox  Grid.Row="3" Content="Auto Detect" VerticalAlignment="Center" Click="CheckBox_Click"/>
+                    <Button x:Name="b_add_exe" Grid.Row="3" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
+                    <Button x:Name="b_del_exe" Grid.Row="3" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
+                    
+                    <ListView x:Name="lv_records"  Grid.Row="4"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Exe" Width="150" DisplayMemberBinding="{Binding exe}"/>
+                                <GridViewColumn Header="Exe" Width="236" DisplayMemberBinding="{Binding exe}"/>
                                 <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
-                                <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
-                                <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
+                                <GridViewColumn Header="ASW" Width="40" DisplayMemberBinding="{Binding asw}"/>
+                                <GridViewColumn Header="OSD" Width="40" DisplayMemberBinding="{Binding osd}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
 
-
-                    <TextBlock x:Name="tb_launcher" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2"
-                               TextAlignment="Center" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"
-                               Text="To enable auto configuration on apps launch, you need to run as Administrator" Visibility="Hidden" />
                 </Grid>
-
-            </StackPanel>
         </TabItem>
+        
+        <TabItem x:Name="tab_service" Header="Service">
+            <Grid x:Name="grid_service">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="b_stop_service"   Grid.Row="0" Grid.Column="0" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
+                <Button x:Name="b_start_service"   Grid.Row="1" Grid.Column="0" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
+                <Button x:Name="b_restart_service"   Grid.Row="2" Grid.Column="0" Content="Restart Oculus Service" FontSize="11" Click="B_restart_service_Click"   />
 
+            </Grid>
+        </TabItem>
+        
         <TabItem x:Name="tab_OC" Header="Open Composite">
             <Grid>
                 <Grid.RowDefinitions>
@@ -113,24 +104,6 @@
                         <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
                     </Label>
                 </Popup>
-
-            </Grid>
-        </TabItem>
-        
-        <TabItem x:Name="tab_service" Header="Service">
-            <Grid x:Name="grid_service">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="120"/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="b_stop_service"   Grid.Row="0" Grid.Column="0" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
-                <Button x:Name="b_start_service"   Grid.Row="1" Grid.Column="0" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
-                <Button x:Name="b_restart_service"   Grid.Row="2" Grid.Column="0" Content="Restart Oculus Service" FontSize="11" Click="B_restart_service_Click"   />
 
             </Grid>
         </TabItem>

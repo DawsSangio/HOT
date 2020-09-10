@@ -63,7 +63,7 @@ namespace OculusHack
                 //TODO implement Admin call to activate service.
                 if (mb == MessageBoxResult.OK)
                 {
-                    stacpanel_main.IsEnabled = false;
+                    grid_main.IsEnabled = false;
                     tab_service.IsSelected = true;
                 }
             }
@@ -77,7 +77,7 @@ namespace OculusHack
                 if (!Tools.SetSS(OculusInstallFolder, ss))
                 {
                     MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPlease check your Oculus installation.\nDebug function are disable.");
-                    grid_debugtools.IsEnabled = false;
+                    grid_main.IsEnabled = false;
                 }
                 else
                 {
@@ -93,58 +93,24 @@ namespace OculusHack
             CheckEnviroment();
             #endregion
 
-            #region Check Admin mode
+            #region Check Admin mode -> Now Admin is default
             //Activate exe check if in Admin mode, or disable Advanced tab if not in Administrator mode.
-            if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
-            {
-                //grid_advanced.IsEnabled = false;
-                b_add_exe.IsEnabled = false;
-                b_del_exe.IsEnabled = false;
-                lv_records.Visibility = Visibility.Hidden;
-                tb_launcher.Visibility = Visibility.Visible;
-                
-            }
-            else
-            {
-                //Start exe check with Management Event. Admini required
-                WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"); 
-                ManagementEventWatcher watcher = new ManagementEventWatcher(query);
-                watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
-                watcher.Start();
-            }
-
-            // new Exe found
-            void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
-            {
-                    foreach (Record rec in records)
-                    {
-                        if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
-                        {
-                            //Use Dipatcher to allow cross treading to set runtime setup.
-                            Dispatcher.Invoke(() =>
-                            {
-                                Tools.SetSS(OculusInstallFolder, rec.ss);
-                                cb_ASW.SelectedIndex = rec.asw;
-                                cb_debugHUD.SelectedIndex = rec.osd;
-                                ss = rec.ss;
-                                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                                //if (rec.oc == 1 && !OC.IsOCactive())
-                                //{
-                                //    OC.EnableOC();
-                                //    cb_OC.IsChecked = true;
-                                //}
-                                //else if (rec.oc == 0 && OC.IsOCactive())
-                                //{
-                                //    OC.DisableOC();
-                                //    cb_OC.IsChecked = false;
-                                //}
-
-                            });
-
-                        }
-                    
-                    }
-            }
+            //if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
+            //{
+            //    //grid_advanced.IsEnabled = false;
+            //    b_add_exe.IsEnabled = false;
+            //    b_del_exe.IsEnabled = false;
+            //    lv_records.Visibility = Visibility.Hidden;
+            //    tb_launcher.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    //Start exe check with Management Event. Admini required
+            //    WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"); 
+            //    ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            //    watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+            //    watcher.Start();
+            //}
             #endregion
 
             #region Check if Open Composite is available for use
@@ -169,15 +135,8 @@ namespace OculusHack
         {
             //Check Library version
             l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
-
-            //Check Home status - OBSOLETE since v12 is option in desctop client
-            //if (Tools.OculusHome(OculusInstallFolder, 1, false))
-            //{
-            //    ck_home_status.IsChecked = true;
-            //}
-            //else ck_home_status.IsChecked = false;
             
-            /*
+            /* temprary disable
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
@@ -350,7 +309,7 @@ namespace OculusHack
         private async void B_stop_service_Click(object sender, RoutedEventArgs e)
         {
             b_stop_service.Content = "Service is Stopping...";
-            stacpanel_main.IsEnabled = false;
+            grid_main.IsEnabled = false;
             await Tools.StopOculusService();
             b_stop_service.Content = "Stop Oculus Service";
         }
@@ -360,20 +319,20 @@ namespace OculusHack
             b_start_service.Content = "Service is Starting...";
             await Tools.StartOculusService();
             b_start_service.Content = "Start Oculus Service";
-            stacpanel_main.IsEnabled = true;
+            grid_main.IsEnabled = true;
         }
 
         private async void B_restart_service_Click(object sender, RoutedEventArgs e)
         {
             b_restart_service.Content = "Service is Stopping...";
-            stacpanel_main.IsEnabled = false;
+            grid_main.IsEnabled = false;
             await Tools.StopOculusService();
 
             b_restart_service.Content = "Service is Starting...";
             await Tools.StartOculusService();
 
             b_restart_service.Content = "Restart Oculus Service";
-            stacpanel_main.IsEnabled = true;
+            grid_main.IsEnabled = true;
 
         }
         #endregion
@@ -521,7 +480,7 @@ namespace OculusHack
         {
             // start Steam VR
             Tools.SetNativeLibrary(OculusInstallFolder, false);
-            MainGrid.IsEnabled = false;
+            grid_main.IsEnabled = false;
             int timeup = 20;
 
             for (int i = timeup; i >= 0; i--)
@@ -588,8 +547,38 @@ namespace OculusHack
 
 
 
+
         #endregion
 
-        
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
+            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+            watcher.Start();
+        }
+
+        public void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            foreach (Record rec in records)
+            {
+                if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
+                {
+                    //Use Dipatcher to allow cross treading to set runtime setup.
+                    Dispatcher.Invoke(() =>
+                    {
+                        Tools.SetSS(OculusInstallFolder, rec.ss);
+                        cb_ASW.SelectedIndex = rec.asw;
+                        cb_debugHUD.SelectedIndex = rec.osd;
+                        ss = rec.ss;
+                        l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+                    });
+
+                }
+
+            }
+        }
+
     }
 }
