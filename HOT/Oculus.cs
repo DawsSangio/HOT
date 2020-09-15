@@ -514,6 +514,61 @@ namespace OculusHack
         }
         #endregion
 
+        #region Oculus Link
+        /// <summary>
+        /// Set Oculus Link Encoding Resolution
+        /// Raccomended value: 2016 - 2352 - 2912
+        /// </summary>
+        public static void SetLinkEncodingResolution(int res)
+        {
+            Microsoft.Win32.Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "EncodeWidth", res);
+        }
+
+        public static int GetLinkEncodingResolution()
+        {
+            int res;
+            try
+            {
+                res = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "EncodeWidth", null);
+                
+            }
+            catch (Exception)
+            {
+                res = 0;
+            }
+            return res;
+
+        }
+
+        /// <summary>
+        /// Set Oculus Link Distortion Curve
+        /// 0 = HIGH, 1 = LOW
+        /// </summary>
+        public static void SetLinkDistortionCurve(int curve)
+        {
+            Microsoft.Win32.Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "DistortionCurve", curve);
+        }
+
+        public static string GetLinkDistortionCurve()
+        {
+            string curve;
+            try
+            {
+                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "DistortionCurve", null);
+                if (value == 1)
+                {
+                    curve = "LOW";
+                }
+                else curve = "HIGH";
+            }
+            catch (Exception)
+            {
+                curve = "DEFAULT";
+            }
+            return curve;
+        }
+        #endregion
+
         #region Manage Runtime Library
 
         ///<summary>
@@ -685,10 +740,6 @@ namespace OculusHack
             if (pname.Length == 0) return false;
             else return true;
         }
-        
-
-
-                  
                
     }
 

@@ -67,8 +67,7 @@ namespace OculusHack
                     tab_service.IsSelected = true;
                 }
             }
-            // All OK, go on.
-           
+            l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
             #endregion
 
             #region Check if Oculus Debug tool are available and set default parameter
@@ -85,15 +84,16 @@ namespace OculusHack
                     cb_debugHUD.SelectedIndex = 0;
                 }
             }
-            
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-
-            ReadAppsCfg();
-
-            CheckEnviroment();
+            //CheckEnviroment();
             #endregion
 
-            #region Check Admin mode -> Now Admin is default
+            #region Read Link values
+            l_link_res.Content = Tools.GetLinkEncodingResolution();
+            l_link_curve.Content = Tools.GetLinkDistortionCurve();
+            #endregion
+
+            #region ** OBSOLETE ** Check Admin mode -> Now Admin is default
             //Activate exe check if in Admin mode, or disable Advanced tab if not in Administrator mode.
             //if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
             //{
@@ -129,13 +129,8 @@ namespace OculusHack
             }
             #endregion
 
-        }
+            ReadAppsCfg();
 
-        private void CheckEnviroment()
-        {
-            //Check Library version
-            l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);
-            
             /* temprary disable
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
@@ -151,6 +146,7 @@ namespace OculusHack
             }
             else ck_blk_dash.IsChecked = true;
             */
+
         }
 
         private string get_oculusfolder()
@@ -337,6 +333,22 @@ namespace OculusHack
         }
         #endregion
 
+        #region Link tab
+        private async void B_link_apply_Click(object sender, RoutedEventArgs e)
+        {
+            Tools.SetLinkEncodingResolution(0);
+            Tools.SetLinkDistortionCurve(0);
+            MessageBox.Show("Oculus Service need to restart");
+            b_link_apply.IsEnabled = false;
+            b_link_apply.Content = "Service is stopping...";
+            await Tools.StopOculusService();
+            b_link_apply.Content = "Service is starting...";
+            await Tools.StartOculusService();
+            b_link_apply.IsEnabled = true;
+            b_link_apply.Content = "Apply";
+        }
+        #endregion
+
         #region Open Composite tab
         private async void DownLoadOC()
         {
@@ -428,7 +440,6 @@ namespace OculusHack
             b_back_lib.IsEnabled = true;
             b_lib.Content = "Restore Library";
 
-            CheckEnviroment();
         }
 
         private async void B_back_lib_Click(object sender, RoutedEventArgs e)
@@ -580,5 +591,6 @@ namespace OculusHack
             }
         }
 
+        
     }
 }
