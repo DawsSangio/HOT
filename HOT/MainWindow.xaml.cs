@@ -334,10 +334,53 @@ namespace OculusHack
         #endregion
 
         #region Link tab
+        private void Cb_link_res_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (cb_link_res.SelectedIndex == 0)
+            {
+                Tools.SetLinkEncodingResolution(-1);
+            }
+            else if (cb_link_res.SelectedIndex == 1)
+            {
+                Tools.SetLinkEncodingResolution(2352);
+            }
+            else if (cb_link_res.SelectedIndex == 2)
+            {
+                Tools.SetLinkEncodingResolution(2608);
+            }
+            else if (cb_link_res.SelectedIndex == 3)
+            {
+                Tools.SetLinkEncodingResolution(2912);
+            }
+            else if (cb_link_res.SelectedIndex == 4)
+            {
+                Tools.SetLinkEncodingResolution(3232);
+            }
+            else if (cb_link_res.SelectedIndex == 5)
+            {
+                Tools.SetLinkEncodingResolution(3600);
+            }
+
+        }
+
+        private void Cb_link_curve_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (cb_link_curve.SelectedIndex == 0)
+            {
+                Tools.SetLinkDistortionCurve(-1);
+            }
+            else if (cb_link_curve.SelectedIndex == 1)
+            {
+                Tools.SetLinkDistortionCurve(1);
+            }
+            else if (cb_link_curve.SelectedIndex == 2)
+            {
+                Tools.SetLinkDistortionCurve(0);
+            }
+        }
+
         private async void B_link_apply_Click(object sender, RoutedEventArgs e)
         {
-            Tools.SetLinkEncodingResolution(0);
-            Tools.SetLinkDistortionCurve(0);
             MessageBox.Show("Oculus Service need to restart");
             b_link_apply.IsEnabled = false;
             b_link_apply.Content = "Service is stopping...";
@@ -346,6 +389,9 @@ namespace OculusHack
             await Tools.StartOculusService();
             b_link_apply.IsEnabled = true;
             b_link_apply.Content = "Apply";
+            l_link_res.Content = Tools.GetLinkEncodingResolution();
+            l_link_curve.Content = Tools.GetLinkDistortionCurve();
+
         }
         #endregion
 
@@ -591,6 +637,5 @@ namespace OculusHack
             }
         }
 
-        
     }
 }

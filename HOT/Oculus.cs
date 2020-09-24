@@ -517,24 +517,30 @@ namespace OculusHack
         #region Oculus Link
         /// <summary>
         /// Set Oculus Link Encoding Resolution
-        /// Raccomended value: 2016 - 2352 - 2912
+        /// Raccomended value: -1(default) - 2352 - 2912
         /// </summary>
         public static void SetLinkEncodingResolution(int res)
         {
-            Microsoft.Win32.Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "EncodeWidth", res);
+            if (res == -1)
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("EncodeWidth", false);
+            }
+            else
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("EncodeWidth", res);
+            }
         }
 
-        public static int GetLinkEncodingResolution()
+        public static string GetLinkEncodingResolution()
         {
-            int res;
+            string res;
             try
             {
-                res = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "EncodeWidth", null);
-                
+                res = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("EncodeWidth").ToString();
             }
             catch (Exception)
             {
-                res = 0;
+                res = "Default";
             }
             return res;
 
@@ -542,11 +548,20 @@ namespace OculusHack
 
         /// <summary>
         /// Set Oculus Link Distortion Curve
-        /// 0 = HIGH, 1 = LOW
+        ///  -1(default), 0 HIGH, 1 LOW
         /// </summary>
         public static void SetLinkDistortionCurve(int curve)
         {
-            Microsoft.Win32.Registry.SetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "DistortionCurve", curve);
+
+            if (curve == -1)
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("DistortionCurve", false);
+            }
+            else
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("DistortionCurve", curve);
+            }
+
         }
 
         public static string GetLinkDistortionCurve()
@@ -554,8 +569,8 @@ namespace OculusHack
             string curve;
             try
             {
-                int value = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Oculus\\RemoteHeadset", "DistortionCurve", null);
-                if (value == 1)
+                curve = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("DistortionCurve").ToString();
+                if (curve == "1")
                 {
                     curve = "LOW";
                 }
@@ -563,7 +578,7 @@ namespace OculusHack
             }
             catch (Exception)
             {
-                curve = "DEFAULT";
+                curve = "Default";
             }
             return curve;
         }
