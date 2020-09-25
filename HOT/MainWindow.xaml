@@ -9,66 +9,66 @@
 
     <TabControl>
         <TabItem x:Name="tab_main" Header="Main">
-                <Grid x:Name="grid_main" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition  Height="30"/>
-                        <RowDefinition  Height="30"/>
-                        <RowDefinition  Height="30"/>
-                        <RowDefinition  Height="30"/>
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+            <Grid x:Name="grid_main" >
+                <Grid.RowDefinitions>
+                    <RowDefinition  Height="30"/>
+                    <RowDefinition  Height="30"/>
+                    <RowDefinition  Height="30"/>
+                    <RowDefinition  Height="30"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                    <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                        <Label x:Name="l_ss"         Content="1.00" Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
-                        <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold" />
-                    </StackPanel>
-                    <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
+                <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                    <Label x:Name="l_ss"         Content="1.00" Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
+                    <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold" />
+                </StackPanel>
+                <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
 
-                    <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
-                    <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
-                        <ComboBoxItem Content="0 - Auto"/>
-                        <ComboBoxItem Content="1 - 45/40fps ASW on"/>
-                        <ComboBoxItem Content="2 - 45/40fps ASW off"/>
-                        <ComboBoxItem Content="3 - Off"/>
-                        <ComboBoxItem Content="4 - 30/27fps ASW on"/>
-                    </ComboBox>
+                <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
+                <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
+                    <ComboBoxItem Content="0 - Auto"/>
+                    <ComboBoxItem Content="1 - 45/40fps ASW on"/>
+                    <ComboBoxItem Content="2 - 45/40fps ASW off"/>
+                    <ComboBoxItem Content="3 - Off"/>
+                    <ComboBoxItem Content="4 - 30/27fps ASW on"/>
+                </ComboBox>
 
-                    <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                    <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
-                        <ComboBoxItem Content="0 - Off"/>
-                        <ComboBoxItem Content="1 - Performance summary"/>
-                        <ComboBoxItem Content="2 - Latency timing"/>
-                        <ComboBoxItem Content="3 - Application render timing"/>
-                        <ComboBoxItem Content="4 - Compositor render timing"/>
-                        <ComboBoxItem Content="5 - ASW status"/>
-                        <ComboBoxItem Content="6 - Layer info - Pixel density"/>
-                    </ComboBox>
+                <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
+                    <ComboBoxItem Content="0 - Off"/>
+                    <ComboBoxItem Content="1 - Performance summary"/>
+                    <ComboBoxItem Content="2 - Latency timing"/>
+                    <ComboBoxItem Content="3 - Application render timing"/>
+                    <ComboBoxItem Content="4 - Compositor render timing"/>
+                    <ComboBoxItem Content="5 - ASW status"/>
+                    <ComboBoxItem Content="6 - Layer info - Pixel density"/>
+                </ComboBox>
 
-                    <CheckBox  Grid.Row="3" Content="Auto Detect" VerticalAlignment="Center" Click="CheckBox_Click"/>
-                    <Button x:Name="b_add_exe" Grid.Row="3" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
-                    <Button x:Name="b_del_exe" Grid.Row="3" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
-                    
-                    <ListView x:Name="lv_records"  Grid.Row="4"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Exe" Width="236" DisplayMemberBinding="{Binding exe}"/>
-                                <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
-                                <GridViewColumn Header="ASW" Width="40" DisplayMemberBinding="{Binding asw}"/>
-                                <GridViewColumn Header="OSD" Width="40" DisplayMemberBinding="{Binding osd}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                <Button x:Name="b_watcher"  Grid.Row="3" Content="Start watcher" Click="b_watcher_Click"/>
+                <Button x:Name="b_add_exe" Grid.Row="3" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
+                <Button x:Name="b_del_exe" Grid.Row="3" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
 
-                </Grid>
+                <ListView x:Name="lv_records"  Grid.Row="4"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Exe" Width="236" DisplayMemberBinding="{Binding exe}"/>
+                            <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
+                            <GridViewColumn Header="ASW" Width="40" DisplayMemberBinding="{Binding asw}"/>
+                            <GridViewColumn Header="OSD" Width="40" DisplayMemberBinding="{Binding osd}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+            </Grid>
         </TabItem>
-        
+
         <TabItem x:Name="tab_service" Header="Service">
             <Grid x:Name="grid_service">
                 <Grid.RowDefinitions>
@@ -118,9 +118,11 @@
                     <ComboBoxItem Content="HIGH quality"/>
                 </ComboBox>
                 <Button x:Name="b_link_apply" Grid.Row="2" Grid.Column="2" Content="Apply" Click="B_link_apply_Click"/>
+                <TextBlock TextWrapping="Wrap" Text="Note: the predefined settings for quality in the Oculus desktop client are not effective if any values than Default are applied.
+                           To use the Oculus desktop client settings, you MUST set the Default option." Grid.Row="3" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
             </Grid>
-            
-            
+
+
         </TabItem>
 
         <TabItem x:Name="tab_OC" Header="Open Composite">
@@ -156,7 +158,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                  
+
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="120"/>
@@ -187,7 +189,7 @@
 
 
     </TabControl>
-    
+
 
 
 

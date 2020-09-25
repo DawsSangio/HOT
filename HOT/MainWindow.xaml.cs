@@ -24,11 +24,15 @@ namespace OculusHack
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
         public int asw = Properties.Settings.Default.ASWsetting;
+
+        // Steamvr pace maker
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
         public bool ASWPacemaker = false;
         private string cfg_file;
 
+        // Watcher record list
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
+        
 
         public MainWindow()
         {
@@ -85,7 +89,6 @@ namespace OculusHack
                 }
             }
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-            //CheckEnviroment();
             #endregion
 
             #region Read Link values
@@ -129,7 +132,11 @@ namespace OculusHack
             }
             #endregion
 
+            #region Watcher initializzation
             ReadAppsCfg();
+            //ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+            #endregion
 
             /* temprary disable
             //Check Dash SFX
@@ -299,8 +306,18 @@ namespace OculusHack
             CfgTools.WriteCfg(records, cfg_file);
         }
 
+        private void b_watcher_Click(object sender, RoutedEventArgs e)
+        {
+            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
+            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+            watcher.Start();
+            b_watcher.IsEnabled = false;
+            b_watcher.Content = "Watcher actived...";
+        }
+
         #endregion
-                
+
         #region Service tab
         private async void B_stop_service_Click(object sender, RoutedEventArgs e)
         {
@@ -607,13 +624,6 @@ namespace OculusHack
 
         #endregion
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
-        {
-            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
-            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
-            watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
-            watcher.Start();
-        }
 
         public void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
