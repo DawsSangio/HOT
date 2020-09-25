@@ -187,7 +187,7 @@ namespace OculusHack
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process.StartInfo.FileName = "net";
                 process.StartInfo.Arguments = "start \"OVRService\"";
-                process.StartInfo.Verb = "runas"; //run as admin
+                process.StartInfo.Verb = "runas"; // UAC request
                 process.Start();
                 
                 process.WaitForExit();
@@ -199,18 +199,11 @@ namespace OculusHack
         {
             return Task.Run(() =>
             {
-                //ServiceController OVRService = new ServiceController("OVRService");
-                //if (OVRService.Status == ServiceControllerStatus.Running)
-                //{
-                //    OVRService.Stop();
-                //    OVRService.WaitForStatus(ServiceControllerStatus.Stopped);
-                //}
-                //return true;
                 Process process = new Process();
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process.StartInfo.FileName = "net";
                 process.StartInfo.Arguments = "stop \"OVRService\"";
-                process.StartInfo.Verb = "runas"; //run as admin
+                process.StartInfo.Verb = "runas"; // UAC request
                 process.Start();
                 process.WaitForExit();
                 return true;
@@ -548,7 +541,7 @@ namespace OculusHack
 
         /// <summary>
         /// Set Oculus Link Distortion Curve
-        ///  -1(default), 0 HIGH, 1 LOW
+        ///  -1(default), 1 HIGH, 0 LOW
         /// </summary>
         public static void SetLinkDistortionCurve(int curve)
         {

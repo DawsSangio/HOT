@@ -365,17 +365,17 @@ namespace OculusHack
 
         private void Cb_link_curve_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (cb_link_curve.SelectedIndex == 0)
+            if (cb_link_curve.SelectedIndex == 0) // DEFAULT
             {
                 Tools.SetLinkDistortionCurve(-1);
             }
-            else if (cb_link_curve.SelectedIndex == 1)
-            {
-                Tools.SetLinkDistortionCurve(1);
-            }
-            else if (cb_link_curve.SelectedIndex == 2)
+            else if (cb_link_curve.SelectedIndex == 1) // LOW
             {
                 Tools.SetLinkDistortionCurve(0);
+            }
+            else if (cb_link_curve.SelectedIndex == 2) // HIGH
+            {
+                Tools.SetLinkDistortionCurve(1);
             }
         }
 
