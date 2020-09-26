@@ -563,7 +563,7 @@ namespace OculusHack
             try
             {
                 curve = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("DistortionCurve").ToString();
-                if (curve == "1")
+                if (curve == "0")
                 {
                     curve = "LOW";
                 }

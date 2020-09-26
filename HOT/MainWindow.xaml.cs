@@ -351,8 +351,9 @@ namespace OculusHack
         #endregion
 
         #region Link tab
-        private void Cb_link_res_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void B_link_apply_Click(object sender, RoutedEventArgs e)
         {
+            //resolution
             if (cb_link_res.SelectedIndex == 0)
             {
                 Tools.SetLinkEncodingResolution(-1);
@@ -378,10 +379,7 @@ namespace OculusHack
                 Tools.SetLinkEncodingResolution(3600);
             }
 
-        }
-
-        private void Cb_link_curve_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
+            //distrorion curve
             if (cb_link_curve.SelectedIndex == 0) // DEFAULT
             {
                 Tools.SetLinkDistortionCurve(-1);
@@ -394,10 +392,7 @@ namespace OculusHack
             {
                 Tools.SetLinkDistortionCurve(1);
             }
-        }
 
-        private async void B_link_apply_Click(object sender, RoutedEventArgs e)
-        {
             MessageBox.Show("Oculus Service need to restart");
             b_link_apply.IsEnabled = false;
             b_link_apply.Content = "Service is stopping...";
