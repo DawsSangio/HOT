@@ -281,6 +281,10 @@ namespace OculusHack
             {
                 Tools.SetOSD(OculusInstallFolder, 10);
             }
+            else if (cb_debugHUD.SelectedIndex == 7) // Link
+            {
+                Tools.SetOSD(OculusInstallFolder, 7);
+            }
         }
                
         private void B_add_exe_Click(object sender, RoutedEventArgs e)

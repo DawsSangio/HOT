@@ -415,7 +415,7 @@ namespace OculusHack
 
         /// <summary>
         /// Set the Debug OSD.
-        /// "mode: 0=Off, 1=Perfomance summary, 2=Latency timing, 3=Application render timing, 4=Compositor render timing, 6=AWS status, 10=Layer info 
+        /// "mode: 0=Off, 1=Perfomance summary, 2=Latency timing, 3=Application render timing, 4=Compositor render timing, 6=AWS status, 10=Layer info, 7=Link 
         /// </summary>
         public static bool SetOSD(string OculusInstallFolder, int mode)
         {
