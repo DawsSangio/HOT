@@ -69,24 +69,7 @@
 
             </Grid>
         </TabItem>
-
-        <TabItem x:Name="tab_service" Header="Service">
-            <Grid x:Name="grid_service">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="120"/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="b_stop_service"   Grid.Row="0" Grid.Column="0" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
-                <Button x:Name="b_start_service"   Grid.Row="1" Grid.Column="0" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
-                <Button x:Name="b_restart_service"   Grid.Row="2" Grid.Column="0" Content="Restart Oculus Service" FontSize="11" Click="B_restart_service_Click"   />
-
-            </Grid>
-        </TabItem>
+       
 
         <TabItem x:Name="tab_link" Header="Quest Link">
             <Grid>
@@ -150,8 +133,8 @@
             </Grid>
         </TabItem>
 
-        <TabItem Header="Misc"  >
-            <Grid x:Name="grid_advanced">
+        <TabItem x:Name="tab_misc" Header="Misc"  >
+            <Grid x:Name="grid_advanced" UseLayoutRounding="False" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
@@ -162,15 +145,19 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
                 <Label  x:Name="l_version"  Grid.Row="0" Grid.Column="0" Content="Runtime version" Grid.ColumnSpan="2"/>
-                <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="0" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
-                <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="0" Content="Restore Library"  Click="B_restore_lib_Click" FontSize="11" />
-                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" />
+
+                <Button x:Name="b_stop_service"   Grid.Row="1" Grid.Column="0" Content="Stop Oculus Service" FontSize="11" Click="B_stop_service_Click" />
+                <Button x:Name="b_start_service"   Grid.Row="2" Grid.Column="0" Content="Start Oculus Service" FontSize="11" Click="B_start_service_Click"  />
+                <Button x:Name="b_restart_service"   Grid.Row="3" Grid.Column="0" Content="Restart Oculus Service" FontSize="11" Click="B_restart_service_Click"   />
+
+                <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="1" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
+                <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="1" Content="Restore Library"  Click="B_restore_lib_Click" FontSize="11" />
+                <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" Grid.Column="1" />
 
                 <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
                 <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>

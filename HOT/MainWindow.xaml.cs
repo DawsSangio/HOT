@@ -68,7 +68,7 @@ namespace OculusHack
                 if (mb == MessageBoxResult.OK)
                 {
                     grid_main.IsEnabled = false;
-                    tab_service.IsSelected = true;
+                    tab_misc.IsSelected = true;
                 }
             }
             l_version.Content = "Runtime version: " + Tools.GetLibVersion(OculusInstallFolder);

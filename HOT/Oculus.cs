@@ -348,6 +348,9 @@ namespace OculusHack
            
         }
 
+        
+
+
         public static void KillOculusHome()
         {
             foreach (Process pname in Process.GetProcessesByName("Home2-Win64-Shipping"))
