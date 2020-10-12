@@ -105,8 +105,7 @@
                     <ComboBoxItem Content="HIGH quality"/>
                 </ComboBox>
                 <Button x:Name="b_link_apply" Grid.Row="2" Grid.Column="2" Content="Apply" Click="B_link_apply_Click"/>
-                <TextBlock TextWrapping="Wrap" Text="Note: the predefined settings for quality in the Oculus desktop client are not effective if any values than Default are applied.
-                           To use the Oculus desktop client settings, you MUST set the Default option." Grid.Row="3" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
+                <TextBlock TextWrapping="Wrap" Text="Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="3" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
             </Grid>
 
 
@@ -124,11 +123,11 @@
                 </Button>
                 <CheckBox x:Name="cb_OC" Grid.Row="1" Content="Use Open Composite" Click="Cb_OC_Click" VerticalContentAlignment="Center" Grid.ColumnSpan="2"/>
 
-                <Popup x:Name="popup" Placement="Center" Grid.ColumnSpan="2">
+                <!--<Popup x:Name="popup" Placement="Center" Grid.ColumnSpan="2">
                     <Label VerticalContentAlignment="Center" Width="300" Height="50" MinWidth="7" Background="LightBlue" HorizontalContentAlignment="Center" >
                         <TextBlock x:Name="pop_oc" Text="Downaloading Open Composite"  />
                     </Label>
-                </Popup>
+                </Popup>-->
 
             </Grid>
         </TabItem>

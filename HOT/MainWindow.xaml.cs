@@ -138,7 +138,7 @@ namespace OculusHack
             //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
             #endregion
 
-            /* temprary disable
+            
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
@@ -147,6 +147,7 @@ namespace OculusHack
             else ck_sfx_status.IsChecked = false;
 
             //check Dash black BG
+            /*
             if (Tools.DashBackground(OculusInstallFolder, 0, false))
             {
                 ck_blk_dash.IsChecked = false;
@@ -414,32 +415,40 @@ namespace OculusHack
         #region Open Composite tab
         private async void DownLoadOC()
         {
-            popup.IsOpen = true;
+            //popup.IsOpen = true;
+            b_dl_OC.IsEnabled = false;
 
-            pop_oc.Text = "Check for Open Composite update";
+            b_dl_OC.Content = "Check for Open Composite update";
             string latesthash = await OC.GetLatestHash();
             await Task.Delay(2000);
 
             if (latesthash is null)
             {
-                pop_oc.Text = "Open Composite version Check: connection failed!";
+                b_dl_OC.Content = "Open Composite version Check: connection failed!";
                 await Task.Delay(2000);
             }
             else if (!OC.CheckForVersion(latesthash))
             {
-                pop_oc.Text = "New version available!";
+                b_dl_OC.Content = "New version available!";
                 await Task.Delay(2000);
-                pop_oc.Text = "Downloading Open Composite...";
+                b_dl_OC.Content = "Downloading Open Composite...";
                 bool download = await OC.downloadDll();
                 if (!download)
                 {
-                    pop_oc.Text = "Open Composite Download: connection failed!";
+                    b_dl_OC.Content = "Open Composite Download: connection failed!";
+                    await Task.Delay(3000);
+                    b_dl_OC.Content = "Download Open Composite";
                 }
-                else pop_oc.Text = "Open Composite is updated.";
-                await Task.Delay(2000);
+                else
+                {
+                    b_dl_OC.Content = "Open Composite is updated.";
+                    await Task.Delay(3000);
+                    b_dl_OC.Content = "Download Open Composite";
+                }
+
             }
 
-            popup.IsOpen = false;
+            //popup.IsOpen = false;
 
             if (!OC.IsAvailable())
             {
@@ -453,6 +462,8 @@ namespace OculusHack
                 cb_OC.Content = "Use Open Composite";
                 cb_OC.IsEnabled = true;
             }
+
+            b_dl_OC.IsEnabled = true;
 
         }
 
