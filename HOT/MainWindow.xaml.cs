@@ -30,6 +30,10 @@ namespace OculusHack
         public bool ASWPacemaker = false;
         private string cfg_file;
 
+        // Encoder list
+        public ObservableCollection<encode_res> list_encode_res = new ObservableCollection<encode_res>();
+
+
         // Watcher record list
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
         
@@ -92,6 +96,43 @@ namespace OculusHack
             #endregion
 
             #region Read Link values
+            encode_res er1 = new encode_res();
+            er1.value = -1;
+            er1.name = "Default";
+            list_encode_res.Add(er1);
+
+            encode_res er2 = new encode_res();
+            er2.value = 2352;
+            er2.name = er2.value + " Balanced";
+            list_encode_res.Add(er2);
+
+            encode_res er3 = new encode_res();
+            er3.value = 2608;
+            er3.name = er3.value.ToString();
+            list_encode_res.Add(er3);
+
+            encode_res er4 = new encode_res();
+            er4.value = 2912;
+            er4.name = er4.value + " Quality";
+            list_encode_res.Add(er4);
+
+            encode_res er5 = new encode_res();
+            er5.value = 3232;
+            er5.name = er5.value.ToString();
+            list_encode_res.Add(er5);
+
+            encode_res er6 = new encode_res();
+            er6.value = 3600;
+            er6.name = er6.value.ToString();
+            list_encode_res.Add(er6);
+
+            encode_res er7 = new encode_res();
+            er7.value = 4000;
+            er7.name = er7.value.ToString();
+            list_encode_res.Add(er7);
+
+            cb_link_res.ItemsSource = list_encode_res;
+
             l_link_res.Content = Tools.GetLinkEncodingResolution();
             l_link_curve.Content = Tools.GetLinkDistortionCurve();
             #endregion
@@ -358,32 +399,9 @@ namespace OculusHack
         #region Link tab
         private async void B_link_apply_Click(object sender, RoutedEventArgs e)
         {
-            //resolution
-            if (cb_link_res.SelectedIndex == 0)
-            {
-                Tools.SetLinkEncodingResolution(-1);
-            }
-            else if (cb_link_res.SelectedIndex == 1)
-            {
-                Tools.SetLinkEncodingResolution(2352);
-            }
-            else if (cb_link_res.SelectedIndex == 2)
-            {
-                Tools.SetLinkEncodingResolution(2608);
-            }
-            else if (cb_link_res.SelectedIndex == 3)
-            {
-                Tools.SetLinkEncodingResolution(2912);
-            }
-            else if (cb_link_res.SelectedIndex == 4)
-            {
-                Tools.SetLinkEncodingResolution(3232);
-            }
-            else if (cb_link_res.SelectedIndex == 5)
-            {
-                Tools.SetLinkEncodingResolution(3600);
-            }
-
+            //encoding resolution
+            Tools.SetLinkEncodingResolution(list_encode_res[cb_link_res.SelectedIndex].value);
+            
             //distrorion curve
             if (cb_link_curve.SelectedIndex == 0) // DEFAULT
             {
@@ -657,5 +675,10 @@ namespace OculusHack
             }
         }
 
+        public class encode_res
+        {
+            public string name { get; set; }
+            public int value { get; set; }
+        }
     }
 }
