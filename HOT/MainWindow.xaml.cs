@@ -117,12 +117,12 @@ namespace OculusHack
             list_encode_res.Add(er4);
 
             encode_res er5 = new encode_res();
-            er5.value = 3232;
+            er5.value = 3288;
             er5.name = er5.value.ToString();
             list_encode_res.Add(er5);
 
             encode_res er6 = new encode_res();
-            er6.value = 3600;
+            er6.value = 3664; // Volga suggest https://twitter.com/volgaksoy/status/1316243051791015936
             er6.name = er6.value.ToString();
             list_encode_res.Add(er6);
 
