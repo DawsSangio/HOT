@@ -586,11 +586,11 @@ namespace OculusHack
         {
             if (bitrate == 0)
             {
-                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("Bitrate", false);
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("BitrateMbps", false);
             }
             else
             {
-                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("Bitrate", bitrate);
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("BitrateMbps", bitrate);
             }
         }
 
@@ -599,7 +599,7 @@ namespace OculusHack
             int bitrate;
             try
             {
-                bitrate = (int)Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("Bitrate");
+                bitrate = (int)Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("BitrateMbps");
             }
             catch (Exception)
             {
