@@ -578,6 +578,21 @@ namespace OculusHack
             }
             return curve;
         }
+        
+        /// <summary>
+        /// Set Oculus Link Bitrate, it's real time, no need to restart service.
+        /// </summary>
+        public static void SetLinkBitrate(int bitrate)
+        {
+            if (bitrate == 0)
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("Bitrate", false);
+            }
+            else
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("Bitrate", bitrate);
+            }
+        }
         #endregion
 
         #region Manage Runtime Library

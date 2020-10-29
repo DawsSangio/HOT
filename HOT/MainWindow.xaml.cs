@@ -400,7 +400,11 @@ namespace OculusHack
         private async void B_link_apply_Click(object sender, RoutedEventArgs e)
         {
             //encoding resolution
-            Tools.SetLinkEncodingResolution(list_encode_res[cb_link_res.SelectedIndex].value);
+            if (cb_link_res.SelectedIndex != -1)
+            {
+                Tools.SetLinkEncodingResolution(list_encode_res[cb_link_res.SelectedIndex].value);
+            }
+            
             
             //distrorion curve
             if (cb_link_curve.SelectedIndex == 0) // DEFAULT
@@ -679,6 +683,11 @@ namespace OculusHack
         {
             public string name { get; set; }
             public int value { get; set; }
+        }
+
+        private void Sl_bitrate_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Tools.SetLinkBitrate((int)sl_bitrate.Value);
         }
     }
 }

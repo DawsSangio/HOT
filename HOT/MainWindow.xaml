@@ -78,6 +78,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
@@ -105,7 +106,12 @@
                     <ComboBoxItem Content="HIGH quality"/>
                 </ComboBox>
                 <Button x:Name="b_link_apply" Grid.Row="2" Grid.Column="2" Content="Apply" Click="B_link_apply_Click"/>
-                <TextBlock TextWrapping="Wrap" Text="Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="3" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
+
+                <Label Content="Encoding Bitrate" Grid.ColumnSpan="2" HorizontalAlignment="Left" Grid.Row="3" />
+                <Label x:Name="l_link_bitrate" Grid.Column="1" HorizontalAlignment="Right" Grid.Row="3" Content="{Binding ElementName=sl_bitrate, Path=Value}"/>
+                <Slider x:Name="sl_bitrate" Grid.Column="2" Maximum="500" SmallChange="0" TickFrequency="50" TickPlacement="BottomRight" Grid.Row="3" IsSnapToTickEnabled="True" PreviewMouseUp="Sl_bitrate_PreviewMouseUp"/>
+
+                <TextBlock TextWrapping="Wrap" Text="Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="4" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
             </Grid>
 
 
