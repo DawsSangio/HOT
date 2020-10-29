@@ -593,6 +593,22 @@ namespace OculusHack
                 Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("Bitrate", bitrate);
             }
         }
+
+        public static int GetLinkBitrate()
+        {
+            int bitrate;
+            try
+            {
+                bitrate = (int)Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("Bitrate");
+            }
+            catch (Exception)
+            {
+                bitrate = 0;
+            }
+            return bitrate;
+
+        }
+
         #endregion
 
         #region Manage Runtime Library

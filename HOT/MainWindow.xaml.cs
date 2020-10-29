@@ -133,6 +133,7 @@ namespace OculusHack
 
             cb_link_res.ItemsSource = list_encode_res;
 
+            sl_bitrate.Value = Tools.GetLinkBitrate();
             l_link_res.Content = Tools.GetLinkEncodingResolution();
             l_link_curve.Content = Tools.GetLinkDistortionCurve();
             #endregion
@@ -432,6 +433,11 @@ namespace OculusHack
             l_link_curve.Content = Tools.GetLinkDistortionCurve();
 
         }
+
+        private void Sl_bitrate_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Tools.SetLinkBitrate((int)sl_bitrate.Value);
+        }
         #endregion
 
         #region Open Composite tab
@@ -685,9 +691,6 @@ namespace OculusHack
             public int value { get; set; }
         }
 
-        private void Sl_bitrate_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Tools.SetLinkBitrate((int)sl_bitrate.Value);
-        }
+        
     }
 }
