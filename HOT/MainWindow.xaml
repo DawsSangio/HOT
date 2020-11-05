@@ -171,7 +171,7 @@
                 <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" Grid.Column="1" />
 
                 <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
-                <CheckBox x:Name="ck_sfx_status" Content="Dash SFX Enable" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>
+                <CheckBox x:Name="ck_sfx_status" Content="Disable Dash ambient sound" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>
                 <CheckBox x:Name="ck_blk_dash" Content="Dash Black Background" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center" FontSize="11" Click="Ck_blk_dash_Click" Grid.ColumnSpan="3"/>
             </Grid>
         </TabItem>

@@ -184,18 +184,17 @@ namespace OculusHack
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
-                ck_sfx_status.IsChecked = true;
+                ck_sfx_status.IsChecked = false;
             }
-            else ck_sfx_status.IsChecked = false;
+            else ck_sfx_status.IsChecked = true;
 
             //check Dash black BG
-            /*
             if (Tools.DashBackground(OculusInstallFolder, 0, false))
             {
                 ck_blk_dash.IsChecked = false;
             }
             else ck_blk_dash.IsChecked = true;
-            */
+            
 
         }
 
@@ -570,9 +569,9 @@ namespace OculusHack
 
             if (ck_sfx_status.IsChecked == false)
             {
-                Tools.DashSFX(OculusInstallFolder, 0, true);
+                Tools.DashSFX(OculusInstallFolder, 1, true);
             }
-            else Tools.DashSFX(OculusInstallFolder, 1, true);
+            else Tools.DashSFX(OculusInstallFolder, 0, true);
 
         }
 
