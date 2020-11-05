@@ -103,7 +103,7 @@ namespace OculusHack
 
             encode_res er2 = new encode_res();
             er2.value = 2352;
-            er2.name = er2.value + " Balanced";
+            er2.name = er2.value + " Quest 1 balanced";
             list_encode_res.Add(er2);
 
             encode_res er3 = new encode_res();
@@ -113,7 +113,7 @@ namespace OculusHack
 
             encode_res er4 = new encode_res();
             er4.value = 2912;
-            er4.name = er4.value + " Quality";
+            er4.name = er4.value + " Quest 1 quality";
             list_encode_res.Add(er4);
 
             encode_res er5 = new encode_res();
@@ -123,7 +123,7 @@ namespace OculusHack
 
             encode_res er6 = new encode_res();
             er6.value = 3664; // Volga suggest https://twitter.com/volgaksoy/status/1316243051791015936
-            er6.name = er6.value.ToString();
+            er6.name = er6.value + " Quest 2 quality";
             list_encode_res.Add(er6);
 
             encode_res er7 = new encode_res();
@@ -180,7 +180,7 @@ namespace OculusHack
             //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
             #endregion
 
-            
+            #region Check Dash misc option
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
@@ -194,7 +194,8 @@ namespace OculusHack
                 ck_blk_dash.IsChecked = false;
             }
             else ck_blk_dash.IsChecked = true;
-            
+            #endregion
+
 
         }
 
