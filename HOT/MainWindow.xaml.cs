@@ -442,7 +442,6 @@ namespace OculusHack
         #region Open Composite tab
         private async void DownLoadOC()
         {
-            //popup.IsOpen = true;
             b_dl_OC.IsEnabled = false;
 
             b_dl_OC.Content = "Check for Open Composite update";
@@ -472,10 +471,12 @@ namespace OculusHack
                     await Task.Delay(3000);
                     b_dl_OC.Content = "Download Open Composite";
                 }
-
+            }
+            else
+            {
+                b_dl_OC.Content = "Download Open Composite";
             }
 
-            //popup.IsOpen = false;
 
             if (!OC.IsAvailable())
             {
