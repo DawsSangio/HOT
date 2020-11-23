@@ -31,7 +31,7 @@ namespace OculusHack
         private string cfg_file;
 
         // Encoder list
-        public ObservableCollection<encode_res> list_encode_res = new ObservableCollection<encode_res>();
+        public ObservableCollection<encode_values> list_encode_res = new ObservableCollection<encode_values>();
 
 
         // Watcher record list
@@ -95,12 +95,15 @@ namespace OculusHack
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
             #endregion
 
-            #region Read Link values
-            encode_res er1 = new encode_res();
+            #region Read and set Link values
+
+
+
+            encode_values er1 = new encode_values();
             er1.value = -1;
             er1.name = "Default";
             list_encode_res.Add(er1);
-
+            /*
             encode_res er2 = new encode_res();
             er2.value = 2352;
             er2.name = er2.value + " Quest 1 balanced";
@@ -130,7 +133,7 @@ namespace OculusHack
             er7.value = 4000;
             er7.name = er7.value.ToString();
             list_encode_res.Add(er7);
-
+            */
             cb_link_res.ItemsSource = list_encode_res;
 
             sl_bitrate.Value = Tools.GetLinkBitrate();
@@ -686,7 +689,7 @@ namespace OculusHack
             }
         }
 
-        public class encode_res
+        public class encode_values
         {
             public string name { get; set; }
             public int value { get; set; }
