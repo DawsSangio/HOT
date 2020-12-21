@@ -608,6 +608,11 @@ namespace OculusHack
             b_disable_oculus.Content = "Disable Oculus Library";
 
         }
+
+        private void B_enable_openxr_Click(object sender, RoutedEventArgs e)
+        {
+            Tools.EnableOpenXR(OculusInstallFolder + "Support\\oculus-runtime\\oculus_openxr_64.json");
+        }
         #endregion
 
         #region SteamVR tab

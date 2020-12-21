@@ -120,7 +120,7 @@
 
                 <Slider x:Name="sl_bitrate" Grid.Row="4" Grid.Column="0" Maximum="500" SmallChange="0" TickFrequency="50" TickPlacement="BottomRight" IsSnapToTickEnabled="True" PreviewMouseUp="Sl_bitrate_PreviewMouseUp" Grid.ColumnSpan="3"/>
 
-                <TextBlock TextWrapping="Wrap" Text="Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="5" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
+                <TextBlock TextWrapping="Wrap" Text="Since v.23 Encoding Resolution and Distortion Curve, are managed automatically to achieve the best result. Please leave them at default values. Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="5" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
             </Grid>
 
 
@@ -172,6 +172,7 @@
                 <Button x:Name="b_back_lib" Grid.Row="1" Grid.Column="1" Content="Backup Library"  Click="B_back_lib_Click" FontSize="11" />
                 <Button x:Name="b_lib"      Grid.Row="2" Grid.Column="1" Content="Restore Library"  Click="B_restore_lib_Click" FontSize="11" />
                 <Button x:Name="b_disable_oculus" Content="Disable Native mode" Grid.Row="3" FontSize="11" Click="B_disable_oculus_Click" Grid.Column="1" />
+                <Button x:Name="b_enable_openxr" Content="Enable Oculus OpenXR" Grid.Row="1"  Grid.Column="2" FontSize="11" Click="B_enable_openxr_Click"  />
 
                 <!--<CheckBox x:Name="ck_home_status" Content="Oculus Home Enable (obsolete)" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_home_status_Click" FontSize="11" Grid.ColumnSpan="4"/>-->
                 <CheckBox x:Name="ck_sfx_status" Content="Disable Dash ambient sound" Grid.Row="4" Grid.Column="0" VerticalContentAlignment="Center" Click="Ck_sfx_status_Click" FontSize="11" Grid.ColumnSpan="4"/>

@@ -784,6 +784,21 @@ namespace OculusHack
         }
         #endregion
 
+        #region OpenXR
+        public static void EnableOpenXR(string manifest_path)
+        {
+            try
+            {
+                Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Khronos\\OpenXR\\1", true).SetValue("ActiveRuntime", manifest_path);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+               
+        #endregion
+
         public static bool IsOculusClientRunning()
         {
 
