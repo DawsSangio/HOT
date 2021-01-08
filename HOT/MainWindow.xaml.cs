@@ -31,7 +31,7 @@ namespace OculusHack
         private string cfg_file;
 
         // Encoder list
-        public ObservableCollection<encode_res> list_encode_res = new ObservableCollection<encode_res>();
+        public ObservableCollection<encode_values> list_encode_res = new ObservableCollection<encode_values>();
 
 
         // Watcher record list
@@ -95,15 +95,18 @@ namespace OculusHack
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
             #endregion
 
-            #region Read Link values
-            encode_res er1 = new encode_res();
+            #region Read and set Link values
+
+
+
+            encode_values er1 = new encode_values();
             er1.value = -1;
             er1.name = "Default";
             list_encode_res.Add(er1);
-
+            /*
             encode_res er2 = new encode_res();
             er2.value = 2352;
-            er2.name = er2.value + " Balanced";
+            er2.name = er2.value + " Quest 1 balanced";
             list_encode_res.Add(er2);
 
             encode_res er3 = new encode_res();
@@ -113,7 +116,7 @@ namespace OculusHack
 
             encode_res er4 = new encode_res();
             er4.value = 2912;
-            er4.name = er4.value + " Quality";
+            er4.name = er4.value + " Quest 1 quality";
             list_encode_res.Add(er4);
 
             encode_res er5 = new encode_res();
@@ -123,14 +126,14 @@ namespace OculusHack
 
             encode_res er6 = new encode_res();
             er6.value = 3664; // Volga suggest https://twitter.com/volgaksoy/status/1316243051791015936
-            er6.name = er6.value.ToString();
+            er6.name = er6.value + " Quest 2 quality";
             list_encode_res.Add(er6);
 
             encode_res er7 = new encode_res();
             er7.value = 4000;
             er7.name = er7.value.ToString();
             list_encode_res.Add(er7);
-
+            */
             cb_link_res.ItemsSource = list_encode_res;
 
             sl_bitrate.Value = Tools.GetLinkBitrate();
@@ -180,22 +183,22 @@ namespace OculusHack
             //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
             #endregion
 
-            
+            #region Check Dash misc option
             //Check Dash SFX
             if (Tools.DashSFX(OculusInstallFolder, 1,false))
             {
-                ck_sfx_status.IsChecked = true;
+                ck_sfx_status.IsChecked = false;
             }
-            else ck_sfx_status.IsChecked = false;
+            else ck_sfx_status.IsChecked = true;
 
             //check Dash black BG
-            /*
             if (Tools.DashBackground(OculusInstallFolder, 0, false))
             {
                 ck_blk_dash.IsChecked = false;
             }
             else ck_blk_dash.IsChecked = true;
-            */
+            #endregion
+
 
         }
 
@@ -448,7 +451,6 @@ namespace OculusHack
         #region Open Composite tab
         private async void DownLoadOC()
         {
-            //popup.IsOpen = true;
             b_dl_OC.IsEnabled = false;
 
             b_dl_OC.Content = "Check for Open Composite update";
@@ -478,10 +480,12 @@ namespace OculusHack
                     await Task.Delay(3000);
                     b_dl_OC.Content = "Download Open Composite";
                 }
-
+            }
+            else
+            {
+                b_dl_OC.Content = "Download Open Composite";
             }
 
-            //popup.IsOpen = false;
 
             if (!OC.IsAvailable())
             {
@@ -575,9 +579,9 @@ namespace OculusHack
 
             if (ck_sfx_status.IsChecked == false)
             {
-                Tools.DashSFX(OculusInstallFolder, 0, true);
+                Tools.DashSFX(OculusInstallFolder, 1, true);
             }
-            else Tools.DashSFX(OculusInstallFolder, 1, true);
+            else Tools.DashSFX(OculusInstallFolder, 0, true);
 
         }
 
@@ -608,6 +612,11 @@ namespace OculusHack
             Tools.SetNativeLibrary(OculusInstallFolder, true);
             b_disable_oculus.Content = "Disable Oculus Library";
 
+        }
+
+        private void B_enable_openxr_Click(object sender, RoutedEventArgs e)
+        {
+            Tools.EnableOpenXR(OculusInstallFolder + "Support\\oculus-runtime\\oculus_openxr_64.json");
         }
         #endregion
 
@@ -690,7 +699,7 @@ namespace OculusHack
             }
         }
 
-        public class encode_res
+        public class encode_values
         {
             public string name { get; set; }
             public int value { get; set; }

@@ -278,73 +278,91 @@ namespace OculusHack
         /// </summary>
         public static bool DashSFX(string OculusInstallFolder, int mode, bool update)
         {
-            string bank_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank";
-            string bank_bkup_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.ban_";
+            try
+            {
+                string bank_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.bank";
+                string bank_bkup_file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\audio_dash\\Build\\Desktop\\Master Bank.ban_";
 
-            if (File.Exists(bank_file) && mode == 1)
-            {
-                return true;
-            }
-            else if (File.Exists(bank_file) && mode == 0)
-            {
-                if (update)
+                if (File.Exists(bank_file) && mode == 1)
                 {
-                    //disable
-                    File.Copy(bank_file, bank_bkup_file, true);
-                    File.Delete(bank_file);
+                    return true;
                 }
+                else if (File.Exists(bank_file) && mode == 0)
+                {
+                    if (update)
+                    {
+                        //disable
+                        File.Copy(bank_file, bank_bkup_file, true);
+                        File.Delete(bank_file);
+                    }
+                    return false;
+                }
+                else if (File.Exists(bank_bkup_file) && mode == 1)
+                {
+                    if (update)
+                    {
+                        //enable
+                        File.Move(bank_bkup_file, bank_file);
+                    }
+                    return false;
+                }
+                else if (File.Exists(bank_bkup_file) && mode == 0)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception)
+            {
+
                 return false;
             }
-            else if (File.Exists(bank_bkup_file) && mode == 1)
-            {
-                if (update)
-                {
-                    //enable
-                    File.Move(bank_bkup_file, bank_file);
-                }
-                return false;
-            }
-            else if (File.Exists(bank_bkup_file) && mode == 0)
-            {
-                return true;
-            }
-            else return false;
+
+            
         }
 
         /// <summary>
         /// Check Dash background status, with optional update
         /// 0 = white, 1 = black
+        /// Return bool means success or not
         /// </summary>
         public static bool DashBackground(string OculusInstallFolder, int mode, bool update)
         {
-            string file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\materials\\environment\\the_void\\the_void_new.material";
-            string txt = File.ReadAllText(file);
-            if (txt.Contains("6") && mode == 0)
+            try
             {
-                return true;
-            }
-            else if (txt.Contains("6") && mode == 1)
-            {
-                if (update)
+                string file = OculusInstallFolder + "\\Support\\oculus-dash\\dash\\assets\\raw\\materials\\environment\\the_void\\the_void_new.material";
+                string txt = File.ReadAllText(file);
+                if (txt.Contains("6") && mode == 0)
                 {
-                    File.WriteAllText(file, txt.Replace("006", "007"));
+                    return true;
                 }
+                else if (txt.Contains("6") && mode == 1)
+                {
+                    if (update)
+                    {
+                        File.WriteAllText(file, txt.Replace("006", "007"));
+                    }
+                    return false;
+                }
+                else if (txt.Contains("7") && mode == 1)
+                {
+                    return true;
+                }
+                else if (txt.Contains("7") && mode == 0)
+                {
+                    if (update)
+                    {
+                        File.WriteAllText(file, txt.Replace("007", "006"));
+                    }
+                    return false;
+                }
+                else return false;
+            }
+            catch (Exception)
+            {
                 return false;
             }
-            else if (txt.Contains("7") && mode == 1)
-            {
-                return true;
-            }
-            else if (txt.Contains("7") && mode == 0)
-            {
-                if (update)
-                {
-                    File.WriteAllText(file, txt.Replace("007", "006"));
-                }
-                return false;
-            }
-            else return false;
-           
+                      
            
         }
 
@@ -768,6 +786,21 @@ namespace OculusHack
             proc.StartInfo = pinfo;
             proc.Start();
         }
+        #endregion
+
+        #region OpenXR
+        public static void EnableOpenXR(string manifest_path)
+        {
+            try
+            {
+                Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Khronos\\OpenXR\\1", true).SetValue("ActiveRuntime", manifest_path);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+               
         #endregion
 
         public static bool IsOculusClientRunning()
