@@ -402,18 +402,7 @@ namespace OculusHack
         #endregion
 
         #region Debugtools
-        //public enum Asw_Modes
-        //{
-        //    Auto,
-        //    Off,
-        //    Sim45,
-        //    Clock45,
-        //    Clock30,
-        //    Clock18,
-        //    HmdAuto,
-        //    Hmd45
-        //}
-
+        
         public class Asw_Mode
         {
             public string name { get; set; }
@@ -428,12 +417,12 @@ namespace OculusHack
 
         private static Asw_Mode am1 = new Asw_Mode("Auto", "asw.Auto");
         private static Asw_Mode am2 = new Asw_Mode("Off", "asw.Off");
-        private static Asw_Mode am3 = new Asw_Mode("45 NO ASW", "asw.Sim45");
-        private static Asw_Mode am4 = new Asw_Mode("45 ASW", "asw.Clock45");
-        private static Asw_Mode am5 = new Asw_Mode("30 ASW", "asw.clock30");
-        private static Asw_Mode am6 = new Asw_Mode("18 ASW", "asw.Clock18");
+        private static Asw_Mode am3 = new Asw_Mode("1/2 fps (45/40/36) NO ASW", "asw.Sim45");
+        private static Asw_Mode am4 = new Asw_Mode("1/2 fps (45/40/36)", "asw.Clock45");
+        private static Asw_Mode am5 = new Asw_Mode("1/3 fps (30/27/24)", "asw.clock30");
+        private static Asw_Mode am6 = new Asw_Mode("1/5 fps (18/16/14)", "asw.Clock18");
         private static Asw_Mode am7 = new Asw_Mode("Quest ASW", "asw.HmdAuto");
-        private static Asw_Mode am8 = new Asw_Mode("Quest 45 ASW", "asw.Hmd45");
+        private static Asw_Mode am8 = new Asw_Mode("Quest 1/2 fps ASW", "asw.Hmd45");
         public static ObservableCollection<Asw_Mode> ASW_Modes = new ObservableCollection<Asw_Mode> { am1,am2,am3,am4,am5,am6,am7,am8 };
         
 

@@ -50,9 +50,9 @@ namespace OculusHack.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string ASWsetting {
+        public int ASWsetting {
             get {
-                return ((string)(this["ASWsetting"]));
+                return ((int)(this["ASWsetting"]));
             }
             set {
                 this["ASWsetting"] = value;

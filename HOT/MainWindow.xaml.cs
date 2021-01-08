@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
-using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Launcher;
 using Valve.VR;
-using System.Reflection;
-using System.Security.Permissions;
-using System.Diagnostics;
 
 namespace OculusHack
 {
     public partial class MainWindow : Window
     {
-        
+        // Set basic parameter
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
-        public string asw = Properties.Settings.Default.ASWsetting;
+        public int asw = Properties.Settings.Default.ASWsetting;
 
         // Steamvr pace maker
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
@@ -36,7 +30,6 @@ namespace OculusHack
         // Watcher record list
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
         
-
         public MainWindow()
         {
             
@@ -87,14 +80,7 @@ namespace OculusHack
                 }
                 else
                 {
-                    foreach (var item in Tools.ASW_Modes)
-                    {
-                        if (item.value == asw)
-                        {
-                            cb_ASW.SelectedIndex = Tools.ASW_Modes.IndexOf(item);
-                        }
-                    }
-                    //cb_ASW.SelectedIndex = Tools.List_ASW_Modes.IndexOf(Tools.Asw_Mode item.value == asw);  
+                    cb_ASW.SelectedIndex = asw;  
                     cb_debugHUD.SelectedIndex = 0;
                 }
             }
@@ -184,6 +170,7 @@ namespace OculusHack
 
             #region Watcher initializzation
             ReadAppsCfg();
+            //WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
             //ManagementEventWatcher watcher = new ManagementEventWatcher(query);
             //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
             #endregion
@@ -276,7 +263,7 @@ namespace OculusHack
             {
                 Tools.SetASW(OculusInstallFolder,Tools.ASW_Modes[cb_ASW.SelectedIndex].value);
             }
-            Properties.Settings.Default.ASWsetting = Tools.ASW_Modes[cb_ASW.SelectedIndex].value;
+            Properties.Settings.Default.ASWsetting = cb_ASW.SelectedIndex;
             Properties.Settings.Default.Save();
         }
 
@@ -343,12 +330,12 @@ namespace OculusHack
 
         private void b_watcher_Click(object sender, RoutedEventArgs e)
         {
+            // TODO make stop watcher
             WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
             ManagementEventWatcher watcher = new ManagementEventWatcher(query);
             watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
             watcher.Start();
             b_watcher.IsEnabled = false;
-            b_watcher.Content = "Watcher actived...";
         }
         #endregion
 
