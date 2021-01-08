@@ -23,17 +23,16 @@ namespace OculusHack
         
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
         public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
-        public int asw = Properties.Settings.Default.ASWsetting;
+        public string asw = Properties.Settings.Default.ASWsetting;
 
         // Steamvr pace maker
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
         public bool ASWPacemaker = false;
         private string cfg_file;
-
+       
         // Encoder list
         public ObservableCollection<encode_values> list_encode_res = new ObservableCollection<encode_values>();
-
-
+        
         // Watcher record list
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
         
@@ -88,17 +87,23 @@ namespace OculusHack
                 }
                 else
                 {
-                    cb_ASW.SelectedIndex = asw;
+                    foreach (var item in Tools.ASW_Modes)
+                    {
+                        if (item.value == asw)
+                        {
+                            cb_ASW.SelectedIndex = Tools.ASW_Modes.IndexOf(item);
+                        }
+                    }
+                    //cb_ASW.SelectedIndex = Tools.List_ASW_Modes.IndexOf(Tools.Asw_Mode item.value == asw);  
                     cb_debugHUD.SelectedIndex = 0;
                 }
             }
             l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+            cb_ASW.ItemsSource = Tools.ASW_Modes;
             #endregion
 
             #region Read and set Link values
-
-
-
             encode_values er1 = new encode_values();
             er1.value = -1;
             er1.name = "Default";
@@ -199,7 +204,6 @@ namespace OculusHack
             else ck_blk_dash.IsChecked = true;
             #endregion
 
-
         }
 
         private string get_oculusfolder()
@@ -232,8 +236,7 @@ namespace OculusHack
             }
         }
 
-        #region Main tab
-        
+        #region Main tab SS
         private void b_setSS_Click(object sender, RoutedEventArgs e)
         {
             Tools.SetSS(OculusInstallFolder, ss);
@@ -264,41 +267,16 @@ namespace OculusHack
             }
             
         }
+        #endregion
 
+        #region Main tab ASW OSD
         private void Cb_ASW_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-
-            if (cb_ASW.SelectedIndex == 0)
+            if (cb_ASW.SelectedIndex != -1)
             {
-                Tools.SetASW(OculusInstallFolder, 0);
-                Properties.Settings.Default.ASWsetting = 0;
+                Tools.SetASW(OculusInstallFolder,Tools.ASW_Modes[cb_ASW.SelectedIndex].value);
             }
-            else if (cb_ASW.SelectedIndex == 1)
-            {
-                Tools.SetASW(OculusInstallFolder, 1);
-                Properties.Settings.Default.ASWsetting = 1;
-            }
-            else if (cb_ASW.SelectedIndex == 2)
-            {
-                Tools.SetASW(OculusInstallFolder, 2);
-                Properties.Settings.Default.ASWsetting = 2;
-            }
-            else if (cb_ASW.SelectedIndex == 3)
-            {
-                Tools.SetASW(OculusInstallFolder, 3);
-                Properties.Settings.Default.ASWsetting = 3;
-            }
-            else if (cb_ASW.SelectedIndex == 4)
-            {
-                Tools.SetASW(OculusInstallFolder, 4);
-                Properties.Settings.Default.ASWsetting = 4;
-            }
-            else if (cb_ASW.SelectedIndex == 5)
-            {
-                Tools.SetASW(OculusInstallFolder, 5);
-                Properties.Settings.Default.ASWsetting = 5;
-            }
-
+            Properties.Settings.Default.ASWsetting = Tools.ASW_Modes[cb_ASW.SelectedIndex].value;
             Properties.Settings.Default.Save();
         }
 
@@ -337,7 +315,9 @@ namespace OculusHack
                 Tools.SetOSD(OculusInstallFolder, 7);
             }
         }
-               
+        #endregion
+        
+        #region Main tab Exe Watcher
         private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -370,7 +350,6 @@ namespace OculusHack
             b_watcher.IsEnabled = false;
             b_watcher.Content = "Watcher actived...";
         }
-
         #endregion
 
         #region Service tab
@@ -657,13 +636,13 @@ namespace OculusHack
 
                     if (cft.m_flTotalRenderGpuMs > 11)
                     {
-                        Tools.SetASW(OculusInstallFolder, 1); //TODO make a quicker method
+                        Tools.SetASW(OculusInstallFolder, "asw.clock45"); //TODO make a quicker method
                         tb_steamvr.Foreground = Brushes.DarkOrange;
                         await Task.Delay(500); // Delay before returning to normal rendering
                     }
                     else
                     {
-                        Tools.SetASW(OculusInstallFolder, 0);
+                        Tools.SetASW(OculusInstallFolder, "asw.Off");
                         tb_steamvr.Foreground = Brushes.Black;
                     }
                 }
@@ -676,7 +655,7 @@ namespace OculusHack
 
         #endregion
 
-
+        #region Event Watcher
         public void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
             foreach (Record rec in records)
@@ -698,13 +677,15 @@ namespace OculusHack
 
             }
         }
+        #endregion
 
         public class encode_values
         {
             public string name { get; set; }
             public int value { get; set; }
         }
-
         
+
+
     }
 }

@@ -32,15 +32,8 @@
                 <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
 
                 <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
-                <ComboBox x:Name="cb_ASW" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" SelectionChanged="Cb_ASW_SelectionChanged"  >
-                    <ComboBoxItem Content="0 - Auto"/>
-                    <ComboBoxItem Content="1 - 1/2 fps (45/40/36) ASW on"/>
-                    <ComboBoxItem Content="2 - 1/2 fps (45/40/36) ASW off"/>
-                    <ComboBoxItem Content="3 - Off"/>
-                    <ComboBoxItem Content="4 - 1/3 fps (30/27/24) ASW on"/>
-                    <ComboBoxItem Content="5 - 1/5 fps (18/16/14) ASW on"/>
-                </ComboBox>
-
+                <ComboBox x:Name="cb_ASW"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayMemberPath="name" SelectionChanged="Cb_ASW_SelectionChanged"/>
+               
                 <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
                 <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
                     <ComboBoxItem Content="0 - Off"/>

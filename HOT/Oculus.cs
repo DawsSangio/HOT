@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Permissions;
+using System.Collections.ObjectModel;
 
 namespace OculusHack
 {
@@ -144,7 +145,7 @@ namespace OculusHack
         }
                 
     }
-
+    
     public static class Tools
     {
         #region Oculus folder 
@@ -169,7 +170,7 @@ namespace OculusHack
             string[] lib = subKeys.GetSubKeyNames();
             foreach (string entry in lib)
             {
-                string key = (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Oculus VR, LLC\\Oculus\\Libraries\\" + entry, "Path",null);
+                string key = (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Oculus VR, LLC\\Oculus\\Libraries\\" + entry, "Path", null);
                 libraries.Add(key);
 
             }
@@ -189,7 +190,7 @@ namespace OculusHack
                 process.StartInfo.Arguments = "start \"OVRService\"";
                 process.StartInfo.Verb = "runas"; // UAC request
                 process.Start();
-                
+
                 process.WaitForExit();
                 return true;
             });
@@ -226,12 +227,12 @@ namespace OculusHack
 
                 return false;
             }
-            
+
         }
         #endregion
 
         #region Oculus Home enviroment
-                
+
         /// <summary>
         /// Check Oculus Home enviroment status, with optional update
         /// mode: 1 = home enable, 0 = home disable
@@ -318,7 +319,7 @@ namespace OculusHack
                 return false;
             }
 
-            
+
         }
 
         /// <summary>
@@ -362,11 +363,11 @@ namespace OculusHack
             {
                 return false;
             }
-                      
-           
+
+
         }
 
-        
+
 
 
         public static void KillOculusHome()
@@ -401,6 +402,40 @@ namespace OculusHack
         #endregion
 
         #region Debugtools
+        //public enum Asw_Modes
+        //{
+        //    Auto,
+        //    Off,
+        //    Sim45,
+        //    Clock45,
+        //    Clock30,
+        //    Clock18,
+        //    HmdAuto,
+        //    Hmd45
+        //}
+
+        public class Asw_Mode
+        {
+            public string name { get; set; }
+            public string value { get; set; }
+
+            public Asw_Mode(string name, string value)
+            {
+                this.name = name;
+                this.value = value;
+            }
+        }
+
+        private static Asw_Mode am1 = new Asw_Mode("Auto", "asw.Auto");
+        private static Asw_Mode am2 = new Asw_Mode("Off", "asw.Off");
+        private static Asw_Mode am3 = new Asw_Mode("45 NO ASW", "asw.Sim45");
+        private static Asw_Mode am4 = new Asw_Mode("45 ASW", "asw.Clock45");
+        private static Asw_Mode am5 = new Asw_Mode("30 ASW", "asw.clock30");
+        private static Asw_Mode am6 = new Asw_Mode("18 ASW", "asw.Clock18");
+        private static Asw_Mode am7 = new Asw_Mode("Quest ASW", "asw.HmdAuto");
+        private static Asw_Mode am8 = new Asw_Mode("Quest 45 ASW", "asw.Hmd45");
+        public static ObservableCollection<Asw_Mode> ASW_Modes = new ObservableCollection<Asw_Mode> { am1,am2,am3,am4,am5,am6,am7,am8 };
+        
 
         public static bool SetSS(string OculusInstallFolder, double ss)
         {
@@ -479,8 +514,9 @@ namespace OculusHack
         /// Set ASW mode.
         /// 0 = Auto, 1 = 45fps(AWS), 2 = 45fps(no AWS), 3 = Off, 4 = 30fps(ASW) 
         /// </summary>
-        public static bool SetASW(string OculusInstallFolder, int mode)
+        public static bool SetASW(string OculusInstallFolder, string mode)
         {
+            /*
             string asw;
             if (mode == 5)
             {
@@ -503,10 +539,11 @@ namespace OculusHack
                 asw = "asw.Clock45";
             }
             else asw = "asw.Auto";
+            */
 
             File.CreateText("cmd").Dispose();
             string file = "cmd";
-            File.WriteAllText(file, "server:" +asw +"\nexit", Encoding.Default);
+            File.WriteAllText(file, "server:" +mode +"\nexit", Encoding.Default);
 
             try
             {
@@ -821,6 +858,6 @@ namespace OculusHack
         }
                
     }
-
-
+           
+    
 }
