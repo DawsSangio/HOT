@@ -290,6 +290,11 @@ namespace OculusHack
                 Tools.SetASW(OculusInstallFolder, 4);
                 Properties.Settings.Default.ASWsetting = 4;
             }
+            else if (cb_ASW.SelectedIndex == 5)
+            {
+                Tools.SetASW(OculusInstallFolder, 5);
+                Properties.Settings.Default.ASWsetting = 5;
+            }
 
             Properties.Settings.Default.Save();
         }

@@ -464,7 +464,11 @@ namespace OculusHack
         public static bool SetASW(string OculusInstallFolder, int mode)
         {
             string asw;
-            if (mode == 4)
+            if (mode == 5)
+            {
+                asw = "asw.Clock18";
+            }
+            else if (mode == 4)
             {
                 asw = "asw.Clock30";
             }
@@ -474,7 +478,7 @@ namespace OculusHack
             }
             else if (mode == 2)
             {
-                asw = "asw.Sim45"; //NO ASW
+                asw = "asw.Sim45"; //half Hz NO ASW
             }
             else if (mode == 1)
             {
