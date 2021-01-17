@@ -16,8 +16,12 @@ namespace OculusHack
     {
         // Set basic parameter
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
-        public double ss = Math.Round(Properties.Settings.Default.SSsetting,2);
+        public double ss = Properties.Settings.Default.SSsetting;
         public int asw = Properties.Settings.Default.ASWsetting;
+        public double hfov = Properties.Settings.Default.HFov;
+        public double vfov = Properties.Settings.Default.VFov;
+        
+
 
         // Steamvr pace maker
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
@@ -34,7 +38,6 @@ namespace OculusHack
         {
             
             InitializeComponent();
-
             #region Check Oculus install and Service
             // Check install
             if (Tools.GetOculusInstallFolder() == null)
@@ -73,18 +76,21 @@ namespace OculusHack
             #region Check if Oculus Debug tool are available and set default parameter
             if (Tools.IsOculusServiceRunning())
             {
-                if (!Tools.SetSS(OculusInstallFolder, ss))
+                if (!Tools.SetSS(OculusInstallFolder, ss)) //This also apply SS
                 {
                     MessageBox.Show("OculusDebugToolCLI.exe not found or wrong version!\nPlease check your Oculus installation.\nDebug function are disable.");
                     grid_main.IsEnabled = false;
                 }
-                else
+                else // Apply saved settings
                 {
                     cb_ASW.SelectedIndex = asw;  
                     cb_debugHUD.SelectedIndex = 0;
+                    l_ss.Content = ss;
+                    Tools.SetFOV(OculusInstallFolder, hfov,vfov);
+                    l_hfov.Content = hfov;
+                    l_vfov.Content = vfov;
                 }
             }
-            l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
             cb_ASW.ItemsSource = Tools.ASW_Modes;
             #endregion
@@ -237,8 +243,8 @@ namespace OculusHack
             if (ss < 5)
             {
                 ss += 0.05;
-                Math.Round(ss, 2);
-                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                ss = Math.Round(ss, 2);
+                l_ss.Content = ss;
                 b_setSS.IsEnabled = true;
             }
         }
@@ -248,12 +254,13 @@ namespace OculusHack
             if (ss > 0.50)
             {
                 ss -= 0.05;
-                Math.Round(ss, 2);
-                l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                ss = Math.Round(ss, 2);
+                l_ss.Content = ss;
                 b_setSS.IsEnabled = true;
             }
             
         }
+        
         #endregion
 
         #region Main tab ASW OSD
@@ -337,6 +344,59 @@ namespace OculusHack
             watcher.Start();
             b_watcher.IsEnabled = false;
         }
+        #endregion
+
+        #region FOV Multiplier
+        private void b_hfov_minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (hfov > 0.05)
+            {
+                hfov -= 0.05;
+                hfov = Math.Round(hfov, 2);
+                l_hfov.Content = hfov; 
+                b_fov.IsEnabled = true;
+            }
+        }
+        private void b_hfov_plus_Click(object sender, RoutedEventArgs e)
+        {
+            if (hfov < 1)
+            {
+                hfov += 0.05;
+                hfov = Math.Round(hfov, 2);
+                l_hfov.Content = hfov;
+                b_fov.IsEnabled = true;
+            }
+        }
+        private void b_vfov_minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (vfov > 0.05)
+            {
+                vfov -= 0.05;
+                vfov = Math.Round(vfov, 2);
+                l_vfov.Content = vfov;
+                b_fov.IsEnabled = true;
+            }
+        }
+        private void b_vfov_plus_Click(object sender, RoutedEventArgs e)
+        {
+            if (vfov < 1)
+            {
+                vfov += 0.05;
+                vfov = Math.Round(vfov, 2);
+                l_vfov.Content = vfov;
+                b_fov.IsEnabled = true;
+            }
+        }
+               
+        private void b_fov_Click(object sender, RoutedEventArgs e)
+        {
+            Tools.SetFOV(OculusInstallFolder, hfov, vfov);
+            Properties.Settings.Default.HFov = hfov;
+            Properties.Settings.Default.VFov = vfov;
+            Properties.Settings.Default.Save();
+            b_fov.IsEnabled = false;
+        }
+
         #endregion
 
         #region Service tab

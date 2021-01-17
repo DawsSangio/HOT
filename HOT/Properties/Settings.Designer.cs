@@ -58,5 +58,29 @@ namespace OculusHack.Properties {
                 this["ASWsetting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double HFov {
+            get {
+                return ((double)(this["HFov"]));
+            }
+            set {
+                this["HFov"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double VFov {
+            get {
+                return ((double)(this["VFov"]));
+            }
+            set {
+                this["VFov"] = value;
+            }
+        }
     }
 }

@@ -505,31 +505,7 @@ namespace OculusHack
         /// </summary>
         public static bool SetASW(string OculusInstallFolder, string mode)
         {
-            /*
-            string asw;
-            if (mode == 5)
-            {
-                asw = "asw.Clock18";
-            }
-            else if (mode == 4)
-            {
-                asw = "asw.Clock30";
-            }
-            else if (mode == 3)
-            {
-                asw = "asw.Off";
-            }
-            else if (mode == 2)
-            {
-                asw = "asw.Sim45"; //half Hz NO ASW
-            }
-            else if (mode == 1)
-            {
-                asw = "asw.Clock45";
-            }
-            else asw = "asw.Auto";
-            */
-
+            
             File.CreateText("cmd").Dispose();
             string file = "cmd";
             File.WriteAllText(file, "server:" +mode +"\nexit", Encoding.Default);
@@ -556,6 +532,46 @@ namespace OculusHack
             
 
         }
+
+        /// <summary>
+        /// Set FOV tangent multiplyer
+        /// </summary>
+        public static bool SetFOV(string OculusInstallFolder, double hfov, double vfov)
+        {
+            if (hfov == 1 || hfov == 1.00)
+            {
+                hfov = 0;
+            }
+            if (vfov == 1 || vfov == 1.00)
+            {
+                vfov = 0;
+            }
+            File.CreateText("cmd").Dispose();
+            string file = "cmd";
+            File.WriteAllText(file, "service set-client-fov-tan-angle-multiplier " + hfov.ToString().Replace(",", ".") + " " +vfov.ToString().Replace(",", ".") +"\nexit", Encoding.Default);
+            try
+            {
+                Process debugtool = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.WorkingDirectory = OculusInstallFolder + "\\Support\\oculus-diagnostics";
+                startInfo.FileName = OculusInstallFolder + "\\Support\\oculus-diagnostics\\OculusDebugToolCLI.exe";
+                string args = " -f " + "\"" + Directory.GetCurrentDirectory() + "\\cmd\"";
+                startInfo.Arguments = args;
+                debugtool.StartInfo = startInfo;
+                debugtool.Start();
+                debugtool.WaitForExit();
+                File.Delete(file);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
+        }
+
         #endregion
 
         #region Oculus Link
