@@ -36,14 +36,14 @@
                
                 <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
                 <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
-                    <ComboBoxItem Content="0 - Off"/>
-                    <ComboBoxItem Content="1 - Performance summary"/>
-                    <ComboBoxItem Content="2 - Latency timing"/>
-                    <ComboBoxItem Content="3 - Application render timing"/>
-                    <ComboBoxItem Content="4 - Compositor render timing"/>
-                    <ComboBoxItem Content="5 - ASW status"/>
-                    <ComboBoxItem Content="6 - Layer info - Pixel density"/>
-                    <ComboBoxItem Content="7 - Oculus Link"/>
+                    <ComboBoxItem Content="Off"/>
+                    <ComboBoxItem Content="Performance summary"/>
+                    <ComboBoxItem Content="Latency timing"/>
+                    <ComboBoxItem Content="Application render timing"/>
+                    <ComboBoxItem Content="Compositor render timing"/>
+                    <ComboBoxItem Content="ASW status"/>
+                    <ComboBoxItem Content="Layer info - Render Target"/>
+                    <ComboBoxItem Content="Oculus Link"/>
                 </ComboBox>
 
                 <Button x:Name="b_watcher"  Grid.Row="3" Content="Start watcher" Click="b_watcher_Click"/>
