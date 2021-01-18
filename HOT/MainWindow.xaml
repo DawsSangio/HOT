@@ -64,13 +64,16 @@
                 <Button x:Name="b_add_exe" Grid.Row="4" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
                 <Button x:Name="b_del_exe" Grid.Row="4" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
 
-                <ListView x:Name="lv_records"  Grid.Row="5"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView x:Name="lv_records"  Grid.Row="5"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Exe" Width="236" DisplayMemberBinding="{Binding exe}"/>
-                            <GridViewColumn Header="SS" Width="40" DisplayMemberBinding="{Binding ss}"/>
-                            <GridViewColumn Header="ASW" Width="40" DisplayMemberBinding="{Binding asw}"/>
-                            <GridViewColumn Header="OSD" Width="40" DisplayMemberBinding="{Binding osd}"/>
+                            <GridViewColumn Header="Exe" Width="180" DisplayMemberBinding="{Binding exe}"/>
+                            <GridViewColumn Header="SS" Width="30" DisplayMemberBinding="{Binding ss}"/>
+                            <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
+                            <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
+                            <GridViewColumn Header="BIT" Width="30" DisplayMemberBinding="{Binding bitrate}"/>
+                            <GridViewColumn Header="HF" Width="30" DisplayMemberBinding="{Binding hfov}"/>
+                            <GridViewColumn Header="VF" Width="30" DisplayMemberBinding="{Binding vfov}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -194,7 +197,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="200"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="b_aswp_on" Content="Start" Click="B_aswp_on_Click" Grid.Row="0" HorizontalAlignment="Center" Width="100" />
+                <Button x:Name="b_aswp_on" Content="Start"  Grid.Row="0" HorizontalAlignment="Center" Width="100" />
                 <ScrollViewer Grid.Row="1">
                     <TextBlock x:Name="tb_steamvr" />
                 </ScrollViewer>

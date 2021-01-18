@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Launcher;
-using Valve.VR;
+//using Valve.VR;
 
 namespace OculusHack
 {
@@ -646,55 +646,55 @@ namespace OculusHack
         #endregion
 
         #region SteamVR tab
-        private void B_aswp_on_Click(object sender, RoutedEventArgs e)
-        {
-            if (ASWPacemaker)
-            {
-                ASWPacemaker = false;
-            }
-            else
-            {
-                OpenVR.Shutdown();
-                ASWPacemaker = true;
-            }
+        //private void B_aswp_on_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (ASWPacemaker)
+        //    {
+        //        ASWPacemaker = false;
+        //    }
+        //    else
+        //    {
+        //        OpenVR.Shutdown();
+        //        ASWPacemaker = true;
+        //    }
 
-            counter();
-            
-        }
+        //    counter();
 
-        private async void counter()
-        {
-            if (ASWPacemaker)
-            {
-                var error = EVRInitError.None;
-                OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
-                //OculusHack.ASWPacemaker.InitOpenVR();
+        //}
 
-                //Get frame time rendering of the compositor.
-                Compositor_FrameTiming cft = new Compositor_FrameTiming();
-                cft.m_nSize = (uint)Marshal.SizeOf(typeof(Compositor_FrameTiming));
+        //private async void counter()
+        //{
+        //    if (ASWPacemaker)
+        //    {
+        //        var error = EVRInitError.None;
+        //        OpenVR.Init(ref error, EVRApplicationType.VRApplication_Background);
+        //        //OculusHack.ASWPacemaker.InitOpenVR();
 
-                while (ASWPacemaker)
-                {
-                    await Task.Delay(200); // Delay of the polling check of frame timing
-                    OpenVR.Compositor.GetFrameTiming(ref cft, 0);
-                    tb_steamvr.Text = cft.m_flTotalRenderGpuMs.ToString() + "\n";
+        //        //Get frame time rendering of the compositor.
+        //        Compositor_FrameTiming cft = new Compositor_FrameTiming();
+        //        cft.m_nSize = (uint)Marshal.SizeOf(typeof(Compositor_FrameTiming));
 
-                    if (cft.m_flTotalRenderGpuMs > 11)
-                    {
-                        Tools.SetASW(OculusInstallFolder, "asw.clock45"); //TODO make a quicker method
-                        tb_steamvr.Foreground = Brushes.DarkOrange;
-                        await Task.Delay(500); // Delay before returning to normal rendering
-                    }
-                    else
-                    {
-                        Tools.SetASW(OculusInstallFolder, "asw.Off");
-                        tb_steamvr.Foreground = Brushes.Black;
-                    }
-                }
-            }
+        //        while (ASWPacemaker)
+        //        {
+        //            await Task.Delay(200); // Delay of the polling check of frame timing
+        //            OpenVR.Compositor.GetFrameTiming(ref cft, 0);
+        //            tb_steamvr.Text = cft.m_flTotalRenderGpuMs.ToString() + "\n";
 
-        }
+        //            if (cft.m_flTotalRenderGpuMs > 11)
+        //            {
+        //                Tools.SetASW(OculusInstallFolder, "asw.clock45"); //TODO make a quicker method
+        //                tb_steamvr.Foreground = Brushes.DarkOrange;
+        //                await Task.Delay(500); // Delay before returning to normal rendering
+        //            }
+        //            else
+        //            {
+        //                Tools.SetASW(OculusInstallFolder, "asw.Off");
+        //                tb_steamvr.Foreground = Brushes.Black;
+        //            }
+        //        }
+        //    }
+
+        //}
 
 
 
@@ -714,7 +714,6 @@ namespace OculusHack
                         Tools.SetSS(OculusInstallFolder, rec.ss);
                         cb_ASW.SelectedIndex = rec.asw;
                         cb_debugHUD.SelectedIndex = rec.osd;
-                        ss = rec.ss;
                         l_ss.Content = ss;
                         sl_bitrate.Value = rec.bitrate;
                         Tools.SetLinkBitrate(rec.bitrate);
