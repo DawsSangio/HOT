@@ -126,7 +126,7 @@
                     </Label.Style>
                 </Label>
 
-                <Slider x:Name="sl_bitrate" Grid.Row="4" Grid.Column="0" Maximum="500" SmallChange="0" TickFrequency="50" TickPlacement="BottomRight" IsSnapToTickEnabled="True" PreviewMouseUp="Sl_bitrate_PreviewMouseUp" Grid.ColumnSpan="3"/>
+                <Slider x:Name="sl_bitrate" Grid.Row="4" Grid.Column="0" Maximum="500" TickFrequency="50" IsSnapToTickEnabled="True" TickPlacement="BottomRight"  PreviewMouseUp="Sl_bitrate_PreviewMouseUp" Grid.ColumnSpan="3"/>
 
                 <TextBlock TextWrapping="Wrap" Text="Since v.23 Encoding Resolution and Distortion Curve, are managed automatically to achieve the best result. Please leave them at default values. Warning: only DEFAULT values make the Oculus desktop client settings valid." Grid.Row="5" Grid.ColumnSpan="3" FontWeight="Bold" VerticalAlignment="Top" TextAlignment="Center" Height="79" Margin="0,0,0,-48" />
             </Grid>

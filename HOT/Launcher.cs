@@ -20,21 +20,21 @@ namespace Launcher
         /// </summary>
         public static ObservableCollection<Record> ReadCfg(string cfg_file)
         {
-
             ObservableCollection<Record> records = new ObservableCollection<Record>();
             IEnumerable<string> lines = File.ReadLines(cfg_file);
             foreach (string line in lines)
             {
                 Record record = new Record();
-                //string[] values = line.Split(' ');
                 int first_quote = line.IndexOf("\"");
                 int sec_quote = line.IndexOf("\"", first_quote+1);
                 record.exe = line.Substring(first_quote, sec_quote).Trim('"');
                 string[] values = line.Substring(sec_quote+1).Split(' ');
-                record.ss = double.Parse(values[1], System.Globalization.CultureInfo.InvariantCulture); //TODO FIX IT
+                record.ss = Convert.ToDouble(values[1]);
                 record.asw = Convert.ToInt16(values[2]);
                 record.osd = Convert.ToInt16(values[3]);
                 record.bitrate = Convert.ToInt16(values[4]);
+                record.hfov = Convert.ToDouble(values[5]);
+                record.vfov = Convert.ToDouble(values[6]);
                 records.Add(record);
             }
 
@@ -46,7 +46,13 @@ namespace Launcher
         {
             string space = " ";
             string quote = "\"";
-            File.AppendAllText(cfg_file,quote + record.exe + quote + space + record.ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + space + record.asw + space + record.osd + space + record.bitrate + "\n");
+            File.AppendAllText(cfg_file, quote + record.exe + quote
+                                        + space + record.ss
+                                        + space + record.asw
+                                        + space + record.osd
+                                        + space + record.bitrate
+                                        + space + record.hfov
+                                        + space + record.vfov + "\n");
 
         }
 
@@ -71,16 +77,21 @@ namespace Launcher
         public int asw { get; set; }
         public int osd { get; set; }
         public int bitrate { get; set; }
+        public double hfov { get; set; }
+        public double vfov { get; set; }
 
         public Record() { }
 
-        public Record(string exe, double ss, int asw, int osd, int oc)
+        public Record(string exe, double ss, int asw, int osd, int bitrate, double hfov, double vfov)
         {
             this.exe = exe;
             this.ss = ss;
             this.asw = asw;
             this.osd = osd;
-            this.bitrate = oc;
+            this.bitrate = bitrate;
+            this.hfov = hfov;
+            this.vfov = vfov;
+
         }
 
 

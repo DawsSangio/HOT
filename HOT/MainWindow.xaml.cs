@@ -20,7 +20,6 @@ namespace OculusHack
         public int asw = Properties.Settings.Default.ASWsetting;
         public double hfov = Properties.Settings.Default.HFov;
         public double vfov = Properties.Settings.Default.VFov;
-        
 
 
         // Steamvr pace maker
@@ -321,7 +320,7 @@ namespace OculusHack
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (ofd.ShowDialog() == false) return;
 
-            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, Convert.ToInt16(cb_OC.IsChecked));
+            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
             records.Add(rec);
             CfgTools.AddRecordToCfg(rec, cfg_file);
             
@@ -716,7 +715,12 @@ namespace OculusHack
                         cb_ASW.SelectedIndex = rec.asw;
                         cb_debugHUD.SelectedIndex = rec.osd;
                         ss = rec.ss;
-                        l_ss.Content = ss.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                        l_ss.Content = ss;
+                        sl_bitrate.Value = rec.bitrate;
+                        Tools.SetLinkBitrate(rec.bitrate);
+                        Tools.SetFOV(OculusInstallFolder, rec.hfov, rec.vfov);
+                        l_hfov.Content = rec.hfov;
+                        l_vfov.Content = rec.vfov;
 
                     });
 
