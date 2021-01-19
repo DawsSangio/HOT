@@ -175,9 +175,10 @@ namespace OculusHack
 
             #region Watcher initializzation
             ReadAppsCfg();
-            //WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
-            //ManagementEventWatcher watcher = new ManagementEventWatcher(query);
-            //watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
+            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
+            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            watcher.EventArrived += new EventArrivedEventHandler(watcher_EventArrived);
+            watcher.Start();
             #endregion
 
             #region Check Dash misc option
@@ -310,7 +311,7 @@ namespace OculusHack
         }
         #endregion
         
-        #region Main tab Exe Watcher
+        #region Main tab Watcher
         private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -337,10 +338,10 @@ namespace OculusHack
         private void b_watcher_Click(object sender, RoutedEventArgs e)
         {
             // TODO make stop watcher
-            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
-            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
-            watcher.EventArrived += new EventArrivedEventHandler(startWatch_EventArrived);
-            watcher.Start();
+            //WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
+            //ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            //watcher.EventArrived += new EventArrivedEventHandler(watcher_EventArrived);
+            //watcher.Start();
             b_watcher.IsEnabled = false;
         }
         #endregion
@@ -702,7 +703,7 @@ namespace OculusHack
         #endregion
 
         #region Event Watcher
-        public void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        public void watcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
             foreach (Record rec in records)
             {
@@ -712,14 +713,20 @@ namespace OculusHack
                     Dispatcher.Invoke(() =>
                     {
                         Tools.SetSS(OculusInstallFolder, rec.ss);
+                        l_ss.Content = rec.ss;
+                        ss = rec.ss;
+
                         cb_ASW.SelectedIndex = rec.asw;
                         cb_debugHUD.SelectedIndex = rec.osd;
-                        l_ss.Content = ss;
-                        sl_bitrate.Value = rec.bitrate;
+                       
                         Tools.SetLinkBitrate(rec.bitrate);
+                        sl_bitrate.Value = rec.bitrate;
+                                                
                         Tools.SetFOV(OculusInstallFolder, rec.hfov, rec.vfov);
                         l_hfov.Content = rec.hfov;
                         l_vfov.Content = rec.vfov;
+                        hfov = rec.hfov;
+                        vfov = rec.vfov;
 
                     });
 
