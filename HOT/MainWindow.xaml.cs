@@ -20,6 +20,10 @@ namespace OculusHack
         public int asw = Properties.Settings.Default.ASWsetting;
         public double hfov = Properties.Settings.Default.HFov;
         public double vfov = Properties.Settings.Default.VFov;
+        private double tmp_ss;
+        private double tmp_hfov;
+        private double tmp_vfov;
+        private double tmp_bitrate;
 
 
         // Steamvr pace maker
@@ -32,7 +36,9 @@ namespace OculusHack
         
         // Watcher record list
         public ObservableCollection<Record> records = new ObservableCollection<Record>();
-        
+        ManagementEventWatcher startWatch = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStartTrace");
+        ManagementEventWatcher stopWatch = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStopTrace");
+
         public MainWindow()
         {
             
@@ -175,10 +181,21 @@ namespace OculusHack
 
             #region Watcher initializzation
             ReadAppsCfg();
-            WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
-            ManagementEventWatcher watcher = new ManagementEventWatcher(query);
+            //WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
+            /*WqlEventQuery query = new WqlEventQuery("Select * From __InstanceCreationEvent Within 5 Where TargetInstance Isa 'Win32_Process'");
+            ManagementEventWatcher watcher = new ManagementEventWatcher();
+            watcher.Query = query;
             watcher.EventArrived += new EventArrivedEventHandler(watcher_EventArrived);
             watcher.Start();
+            
+            var startWatch = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStartTrace");
+            startWatch.EventArrived += startWatch_EventArrived;
+            startWatch.Start();
+
+            var stopWatch = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStopTrace");
+            stopWatch.EventArrived += stopWatch_EventArrived;
+            stopWatch.Start();
+            */        
             #endregion
 
             #region Check Dash misc option
@@ -324,7 +341,6 @@ namespace OculusHack
             Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
             records.Add(rec);
             CfgTools.AddRecordToCfg(rec, cfg_file);
-            
 
         }
 
@@ -337,11 +353,13 @@ namespace OculusHack
 
         private void b_watcher_Click(object sender, RoutedEventArgs e)
         {
-            // TODO make stop watcher
-            //WqlEventQuery query = new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace");
-            //ManagementEventWatcher watcher = new ManagementEventWatcher(query);
-            //watcher.EventArrived += new EventArrivedEventHandler(watcher_EventArrived);
-            //watcher.Start();
+            // Start wathcers
+            startWatch.EventArrived += startWatch_EventArrived;
+            startWatch.Start();
+
+            stopWatch.EventArrived += stopWatch_EventArrived;
+            stopWatch.Start();
+
             b_watcher.IsEnabled = false;
         }
         #endregion
@@ -703,37 +721,67 @@ namespace OculusHack
         #endregion
 
         #region Event Watcher
-        public void watcher_EventArrived(object sender, EventArrivedEventArgs e)
+        public void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
             foreach (Record rec in records)
             {
                 if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
                 {
+                    
                     //Use Dipatcher to allow cross treading to set runtime setup.
                     Dispatcher.Invoke(() =>
                     {
+                        tmp_ss = ss;
                         Tools.SetSS(OculusInstallFolder, rec.ss);
                         l_ss.Content = rec.ss;
                         ss = rec.ss;
 
                         cb_ASW.SelectedIndex = rec.asw;
                         cb_debugHUD.SelectedIndex = rec.osd;
-                       
-                        Tools.SetLinkBitrate(rec.bitrate);
-                        sl_bitrate.Value = rec.bitrate;
-                                                
+
+                        tmp_hfov = hfov;
+                        tmp_vfov = vfov;
                         Tools.SetFOV(OculusInstallFolder, rec.hfov, rec.vfov);
                         l_hfov.Content = rec.hfov;
                         l_vfov.Content = rec.vfov;
                         hfov = rec.hfov;
                         vfov = rec.vfov;
 
+                        tmp_bitrate = sl_bitrate.Value;
+                        Tools.SetLinkBitrate(rec.bitrate);
+                        sl_bitrate.Value = rec.bitrate;
+
                     });
-
                 }
-
             }
         }
+
+        public void stopWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            foreach (Record rec in records)
+            {
+                if (e.NewEvent.Properties["ProcessName"].Value.ToString() == Path.GetFileName(rec.exe))
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ss = tmp_ss;
+                        Tools.SetSS(OculusInstallFolder, ss);
+                        l_ss.Content = ss;
+
+                        hfov = tmp_hfov;
+                        vfov = tmp_vfov;
+                        Tools.SetFOV(OculusInstallFolder, hfov, vfov);
+                        l_hfov.Content = hfov;
+                        l_vfov.Content = vfov;
+
+                        sl_bitrate.Value = tmp_bitrate;
+                        Tools.SetLinkBitrate((int)sl_bitrate.Value);
+                        
+                    });
+                }
+            }
+        }
+        
         #endregion
 
         public class encode_values
