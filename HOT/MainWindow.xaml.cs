@@ -380,6 +380,7 @@ namespace OculusHack
                 cb_debugHUD.SelectedIndex = rec.osd;
 
                 b_active_set.Content = "Restore Default";
+                preset_active = true;
             }
             else
             {
@@ -398,10 +399,11 @@ namespace OculusHack
                 Tools.SetLinkBitrate((int)tmp_bitrate);
                 sl_bitrate.Value = tmp_bitrate;
 
-                //cb_ASW.SelectedIndex = asw;
+                cb_ASW.SelectedIndex = asw;
                 //cb_debugHUD.SelectedIndex = osd;
 
                 b_active_set.Content = "Active Preset";
+                preset_active = false;
             }
 
         }
