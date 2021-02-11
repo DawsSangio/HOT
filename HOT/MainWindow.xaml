@@ -52,10 +52,10 @@
 
                 <StackPanel Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
                     <Button x:Name="b_hfov_minus"  Content="-" Click="b_hfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
-                    <Label x:Name="l_hfov"  ContentStringFormat="h 0.00"  Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
+                    <Label x:Name="l_hfov"  ContentStringFormat="h 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
                     <Button x:Name="b_hfov_plus"   Content="+" Click="b_hfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
                     <Button x:Name="b_vfov_minus"  Content="-" Click="b_vfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
-                    <Label x:Name="l_vfov"  ContentStringFormat="v 0.00"  Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
+                    <Label x:Name="l_vfov"  ContentStringFormat="v 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
                     <Button x:Name="b_vfov_plus"   Content="+" Click="b_vfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
                 </StackPanel>
 
