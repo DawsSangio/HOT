@@ -24,6 +24,7 @@ namespace OculusHack
         private double tmp_hfov;
         private double tmp_vfov;
         private double tmp_bitrate;
+        private bool preset_active = false;
 
 
         // Steamvr pace maker
@@ -328,7 +329,7 @@ namespace OculusHack
         }
         #endregion
         
-        #region Main tab Watcher
+        #region Main tab Preset
         private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -349,6 +350,60 @@ namespace OculusHack
             int idx = lv_records.SelectedIndex;
             records.RemoveAt(idx);
             CfgTools.WriteCfg(records, cfg_file);
+        }
+
+        private void b_active_Click(object sender, RoutedEventArgs e)
+        {
+            if (!preset_active)
+            {
+                Record rec = records[lv_records.SelectedIndex];
+                tmp_ss = ss;
+                tmp_hfov = hfov;
+                tmp_vfov = vfov;
+                tmp_bitrate = sl_bitrate.Value;
+
+                ss = rec.ss;
+                hfov = rec.hfov;
+                vfov = rec.vfov;
+            
+                Tools.SetSS(OculusInstallFolder, ss);
+                l_ss.Content = ss;
+
+                Tools.SetFOV(OculusInstallFolder, hfov, vfov);
+                l_hfov.Content = hfov;
+                l_vfov.Content = vfov;
+                        
+                Tools.SetLinkBitrate(rec.bitrate);
+                sl_bitrate.Value = rec.bitrate;
+
+                cb_ASW.SelectedIndex = rec.asw;
+                cb_debugHUD.SelectedIndex = rec.osd;
+
+                b_active_set.Content = "Restore Default";
+            }
+            else
+            {
+                ss = tmp_ss;
+                hfov = tmp_hfov;
+                vfov = tmp_vfov;
+                sl_bitrate.Value = tmp_bitrate;
+                                
+                Tools.SetSS(OculusInstallFolder, ss);
+                l_ss.Content = ss;
+
+                Tools.SetFOV(OculusInstallFolder, hfov, vfov);
+                l_hfov.Content = hfov;
+                l_vfov.Content = vfov;
+
+                Tools.SetLinkBitrate((int)tmp_bitrate);
+                sl_bitrate.Value = tmp_bitrate;
+
+                //cb_ASW.SelectedIndex = asw;
+                //cb_debugHUD.SelectedIndex = osd;
+
+                b_active_set.Content = "Active Preset";
+            }
+
         }
 
         private void b_watcher_Click(object sender, RoutedEventArgs e)
@@ -789,8 +844,7 @@ namespace OculusHack
             public string name { get; set; }
             public int value { get; set; }
         }
+
         
-
-
     }
 }

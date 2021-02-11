@@ -60,7 +60,8 @@
                 </StackPanel>
 
 
-                <Button x:Name="b_watcher"  Grid.Row="4" Content="Start watcher" Click="b_watcher_Click"/>
+                <Button x:Name="b_watcher"  Grid.Row="4" Content="Start watcher" Click="b_watcher_Click" Visibility="Hidden"/>
+                <Button x:Name="b_active_set"  Grid.Row="4" Content="Active Preset" Click="b_active_Click"/>
                 <Button x:Name="b_add_exe" Grid.Row="4" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
                 <Button x:Name="b_del_exe" Grid.Row="4" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
 
