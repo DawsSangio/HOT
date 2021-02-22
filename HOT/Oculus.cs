@@ -501,7 +501,7 @@ namespace OculusHack
 
         /// <summary>
         /// Set ASW mode.
-        /// 0 = Auto, 1 = 45fps(AWS), 2 = 45fps(no AWS), 3 = Off, 4 = 30fps(ASW) 
+        /// asw.Auto, asw.Off, asw.Sim45....base on a collection of Asw_mode. 
         /// </summary>
         public static bool SetASW(string OculusInstallFolder, string mode)
         {

@@ -376,7 +376,9 @@ namespace OculusHack
                 Tools.SetLinkBitrate(rec.bitrate);
                 sl_bitrate.Value = rec.bitrate;
 
+                Tools.SetASW(OculusInstallFolder, Tools.ASW_Modes[rec.asw].value);
                 cb_ASW.SelectedIndex = rec.asw;
+
                 cb_debugHUD.SelectedIndex = rec.osd;
 
                 b_active_set.Content = "Restore Default";
@@ -398,7 +400,9 @@ namespace OculusHack
                 Tools.SetLinkBitrate((int)tmp_bitrate);
                 sl_bitrate.Value = tmp_bitrate;
 
-                //cb_ASW.SelectedIndex = asw;
+                Tools.SetASW(OculusInstallFolder, Tools.ASW_Modes[asw].value);
+                cb_ASW.SelectedIndex = asw;
+                
                 //cb_debugHUD.SelectedIndex = osd;
 
                 b_active_set.Content = "Active Preset";
@@ -791,7 +795,9 @@ namespace OculusHack
                         l_ss.Content = rec.ss;
                         ss = rec.ss;
 
+                        Tools.SetASW(OculusInstallFolder, Tools.ASW_Modes[rec.asw].value);
                         cb_ASW.SelectedIndex = rec.asw;
+
                         cb_debugHUD.SelectedIndex = rec.osd;
 
                         tmp_hfov = hfov;
@@ -828,6 +834,9 @@ namespace OculusHack
                         Tools.SetFOV(OculusInstallFolder, hfov, vfov);
                         l_hfov.Content = hfov;
                         l_vfov.Content = vfov;
+
+                        Tools.SetASW(OculusInstallFolder, Tools.ASW_Modes[asw].value);
+                        cb_ASW.SelectedIndex = rec.asw;
 
                         sl_bitrate.Value = tmp_bitrate;
                         Tools.SetLinkBitrate((int)sl_bitrate.Value);
