@@ -354,7 +354,7 @@ namespace OculusHack
 
         private void b_active_Click(object sender, RoutedEventArgs e)
         {
-            if (!preset_active)
+            if (!preset_active && lv_records.SelectedIndex>=0)
             {
                 Record rec = records[lv_records.SelectedIndex];
                 tmp_ss = ss;
@@ -382,8 +382,9 @@ namespace OculusHack
                 cb_debugHUD.SelectedIndex = rec.osd;
 
                 b_active_set.Content = "Restore Default";
+                preset_active = true;
             }
-            else
+            else if (preset_active)
             {
                 ss = tmp_ss;
                 hfov = tmp_hfov;
@@ -406,6 +407,7 @@ namespace OculusHack
                 //cb_debugHUD.SelectedIndex = osd;
 
                 b_active_set.Content = "Active Preset";
+                preset_active = false;
             }
 
         }
