@@ -159,7 +159,7 @@
     <Resource Include="s2o.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="openvr_api.dll">
+    <Content Include="openvr\openvr_api.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
