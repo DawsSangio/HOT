@@ -10,10 +10,7 @@ namespace Launcher
     {
         // Structure of HOT.cfg entries
         //
-        // [app.exe]_[ss]_[asw]_[osd]_[Bitrate]
-        // es: 
-        // echovr.exe = 1.00 0 0
-        // aces.exe = 1.30 1 0
+        // [app.exe]_[ss]_[asw]_[osd]_[Bitrate]_[Hfov]_[Vfov]
 
         /// <summary>
         /// Read HOT.cfg and and return a collentecion of the enrty
@@ -73,6 +70,7 @@ namespace Launcher
     public class Record
     {
         public string exe { get; set; }
+        public string name { get; set; }
         public double ss { get; set; }
         public int asw { get; set; }
         public int osd { get; set; }
@@ -93,9 +91,7 @@ namespace Launcher
             this.vfov = vfov;
 
         }
-
-
-
+        
     }
     
 
