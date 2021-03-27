@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusHack"
         xmlns:Launcher="clr-namespace:Launcher" x:Class="OculusHack.MainWindow"
-        Title="Humble Oculus Toolkit - Daws 2019" Height="300" Width="380" MaxWidth="380" MinWidth="380" MinHeight="300" ResizeMode="CanResizeWithGrip" TabIndex="0" >
+        Title="Humble Oculus Toolkit - Daws 2019" Height="350" Width="380" MaxWidth="380" MinWidth="380" MinHeight="300" ResizeMode="CanResizeWithGrip" TabIndex="0" >
 
     <TabControl>
         <TabItem x:Name="tab_main" Header="Main">
             <Grid x:Name="grid_main" >
                 <Grid.RowDefinitions>
+                    <RowDefinition  Height="30"/>
                     <RowDefinition  Height="30"/>
                     <RowDefinition  Height="30"/>
                     <RowDefinition  Height="30"/>
@@ -24,19 +25,32 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Super Sampling" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Label Content="Super Sampling" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" HorizontalAlignment="Right"/>
+                <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" >
                     <Button x:Name="b_ss_minus"  Content="-" Click="b_ss_minus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold"/>
                     <Label x:Name="l_ss"  ContentStringFormat="0.00" Width="60" FontSize="20" HorizontalContentAlignment="Center" Padding="0"/>
                     <Button x:Name="b_ss_plus"   Content="+" Click="b_ss_plus_Click" Width="30" FontSize="16" VerticalContentAlignment="Center" FontWeight="Bold" />
                 </StackPanel>
-                <Button x:Name="b_setSS"     Content="Apply Super Sampling" Grid.Column="2" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" />
+                <Label Content="Horizontal FOV" Grid.Row="3" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" HorizontalAlignment="Right"/>
+                <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
+                    <Button x:Name="b_hfov_minus"  Content="-" Click="b_hfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
+                    <Label x:Name="l_hfov"  ContentStringFormat="h 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Button x:Name="b_hfov_plus"   Content="+" Click="b_hfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
+                </StackPanel>
+                <Label Content="Vertical FOV" Grid.Row="4" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" HorizontalAlignment="Right"/>
+                <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal">
+                    <Button x:Name="b_vfov_minus"  Content="-" Click="b_vfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
+                    <Label x:Name="l_vfov"  ContentStringFormat="v 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
+                    <Button x:Name="b_vfov_plus"   Content="+" Click="b_vfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
+                </StackPanel>
+                <Button x:Name="b_setSS" Grid.Row="2"  Content="Apply" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" Grid.Column="2" Grid.RowSpan="3"  />
 
-                <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
-                <ComboBox x:Name="cb_ASW"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayMemberPath="name" SelectionChanged="Cb_ASW_SelectionChanged"/>
+
+                <Label Content="Async Space Warp" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
+                <ComboBox x:Name="cb_ASW"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayMemberPath="name" SelectionChanged="Cb_ASW_SelectionChanged"/>
                
-                <Label Content="OSD performance" Grid.Row="2" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                <ComboBox x:Name="cb_debugHUD" Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
+                <Label Content="OSD performance" Grid.Row="1" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                <ComboBox x:Name="cb_debugHUD" Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
                     <ComboBoxItem Content="Off"/>
                     <ComboBoxItem Content="Performance summary"/>
                     <ComboBoxItem Content="Latency timing"/>
@@ -47,34 +61,25 @@
                     <ComboBoxItem Content="Oculus Link"/>
                 </ComboBox>
 
-                <Label Content="FOV multiplyer" Grid.Row="3" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" HorizontalAlignment="Left"/>
-                <Button x:Name="b_fov"  Content="Apply" Click="b_fov_Click" Width="30" Grid.Row="3" HorizontalAlignment="Right" IsEnabled="False" FontSize="10"/>
+                
+                
+                <Button x:Name="b_active_set"  Grid.Row="5" Content="Apply Preset" Click="b_active_Click"/>
+                <Button x:Name="b_update_set"  Grid.Row="5" Content="Update Preset" Grid.Column="1" Click="B_update_set_Click" />
 
-                <StackPanel Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <Button x:Name="b_hfov_minus"  Content="-" Click="b_hfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
-                    <Label x:Name="l_hfov"  ContentStringFormat="h 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Button x:Name="b_hfov_plus"   Content="+" Click="b_hfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
-                    <Button x:Name="b_vfov_minus"  Content="-" Click="b_vfov_minus_Click" Width="30" FontSize="16"  FontWeight="Bold"/>
-                    <Label x:Name="l_vfov"  ContentStringFormat="v 0.00"  Width="60" FontSize="14" HorizontalContentAlignment="Center" Padding="0" VerticalContentAlignment="Center"/>
-                    <Button x:Name="b_vfov_plus"   Content="+" Click="b_vfov_plus_Click" Width="30" FontSize="16"  FontWeight="Bold" />
-                </StackPanel>
+                <Button x:Name="b_watcher"  Grid.Row="5" Content="Start watcher" Click="b_watcher_Click" Visibility="Hidden"/>
+                <Button x:Name="b_add_exe" Grid.Row="5" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1" Visibility="Hidden"/>
+                <Button x:Name="b_del_exe" Grid.Row="5" Content="Remove Preset" Click="B_del_exe_Click" Grid.Column="3" />
 
-
-                <Button x:Name="b_watcher"  Grid.Row="4" Content="Start watcher" Click="b_watcher_Click" Visibility="Hidden"/>
-                <Button x:Name="b_active_set"  Grid.Row="4" Content="Active Preset" Click="b_active_Click"/>
-                <Button x:Name="b_add_exe" Grid.Row="4" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1"/>
-                <Button x:Name="b_del_exe" Grid.Row="4" Content="Remove exe" Click="B_del_exe_Click" Grid.Column="3"/>
-
-                <ListView x:Name="lv_records"  Grid.Row="5"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10">
+                <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10" >
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Exe" Width="180" DisplayMemberBinding="{Binding exe}"/>
-                            <GridViewColumn Header="SS" Width="30" DisplayMemberBinding="{Binding ss}"/>
+                            <GridViewColumn Header="Exe" Width="170" DisplayMemberBinding="{Binding exe }" />
+                            <GridViewColumn Header="SS" Width="30" DisplayMemberBinding="{Binding ss, StringFormat=0.00}"/>
+                            <GridViewColumn Header="HF" Width="30" DisplayMemberBinding="{Binding hfov, StringFormat=0.00}"/>
+                            <GridViewColumn Header="VF" Width="30" DisplayMemberBinding="{Binding vfov, StringFormat=0.00}"/>
+                            <GridViewColumn Header="BIT" Width="30" DisplayMemberBinding="{Binding bitrate}"/>
                             <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
                             <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
-                            <GridViewColumn Header="BIT" Width="30" DisplayMemberBinding="{Binding bitrate}"/>
-                            <GridViewColumn Header="HF" Width="30" DisplayMemberBinding="{Binding hfov}"/>
-                            <GridViewColumn Header="VF" Width="30" DisplayMemberBinding="{Binding vfov}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

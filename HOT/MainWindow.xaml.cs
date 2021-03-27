@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
@@ -16,10 +17,12 @@ namespace OculusHack
     {
         // Set basic parameter
         public string OculusInstallFolder = Properties.Settings.Default.HOTSettings;
+
         public double ss = Properties.Settings.Default.SSsetting;
-        public int asw = Properties.Settings.Default.ASWsetting;
         public double hfov = Properties.Settings.Default.HFov;
         public double vfov = Properties.Settings.Default.VFov;
+        public int asw = Properties.Settings.Default.ASWsetting;
+
         private double tmp_ss;
         private double tmp_hfov;
         private double tmp_vfov;
@@ -95,6 +98,7 @@ namespace OculusHack
                     Tools.SetFOV(OculusInstallFolder, hfov,vfov);
                     l_hfov.Content = hfov;
                     l_vfov.Content = vfov;
+                    SetValuesGray();
                 }
             }
 
@@ -247,13 +251,19 @@ namespace OculusHack
             }
         }
 
-        #region Main tab SS
+        #region Main tab SS FOV
         private void b_setSS_Click(object sender, RoutedEventArgs e)
         {
             Tools.SetSS(OculusInstallFolder, ss);
             Properties.Settings.Default.SSsetting = ss;
-            Properties.Settings.Default.Save();
             b_setSS.IsEnabled = false;
+
+            Tools.SetFOV(OculusInstallFolder, hfov, vfov);
+            Properties.Settings.Default.HFov = hfov;
+            Properties.Settings.Default.VFov = vfov;
+            Properties.Settings.Default.Save();
+
+            SetValuesGray();
         }
 
         private void b_ss_plus_Click(object sender, RoutedEventArgs e)
@@ -264,6 +274,7 @@ namespace OculusHack
                 ss = Math.Round(ss, 2);
                 l_ss.Content = ss;
                 b_setSS.IsEnabled = true;
+                l_ss.Foreground = Brushes.Black;
             }
         }
 
@@ -275,10 +286,57 @@ namespace OculusHack
                 ss = Math.Round(ss, 2);
                 l_ss.Content = ss;
                 b_setSS.IsEnabled = true;
+                l_ss.Foreground = Brushes.Black;
             }
             
         }
-        
+
+        private void b_hfov_minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (hfov > 0.05)
+            {
+                hfov -= 0.05;
+                hfov = Math.Round(hfov, 2);
+                l_hfov.Content = hfov;
+                b_setSS.IsEnabled = true;
+                l_hfov.Foreground = Brushes.Black;
+            }
+        }
+        private void b_hfov_plus_Click(object sender, RoutedEventArgs e)
+        {
+            if (hfov < 1)
+            {
+                hfov += 0.05;
+                hfov = Math.Round(hfov, 2);
+                l_hfov.Content = hfov;
+                b_setSS.IsEnabled = true;
+                l_hfov.Foreground = Brushes.Black;
+            }
+        }
+        private void b_vfov_minus_Click(object sender, RoutedEventArgs e)
+        {
+            if (vfov > 0.05)
+            {
+                vfov -= 0.05;
+                vfov = Math.Round(vfov, 2);
+                l_vfov.Content = vfov;
+                b_setSS.IsEnabled = true;
+                l_vfov.Foreground = Brushes.Black;
+            }
+        }
+        private void b_vfov_plus_Click(object sender, RoutedEventArgs e)
+        {
+            if (vfov < 1)
+            {
+                vfov += 0.05;
+                vfov = Math.Round(vfov, 2);
+                l_vfov.Content = vfov;
+                b_setSS.IsEnabled = true;
+                l_vfov.Foreground = Brushes.Black;
+            }
+        }
+
+
         #endregion
 
         #region Main tab ASW OSD
@@ -328,8 +386,20 @@ namespace OculusHack
             }
         }
         #endregion
-        
-        #region Main tab Preset
+
+        #region Main tab Whatcer
+        private void b_watcher_Click(object sender, RoutedEventArgs e)
+        {
+            // Start wathcers
+            startWatch.EventArrived += startWatch_EventArrived;
+            startWatch.Start();
+
+            stopWatch.EventArrived += stopWatch_EventArrived;
+            stopWatch.Start();
+
+            b_watcher.IsEnabled = false;
+        }
+
         private void B_add_exe_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -339,7 +409,7 @@ namespace OculusHack
             ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
             if (ofd.ShowDialog() == false) return;
 
-            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex , cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
+            Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex, cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
             records.Add(rec);
             CfgTools.AddRecordToCfg(rec, cfg_file);
 
@@ -351,7 +421,10 @@ namespace OculusHack
             records.RemoveAt(idx);
             CfgTools.WriteCfg(records, cfg_file);
         }
+        #endregion
 
+        #region Main tab PRESET
+        
         private void b_active_Click(object sender, RoutedEventArgs e)
         {
             if (!preset_active && lv_records.SelectedIndex>=0)
@@ -383,6 +456,7 @@ namespace OculusHack
 
                 b_active_set.Content = "Restore Default";
                 preset_active = true;
+                SetValuesGray();
             }
             else if (preset_active)
             {
@@ -408,74 +482,26 @@ namespace OculusHack
 
                 b_active_set.Content = "Active Preset";
                 preset_active = false;
+                SetValuesGray();
             }
 
         }
 
-        private void b_watcher_Click(object sender, RoutedEventArgs e)
+       
+        private void B_update_set_Click(object sender, RoutedEventArgs e)
         {
-            // Start wathcers
-            startWatch.EventArrived += startWatch_EventArrived;
-            startWatch.Start();
-
-            stopWatch.EventArrived += stopWatch_EventArrived;
-            stopWatch.Start();
-
-            b_watcher.IsEnabled = false;
-        }
-        #endregion
-
-        #region FOV Multiplier
-        private void b_hfov_minus_Click(object sender, RoutedEventArgs e)
-        {
-            if (hfov > 0.05)
+            if (lv_records.SelectedIndex >= 0)
             {
-                hfov -= 0.05;
-                hfov = Math.Round(hfov, 2);
-                l_hfov.Content = hfov; 
-                b_fov.IsEnabled = true;
+                records[lv_records.SelectedIndex].ss = (double)l_ss.Content;
+                records[lv_records.SelectedIndex].hfov = (double)l_hfov.Content;
+                records[lv_records.SelectedIndex].vfov = (double)l_vfov.Content;
+                records[lv_records.SelectedIndex].bitrate = (int)sl_bitrate.Value;
+
+                CfgTools.WriteCfg(records, cfg_file);
             }
-        }
-        private void b_hfov_plus_Click(object sender, RoutedEventArgs e)
-        {
-            if (hfov < 1)
-            {
-                hfov += 0.05;
-                hfov = Math.Round(hfov, 2);
-                l_hfov.Content = hfov;
-                b_fov.IsEnabled = true;
-            }
-        }
-        private void b_vfov_minus_Click(object sender, RoutedEventArgs e)
-        {
-            if (vfov > 0.05)
-            {
-                vfov -= 0.05;
-                vfov = Math.Round(vfov, 2);
-                l_vfov.Content = vfov;
-                b_fov.IsEnabled = true;
-            }
-        }
-        private void b_vfov_plus_Click(object sender, RoutedEventArgs e)
-        {
-            if (vfov < 1)
-            {
-                vfov += 0.05;
-                vfov = Math.Round(vfov, 2);
-                l_vfov.Content = vfov;
-                b_fov.IsEnabled = true;
-            }
-        }
-               
-        private void b_fov_Click(object sender, RoutedEventArgs e)
-        {
-            Tools.SetFOV(OculusInstallFolder, hfov, vfov);
-            Properties.Settings.Default.HFov = hfov;
-            Properties.Settings.Default.VFov = vfov;
-            Properties.Settings.Default.Save();
-            b_fov.IsEnabled = false;
         }
 
+        
         #endregion
 
         #region Service tab
@@ -854,6 +880,19 @@ namespace OculusHack
         {
             public string name { get; set; }
             public int value { get; set; }
+        }
+
+        public void SetValuesGray()
+        {
+            l_ss.Foreground = Brushes.Gray;
+            l_hfov.Foreground = Brushes.Gray;
+            l_vfov.Foreground = Brushes.Gray;
+        }
+        public void SetValuesBlack()
+        {
+            l_ss.Foreground = Brushes.Black;
+            l_hfov.Foreground = Brushes.Black;
+            l_vfov.Foreground = Brushes.Black;
         }
 
         
