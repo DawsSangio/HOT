@@ -411,7 +411,7 @@ namespace OculusHack
 
             Record rec = new Record(ofd.FileName, ss, cb_ASW.SelectedIndex, cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
             records.Add(rec);
-            CfgTools.AddRecordToCfg(rec, cfg_file);
+            CfgTools.WriteCfg(records, cfg_file);
 
         }
 
@@ -496,12 +496,19 @@ namespace OculusHack
                 records[lv_records.SelectedIndex].hfov = (double)l_hfov.Content;
                 records[lv_records.SelectedIndex].vfov = (double)l_vfov.Content;
                 records[lv_records.SelectedIndex].bitrate = (int)sl_bitrate.Value;
-
                 CfgTools.WriteCfg(records, cfg_file);
+                // TODO refresh list view
+
             }
         }
 
-        
+        private void B_add_record_Click(object sender, RoutedEventArgs e)
+        {
+            Record rec = new Record("New preset", ss, cb_ASW.SelectedIndex, cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
+            records.Add(rec);
+            CfgTools.WriteCfg(records, cfg_file);
+        }
+
         #endregion
 
         #region Service tab

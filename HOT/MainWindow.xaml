@@ -68,7 +68,9 @@
 
                 <Button x:Name="b_watcher"  Grid.Row="5" Content="Start watcher" Click="b_watcher_Click" Visibility="Hidden"/>
                 <Button x:Name="b_add_exe" Grid.Row="5" Content="Add exe" Click="B_add_exe_Click" Grid.Column="1" Visibility="Hidden"/>
-                <Button x:Name="b_del_exe" Grid.Row="5" Content="Remove Preset" Click="B_del_exe_Click" Grid.Column="3" />
+                <Button x:Name="b_add_record" Grid.Row="5" Content="Add New Preset" Click="B_add_record_Click" Grid.Column="3" Height="15" VerticalAlignment="Top" FontSize="10" />
+                <Button x:Name="b_del_exe" Grid.Row="5" Content="Remove Preset" Click="B_del_exe_Click" Grid.Column="3" Height="15" VerticalAlignment="Bottom" FontSize="10" />
+
 
                 <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10" >
                     <ListView.View>

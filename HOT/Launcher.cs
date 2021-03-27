@@ -39,7 +39,7 @@ namespace Launcher
 
         }
 
-        public static void AddRecordToCfg(Record record, string cfg_file)
+        private static void AddRecordToCfg(Record record, string cfg_file)
         {
             string space = " ";
             string quote = "\"";
