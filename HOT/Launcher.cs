@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
-
+using System.Runtime.CompilerServices;
 
 namespace Launcher
 {
@@ -67,16 +68,49 @@ namespace Launcher
 
     }
 
-    public class Record
+    public class Record : INotifyPropertyChanged
     {
-        public string exe { get; set; }
-        public string name { get; set; }
-        public double ss { get; set; }
+        private string _exe;
+        public string exe
+        {
+            get { return this._exe; }
+            set
+            {
+                if (value != this._exe)
+                {
+                    this._exe = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+
+        private double _ss;
+        public double ss
+        {
+            get { return this._ss; }
+            set
+            {
+                if (value != this._ss)
+                {
+                    this._ss = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public int asw { get; set; }
+
         public int osd { get; set; }
+
         public int bitrate { get; set; }
+
         public double hfov { get; set; }
+
         public double vfov { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
 
         public Record() { }
 
@@ -91,9 +125,20 @@ namespace Launcher
             this.vfov = vfov;
 
         }
-        
+
+        // This method is called by the Set accessor of each property.
+        // The CallerMemberName attribute that is applied to the optional propertyName
+        // parameter causes the property name of the caller to be substituted as an argument.
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
     }
-    
+
 
 }
 
