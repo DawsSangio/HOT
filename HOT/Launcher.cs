@@ -99,18 +99,65 @@ namespace Launcher
             }
         }
 
-        public int asw { get; set; }
+        private int _bitrate;
+        public int bitrate
+        {
+            get { return this._bitrate; }
+            set
+            {
+                if (value != this._bitrate)
+                {
+                    this._bitrate = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private double _hfov;
+        public double hfov
+        {
+            get { return this._hfov; }
+            set
+            {
+                if (value != this._hfov)
+                {
+                    this._hfov = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private double _vfov;
+        public double vfov
+        {
+            get { return this._vfov; }
+            set
+            {
+                if (value != this._vfov)
+                {
+                    this._vfov = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        private int _asw;
+        public int asw
+        {
+            get { return this._asw; }
+            set
+            {
+                if (value != this._asw)
+                {
+                    this._asw = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public int osd { get; set; }
 
-        public int bitrate { get; set; }
-
-        public double hfov { get; set; }
-
-        public double vfov { get; set; }
-
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         public Record() { }
 

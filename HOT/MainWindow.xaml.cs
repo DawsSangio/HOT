@@ -496,9 +496,8 @@ namespace OculusHack
                 records[lv_records.SelectedIndex].hfov = (double)l_hfov.Content;
                 records[lv_records.SelectedIndex].vfov = (double)l_vfov.Content;
                 records[lv_records.SelectedIndex].bitrate = (int)sl_bitrate.Value;
+                records[lv_records.SelectedIndex].asw = cb_ASW.SelectedIndex;
                 CfgTools.WriteCfg(records, cfg_file);
-                // TODO refresh list view
-
             }
         }
 
