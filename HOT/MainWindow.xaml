@@ -72,10 +72,10 @@
                 <Button x:Name="b_del_exe" Grid.Row="5" Content="Remove Preset" Click="B_del_exe_Click" Grid.Column="3" Height="15" VerticalAlignment="Bottom" FontSize="10" />
 
 
-                <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10" >
+                <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10" MouseDoubleClick="Lv_records_MouseDoubleClick" >
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Exe" Width="170" DisplayMemberBinding="{Binding exe }" />
+                            <GridViewColumn Header="Description" Width="170" DisplayMemberBinding="{Binding exe }" />
                             <GridViewColumn Header="SS" Width="30" DisplayMemberBinding="{Binding ss, StringFormat=0.00}"/>
                             <GridViewColumn Header="HF" Width="30" DisplayMemberBinding="{Binding hfov, StringFormat=0.00}"/>
                             <GridViewColumn Header="VF" Width="30" DisplayMemberBinding="{Binding vfov, StringFormat=0.00}"/>

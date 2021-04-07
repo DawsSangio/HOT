@@ -29,7 +29,6 @@ namespace OculusHack
         private double tmp_bitrate;
         private bool preset_active = false;
 
-
         // Steamvr pace maker
         public string openvrcfg = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\openvr\\openvrpaths.vrpath";
         public bool ASWPacemaker = false;
@@ -277,7 +276,6 @@ namespace OculusHack
                 l_ss.Foreground = Brushes.Black;
             }
         }
-
         private void b_ss_minus_Click(object sender, RoutedEventArgs e)
         {
             if (ss > 0.50)
@@ -335,8 +333,6 @@ namespace OculusHack
                 l_vfov.Foreground = Brushes.Black;
             }
         }
-
-
         #endregion
 
         #region Main tab ASW OSD
@@ -424,7 +420,6 @@ namespace OculusHack
         #endregion
 
         #region Main tab PRESET
-        
         private void b_active_Click(object sender, RoutedEventArgs e)
         {
             if (!preset_active && lv_records.SelectedIndex>=0)
@@ -486,7 +481,6 @@ namespace OculusHack
             }
 
         }
-
        
         private void B_update_set_Click(object sender, RoutedEventArgs e)
         {
@@ -507,7 +501,6 @@ namespace OculusHack
             records.Add(rec);
             CfgTools.WriteCfg(records, cfg_file);
         }
-
         #endregion
 
         #region Service tab
@@ -660,7 +653,6 @@ namespace OculusHack
         #endregion
 
         #region Misc tab
-
         private async void B_restore_lib_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
@@ -899,6 +891,14 @@ namespace OculusHack
             l_ss.Foreground = Brushes.Black;
             l_hfov.Foreground = Brushes.Black;
             l_vfov.Foreground = Brushes.Black;
+        }
+
+        private void Lv_records_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var wind = new Description();
+            wind.DataContext = records[lv_records.SelectedIndex];
+            wind.ShowDialog();
+            CfgTools.WriteCfg(records,cfg_file);
         }
 
         
