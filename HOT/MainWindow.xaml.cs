@@ -250,7 +250,7 @@ namespace OculusHack
             }
         }
 
-        #region Main tab SS FOV
+        #region Main tab SS / FOV
         private void b_setSS_Click(object sender, RoutedEventArgs e)
         {
             Tools.SetSS(OculusInstallFolder, ss);
@@ -413,9 +413,12 @@ namespace OculusHack
 
         private void B_del_exe_Click(object sender, RoutedEventArgs e)
         {
-            int idx = lv_records.SelectedIndex;
-            records.RemoveAt(idx);
-            CfgTools.WriteCfg(records, cfg_file);
+            if (lv_records.SelectedIndex >=0)
+            {
+                records.RemoveAt(lv_records.SelectedIndex);
+                CfgTools.WriteCfg(records, cfg_file);
+            }
+            
         }
         #endregion
 
@@ -499,6 +502,14 @@ namespace OculusHack
         {
             Record rec = new Record("New preset", ss, cb_ASW.SelectedIndex, cb_debugHUD.SelectedIndex, (int)sl_bitrate.Value, hfov, vfov);
             records.Add(rec);
+            CfgTools.WriteCfg(records, cfg_file);
+        }
+
+        private void Lv_records_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var wind = new Description();
+            wind.DataContext = records[lv_records.SelectedIndex];
+            wind.ShowDialog();
             CfgTools.WriteCfg(records, cfg_file);
         }
         #endregion
@@ -893,13 +904,7 @@ namespace OculusHack
             l_vfov.Foreground = Brushes.Black;
         }
 
-        private void Lv_records_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var wind = new Description();
-            wind.DataContext = records[lv_records.SelectedIndex];
-            wind.ShowDialog();
-            CfgTools.WriteCfg(records,cfg_file);
-        }
+        
 
         
     }

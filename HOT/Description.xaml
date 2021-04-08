@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OculusHack"
         mc:Ignorable="d"
-        Title="Edit description" Height="100" Width="400">
-    <StackPanel>
-        <TextBox x:Name="tb_desc" Text="{Binding exe}" TextWrapping="Wrap" VerticalContentAlignment="Center" />
-    </StackPanel>
+        Title="Edit description" Height="70" Width="400">
+    <Grid>
+        <TextBox x:Name="tb_desc" Text="{Binding exe}" TextWrapping="Wrap" VerticalContentAlignment="Center" FontSize="14" />
+    </Grid>
 </Window>

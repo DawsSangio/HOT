@@ -9,7 +9,7 @@
 
     <TabControl>
         <TabItem x:Name="tab_main" Header="Main">
-            <Grid x:Name="grid_main" >
+            <Grid x:Name="grid_main">
                 <Grid.RowDefinitions>
                     <RowDefinition  Height="30"/>
                     <RowDefinition  Height="30"/>
@@ -46,11 +46,11 @@
                 <Button x:Name="b_setSS" Grid.Row="2"  Content="Apply" Click="b_setSS_Click"  FontSize="11" IsEnabled="False" Grid.Column="2" Grid.RowSpan="3"  />
 
 
-                <Label Content="Async Space Warp" Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
-                <ComboBox x:Name="cb_ASW"  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayMemberPath="name" SelectionChanged="Cb_ASW_SelectionChanged"/>
+                <Label Content="Async Space Warp" Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11" />
+                <ComboBox x:Name="cb_ASW"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" DisplayMemberPath="name" SelectionChanged="Cb_ASW_SelectionChanged"/>
                
-                <Label Content="OSD performance" Grid.Row="1" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
-                <ComboBox x:Name="cb_debugHUD" Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
+                <Label Content="OSD performance" Grid.Row="0" Grid.Column="0"  VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="11"/>
+                <ComboBox x:Name="cb_debugHUD" Grid.Row="0" Grid.Column="1"  Grid.ColumnSpan="2"  VerticalContentAlignment="Center" SelectionChanged="cb_OSD_SelectionChanged"  >
                     <ComboBoxItem Content="Off"/>
                     <ComboBoxItem Content="Performance summary"/>
                     <ComboBoxItem Content="Latency timing"/>
@@ -72,16 +72,16 @@
                 <Button x:Name="b_del_exe" Grid.Row="5" Content="Remove Preset" Click="B_del_exe_Click" Grid.Column="3" Height="15" VerticalAlignment="Bottom" FontSize="10" />
 
 
-                <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="10" MouseDoubleClick="Lv_records_MouseDoubleClick" >
+                <ListView x:Name="lv_records"  Grid.Row="6"  Grid.ColumnSpan="3" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontSize="11" MouseDoubleClick="Lv_records_MouseDoubleClick" >
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Description" Width="170" DisplayMemberBinding="{Binding exe }" />
-                            <GridViewColumn Header="SS" Width="30" DisplayMemberBinding="{Binding ss, StringFormat=0.00}"/>
-                            <GridViewColumn Header="HF" Width="30" DisplayMemberBinding="{Binding hfov, StringFormat=0.00}"/>
-                            <GridViewColumn Header="VF" Width="30" DisplayMemberBinding="{Binding vfov, StringFormat=0.00}"/>
-                            <GridViewColumn Header="BIT" Width="30" DisplayMemberBinding="{Binding bitrate}"/>
-                            <GridViewColumn Header="ASW" Width="30" DisplayMemberBinding="{Binding asw}"/>
-                            <GridViewColumn Header="OSD" Width="30" DisplayMemberBinding="{Binding osd}"/>
+                            <GridViewColumn Header="Description" Width="180" DisplayMemberBinding="{Binding exe }" />
+                            <GridViewColumn Header="SS" Width="35" DisplayMemberBinding="{Binding ss, StringFormat=0.00}"/>
+                            <GridViewColumn Header="HF" Width="35" DisplayMemberBinding="{Binding hfov, StringFormat=0.00}"/>
+                            <GridViewColumn Header="VF" Width="35" DisplayMemberBinding="{Binding vfov, StringFormat=0.00}"/>
+                            <GridViewColumn Header="BIT" Width="35" DisplayMemberBinding="{Binding bitrate}"/>
+                            <GridViewColumn Header="ASW" Width="35" DisplayMemberBinding="{Binding asw}"/>
+                            
                         </GridView>
                     </ListView.View>
                 </ListView>
