@@ -673,6 +673,74 @@ namespace OculusHack
 
         }
 
+        /// <summary>
+        /// Set Oculus Link Dynamic Bitrate status.
+        /// -1 Default (no record), 1 Enable, 0 Disable
+        /// </summary>
+        public static void SetLinkDynamicBitrate(int dbr)
+        {
+
+            if (dbr == -1)
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("DBR", false);
+            }
+            else
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("DBR", dbr);
+            }
+
+        }
+
+        public static string GetLinkDynamicBitrate()
+        {
+            string dbr;
+            try
+            {
+                dbr = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("DBR").ToString();
+                if (dbr == "0")
+                {
+                    dbr = "Disable";
+                }
+                else dbr = "Enable";
+            }
+            catch (Exception)
+            {
+                dbr = "Default";
+            }
+            return dbr;
+        }
+
+        /// <summary>
+        /// Set Oculus AirLink Maximum Dynamic Bitrate, it's real time, no need to restart service.
+        /// Max vaule is 200 Nvidia, 100 AMD
+        /// </summary>
+        public static void SetLinkMaxDynamicBitrate(int maxdynamicbitrate)
+        {
+            if (maxdynamicbitrate == 0)
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).DeleteValue("DBRMax", false);
+            }
+            else
+            {
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", true).SetValue("DBRMax", maxdynamicbitrate);
+            }
+        }
+
+        public static int GetLinkMaxDynamicBitrate()
+        {
+            int maxdynamicbitrate;
+            try
+            {
+                maxdynamicbitrate = (int)Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Oculus\\RemoteHeadset", false).GetValue("DBRMax");
+            }
+            catch (Exception)
+            {
+                maxdynamicbitrate = 0;
+            }
+            return maxdynamicbitrate;
+
+        }
+
         #endregion
 
         #region Manage Runtime Library
