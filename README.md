@@ -1,7 +1,7 @@
 # HOT
 Humble Oculus Toolkit
 
-[hot_04](https://user-images.githubusercontent.com/26057951/115012029-9dde7780-9eaf-11eb-8cc3-853c46131f9e.jpg)
+![hot_04](https://user-images.githubusercontent.com/26057951/115012029-9dde7780-9eaf-11eb-8cc3-853c46131f9e.jpg)
 
 A simple tool to manage basic functions of the Oculus Runtime for Rift CV1 and Rift-S, like Super Sampling or OSD debug screens.
 I want it simple, so no install required, no additional dll required, a single exe that you can put where you want and simply run it.
